@@ -1,0 +1,10 @@
+﻿<button type="button" class="asr-audio-recorder btn btn-primary" @onclick="OnMicrophoneButtonClickedAsync">
+    @if (IsRecording)
+    {
+        <i class="fa-solid fa-microphone fa-fade asr-audio-recording"></i>
+    }
+    else
+    {
+        <i class="fa-solid fa-microphone"></i>
+    }
+</button>

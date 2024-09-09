@@ -1,0 +1,12 @@
+{
+  "Name": "Stop Command",
+  "Description": "Command to stop the currently running task",
+  "Templates": [
+    "Stop",
+    "Cease",
+    "Quit",
+    "End",
+    "Terminate"
+  ],
+  "Options": []
+}

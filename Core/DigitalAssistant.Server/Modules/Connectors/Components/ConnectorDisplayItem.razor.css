@@ -1,0 +1,9 @@
+﻿.card-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.btn-enable-disable-connector {
+    width: 100%;
+}

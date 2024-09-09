@@ -1,0 +1,9 @@
+{
+  "Name": "Musikradios verwalten",
+  "Description": "Befehle zum abspielen von Internetradios",
+  "Templates": [
+    "[Spiel|Spiele] den Radiosender {RadioStation:Text}"
+  ],
+  "Options": [],
+  "PlayRadioStationResponse": "Der Radiosender {0} wird abgespielt"
+}

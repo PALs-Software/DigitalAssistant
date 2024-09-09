@@ -1,0 +1,7 @@
+﻿::deep .accordion-body {
+    background-color: #252525;
+}
+
+::deep .accordion-body .card-body {
+    padding: 0;
+}

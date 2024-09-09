@@ -1,0 +1,15 @@
+﻿.back-panel {
+    position: absolute;
+    inset: 48px 0px 0px;
+    background-color: white;
+    opacity: 0;
+    display: none;
+    visibility: hidden;
+    z-index: -1;
+}
+
+.back-panel.show {
+    display: block;
+    visibility: visible;
+    z-index: 1000;
+}

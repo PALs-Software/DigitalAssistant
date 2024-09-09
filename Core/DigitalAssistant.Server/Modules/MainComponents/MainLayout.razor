@@ -1,0 +1,37 @@
+﻿@using DigitalAssistant.Server.Modules.Clients.Components
+@using DigitalAssistant.Server.Modules.Menus.Components
+@layout BaseAuthorizedLayout
+@inherits LayoutComponentBase
+
+<PageTitle>DA</PageTitle>
+
+<ThemeSelector @ref="ThemeSelector" />
+<CascadingValue Value="ThemeSelector">
+
+    <TopMenu />
+
+    <Layout Sider="true">
+        <SideMenu />
+        <Layout>
+            <LayoutContent Padding="Padding.Is4.OnX">
+
+                @Body
+
+            </LayoutContent>
+        </Layout>
+    </Layout>
+
+</CascadingValue>
+
+@code {
+    [Inject] protected ClientStatusPopup ClientStatusPopup { get; set; } = null!;
+    protected ThemeSelector? ThemeSelector;
+
+    protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+            InvokeAsync(StateHasChanged);
+
+        return base.OnAfterRenderAsync(firstRender);
+    }
+}

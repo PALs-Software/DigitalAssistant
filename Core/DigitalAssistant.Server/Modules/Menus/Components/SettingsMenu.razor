@@ -1,0 +1,17 @@
+﻿<div class="settings-menu">
+    <div class="settings-menu-start">
+        <h3 class="pb-2">@Localizer["Settings"]</h3>
+
+        <DigitalAssistant.Server.Modules.LanguageSelection.Components.LanguageSelector />
+
+        <div class="form-group row">
+            <label class="col-form-label col text-truncate">@Localizer["Dark Mode:"]</label>
+            <div class="col align-self-center">
+                <label class="switch">
+                    <input type="checkbox" @onchange="ChangeDarkModeSettingAsync" @attributes="InputAttributes">
+                    <span class="slider round"></span>
+                </label>
+            </div>
+        </div>
+    </div>
+</div>

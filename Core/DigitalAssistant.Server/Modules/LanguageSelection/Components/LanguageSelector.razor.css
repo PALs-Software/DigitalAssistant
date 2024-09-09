@@ -1,0 +1,33 @@
+﻿.language-selector ::deep label {
+    color: var(--bs-body-color);
+    overflow-x: hidden;
+    margin-bottom: 0;
+}
+
+.b-bar-menu .language-selector ::deep i {
+    display: inline-block;
+}
+
+.b-bar-menu.show .language-selector ::deep i {
+    display: none;
+}
+
+.b-bar-menu .language-selector label {
+    display: none;
+}
+
+.b-bar-menu.show .language-selector label {
+    display: block;
+}
+
+.dropdown-toggle {
+    background-color: var(--side-panel-language-background-color);
+}
+
+.dropdown-menu {
+    background-color: var(--side-panel-language-dropdown-background-color);
+}
+
+.dropdown-item:hover {
+    background-color: var(--side-panel-language-dropdown-background-color-hover);
+}

@@ -1,0 +1,10 @@
+﻿@page "/User/Login"
+@using BlazorBase.User.Pages;
+
+@layout BaseLayout
+@inherits BaseUserLogin
+
+<BaseLoginForm WebsiteName="@Options.WebsiteName"
+               ShowImageOfTheDayAsBackgroundImage="@Options.ShowImageOfTheDayAsBackgroundImageByLogin"
+               BackgroundImageSrc="@Options.LoginBackgroundImageSrc"
+               />

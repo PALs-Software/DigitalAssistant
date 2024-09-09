@@ -1,0 +1,51 @@
+{
+  "Name": "",
+  "Description": "",
+  "Templates": [
+  ],
+  "Options": [
+    {
+      "Name": "DeltaDirection",
+      "Values": [
+        {
+          "Name": "Increase",
+          "LocalizedValues": [ "Increase", "Higher", "Raise", "Boost", "Brighter" ]
+        },
+        {
+          "Name": "Decrease",
+          "LocalizedValues": [ "Decrease", "Lower", "Reduce", "Darker" ]
+        }
+      ]
+    },
+    {
+      "Name": "State",
+      "Values": [
+        {
+          "Name": "On",
+          "LocalizedValues": [ "On", "Turn on" ]
+        },
+        {
+          "Name": "Off",
+          "LocalizedValues": [ "Off", "Turn off" ]
+        }
+      ]
+    },
+    {
+      "Name": "Color",
+      "Values": [
+        {
+          "Name": "Blue",
+          "LocalizedValues": [ "Blue" ]
+        },
+        {
+          "Name": "Red",
+          "LocalizedValues": [ "Red" ]
+        },
+        {
+          "Name": "Yellow",
+          "LocalizedValues": [ "Yellow" ]
+        }
+      ]
+    }
+  ]
+}

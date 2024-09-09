@@ -1,0 +1,12 @@
+{
+  "Name": "Stopp Befehl",
+  "Description": "Befehl zum stoppen der aktuell ausgeführten Aufgabe",
+  "Templates": [
+    "Stopp",
+    "Aufhören",
+    "Hör auf",
+    "Beenden",
+    "Beende"
+  ],
+  "Options": []
+}

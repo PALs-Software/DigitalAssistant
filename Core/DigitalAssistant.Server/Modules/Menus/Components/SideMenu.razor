@@ -1,0 +1,37 @@
+﻿@using Blazorise.Icons.FontAwesome
+@using DigitalAssistant.Server.Modules.LanguageSelection.Components
+
+<LayoutSider>
+    <LayoutSiderContent>
+        <Bar @bind-Visible="Visible"
+             ThemeContrast="ThemeContrast.Dark"
+             NavigationBreakpoint="Breakpoint.Tablet"
+             Mode="BarMode.VerticalInline"
+             CollapseMode="BarCollapseMode.Small">
+           
+            <BarMenu>
+                <BarStart>
+                    <BarItem Class="dashboard-item">
+                        <BarLink To="@IndexLink">
+                            <BarIcon IconName="IconName.ChartPie" />
+                            @Localizer["Telemetry"]
+                        </BarLink>
+                    </BarItem>
+                    @if (AdministrationNavigationEntries.Count > 0)
+                    {
+                        <BaseMenu MenuName="@(Localizer["Administration"])" MenuIcon="FontAwesomeIcons.Cog" NavigationEntries="AdministrationNavigationEntries" DropDownIsVisibleByDefault="true" />
+                    }
+                    <BaseMenu MenuName="@(Localizer["General"])" MenuIcon="FontAwesomeIcons.Home" NavigationEntries="GeneralNavigationEntries" DropDownIsVisibleByDefault="true" />
+
+                </BarStart>
+                <BarEnd>
+                    <div class="side-menu-toggler" @onclick="ToogleVisibility">
+                        <a class="btn">
+                            <i class="fas fa-lg @(Visible ? "fa-chevron-left" : "fa-chevron-right")" />
+                        </a>
+                    </div>
+                </BarEnd>
+            </BarMenu>
+        </Bar>
+    </LayoutSiderContent>
+</LayoutSider>

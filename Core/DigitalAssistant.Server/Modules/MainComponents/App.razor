@@ -1,0 +1,74 @@
+﻿@using BlazorBase.DataUpgrade;
+@using Microsoft.AspNetCore.Components
+@using Microsoft.AspNetCore.Components.Web
+@using System.Globalization
+@using Microsoft.AspNetCore.Localization
+@using System.Diagnostics
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <base href="/" />
+
+    <link rel="icon" type="image/png" href="favicon.png" />
+
+    <link rel="stylesheet" href="libs/bootstrap/css/bootstrap.min.css" />
+
+    <link href="libs/fontawesome/css/fontawesome.min.css" rel="stylesheet" />
+    <link href="libs/fontawesome/css/brands.css" rel="stylesheet" />
+    <link href="libs/fontawesome/css/solid.css" rel="stylesheet" />
+    <link href="libs/fontawesome/css/v4-font-face.css" rel="stylesheet" />
+
+    <link href="_content/Blazorise/blazorise.css" rel="stylesheet" />
+    <link href="_content/Blazorise.Snackbar/blazorise.snackbar.css" rel="stylesheet" />
+    <link href="_content/Blazorise.Bootstrap/blazorise.bootstrap.css" rel="stylesheet" />
+    <link href="_content/Blazorise.Sidebar/blazorise.sidebar.css" rel="stylesheet" />
+
+    <link href="_content/BlazorBase.CRUD/crud.css" rel="stylesheet" />
+    
+    <link href="_content/BlazorBase.Themes/smaller-font.css" rel="stylesheet" />
+    <link href="_content/BlazorBase.Themes/light-theme.css" rel="stylesheet" />
+    <link href="css/light.css" rel="stylesheet" />
+    <HeadOutlet @rendermode="@RenderMode.InteractiveServer" />
+
+    <link href="css/site.css" rel="stylesheet" />
+    <link href="DigitalAssistant.Server.styles.css" rel="stylesheet" />
+</head>
+<body>
+
+    <ServerRouter @rendermode="RenderMode.InteractiveServer" />
+
+    <div id="blazor-error-ui">
+        An unhandled error has occurred.
+        <a href="" class="reload">Reload</a>
+        <a class="dismiss">🗙</a>
+    </div>
+
+    <script>
+        window.ClientCulture = {
+            Get: () => window.localStorage['ClientCulture'],
+            Set: (value) => window.localStorage['ClientCulture'] = value
+        };
+    </script>
+
+    <script src="_framework/blazor.web.js"></script>
+
+    <script defer src="libs/bootstrap/js/jquery-3.5.1.slim.min.js"></script>
+    <script defer src="libs/bootstrap/js/popper.min.js"></script>
+    <script defer src="libs/bootstrap/js/bootstrap.min.js"></script>
+    <script defer src="js/DA.js"></script>
+
+    <script defer src="_content/Blazorise/blazorise.js"></script>
+    <script defer src="_content/Blazorise.Bootstrap/blazorise.bootstrap.js"></script>
+
+    <script defer src="_content/ThePALBotCompany.BlazorBase/blazorBase.js"></script>
+    <script defer src="_content/BlazorBase.User/blazorBase.user.js"></script>
+    <script defer src="_content/BlazorBase.CRUD/blazorBase.crud.js"></script>
+    <script defer src="_content/BlazorBase.CRUD/blazorBase.crud.modal.js"></script>
+    <script defer src="_content/BlazorBase.Backup/blazorBase.backup.js"></script>
+
+</body>
+</html>
+

@@ -1,0 +1,56 @@
+﻿@page "/Connectors"
+@attribute [Authorize(Roles = "Admin")]
+
+<div class="connector-list">
+
+    <PageTitle>@Localizer["Connectors"]</PageTitle>
+
+    <h3 class="mt-2">
+        @Localizer["Connectors"]
+    </h3>
+
+    <Accordion>
+        <Collapse Visible="AccordionCollapseState[0]">
+            <CollapseHeader @onclick="() => AccordionCollapseState[0] = !AccordionCollapseState[0]" Class="text-center">
+                <h5 class="mb-0">
+                    @Localizer["Enabled Connectors"]
+                </h5>
+            </CollapseHeader>
+            <CollapseBody Class="accordion-body p-2">
+                <div class="row m-0">
+                    @foreach (var connector in EnabledConnectors)
+                    {
+                        <div class="display-item col-sm-12 col-md-6 col-lg-4 col-xl-3 p-2 pt-0">
+                            <ConnectorDisplayItem Connector="@connector" OnDisableConnector="DisableConnectorAsync" />
+                        </div>
+                    }
+                </div>
+            </CollapseBody>
+        </Collapse>
+
+        <Collapse Visible="AccordionCollapseState[1]">
+            <CollapseHeader @onclick="() => AccordionCollapseState[1] = !AccordionCollapseState[1]" Class="text-center">
+                <h5 class="mb-0">
+                    @Localizer["Disabled Connectors"]
+                </h5>
+            </CollapseHeader>
+            <CollapseBody Class="accordion-body p-2">
+                <div class="row m-0">
+                    @foreach (var connector in DisabledConnectors)
+                    {
+                        <div class="display-item col-sm-12 col-md-6 col-lg-4 col-xl-3 p-2 pt-0">
+                            <ConnectorDisplayItem Connector="@connector" OnEnableConnector="EnableConnectorAsync" />
+                        </div>
+                    }
+                </div>
+            </CollapseBody>
+        </Collapse>
+    </Accordion>
+
+    @if (ShowEnableConnectorModal)
+    {
+        <EnableConnectorModal Connector="ConnectorToEnable" Closed="EnableConnectorModalClosed">
+
+        </EnableConnectorModal>
+    }
+</div>

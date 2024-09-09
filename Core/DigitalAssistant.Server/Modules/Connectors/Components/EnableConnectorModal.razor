@@ -1,0 +1,15 @@
+﻿<div class="enable-connector-modal">
+    <Modal @ref="Modal" Style="z-index:9999" ShowBackdrop="true" Closed="Closed">
+        <ModalContent Centered="true" Size="ModalSize.Large">
+            <ModalHeader>
+                <ModalTitle>
+                    @Localizer["Enable {0}", Connector.Name]
+                </ModalTitle>
+                <CloseButton />
+            </ModalHeader>
+            <div class="enable-connector-body">
+                @GetConnectorSetupRenderFragment()
+            </div>
+        </ModalContent>
+    </Modal>
+</div>

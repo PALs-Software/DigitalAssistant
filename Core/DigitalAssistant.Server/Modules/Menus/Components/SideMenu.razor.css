@@ -1,0 +1,9 @@
+.side-menu-toggler {
+    display: flex;
+    justify-content: flex-end;
+    padding-right: 1rem;
+}
+
+    .side-menu-toggler .btn .fas {
+        color: var(--bs-body-color);
+    }

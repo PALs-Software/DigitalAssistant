@@ -1,0 +1,30 @@
+:root {
+    --bs-body-bg: #201f1e;
+    /*Primary Color*/
+    --primary-color: #fff;
+    --primary-bg-color: #72883c;
+    --primary-border-color: #495825;
+    --primary-bg-color-hover: #91ce00;
+    --primary-border-color-hover: #495825;
+    --primary-bg-color-focus: #91ce00;
+    --primary-bg-color-active: #638d00;
+    --primary-bg-color-shadow: rgb(33 132 20 / 50%);
+    /*Danger Color*/
+    --danger-color: #fff;
+    --danger-bg-color: #82020e;
+    --danger-border-color: #5e020b;
+    --danger-bg-color-hover: #c10013;
+    --danger-border-color-hover: #85000d;
+    --danger-bg-color-focus: #c82333;
+    --danger-bg-color-active: #bd2130;
+    --danger-bg-color-shadow: rgba(225,83,97,.5);
+    /*Top Menu*/
+    --top-menu-bg: #495825;
+    --top-menu-bg-hover: #6f8d28;
+    /*Side Panel*/
+    --side-panel-background-color: var(--b-bar-dark-background);
+    --side-panel-border-color: var(--table-border-color);
+    --side-panel-language-background-color: #7c7c7c;
+    --side-panel-language-dropdown-background-color: var(--side-panel-language-background-color);
+    --side-panel-language-dropdown-background-color-hover: #a5a3a3;
+}

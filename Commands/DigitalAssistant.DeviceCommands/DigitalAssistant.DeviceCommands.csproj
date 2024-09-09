@@ -1,0 +1,40 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Remove="GetCurrentTimeCommand.de.json" />
+		<None Remove="GetCurrentTimeCommand.json" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Content Include="LightDeviceCommands.de.json">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+		</Content>
+		<Content Include="LightDeviceCommands.en.json">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+		</Content>
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\Core\DigitalAssistant.Abstractions\DigitalAssistant.Abstractions.csproj" />
+	</ItemGroup>
+	
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<ItemGroup>
+			<DllFiles Include="$(OutDir)\DigitalAssistant.DeviceCommands.*" />
+			<TranslationFiles Include="$(OutDir)\**\*.json" />
+		</ItemGroup>
+		<Copy SourceFiles="@(DllFiles)" DestinationFolder="$(ProjectDir)..\..\Core\DigitalAssistant.Server\bin\Debug\net8.0\Commands\DigitalAssistant.DeviceCommands" />
+		<Copy SourceFiles="@(TranslationFiles)" DestinationFolder="$(ProjectDir)..\..\Core\DigitalAssistant.Server\bin\Debug\net8.0\Commands\DigitalAssistant.DeviceCommands\%(RecursiveDir)" />
+	</Target>
+
+</Project>

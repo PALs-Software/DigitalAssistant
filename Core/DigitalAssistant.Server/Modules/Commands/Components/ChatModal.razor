@@ -1,0 +1,44 @@
+﻿
+<div class="chat-modal">
+    <Modal @ref="Modal" Style="z-index:9999" ShowBackdrop="true">
+        <ModalContent Centered="true" Size="ModalSize.Large">
+            <ModalHeader>
+                <ModalTitle>
+                    @Localizer["Assistant Chat"]
+                </ModalTitle>
+                <CloseButton />
+            </ModalHeader>
+            <ModalBody>
+
+                <div id="chat-messages" class="chat-messages">
+                    @foreach (var messageEntry in Messages)
+                    {
+                        <span class="chat-message @(messageEntry.FromUser ? "chat-message-right" : "chat-message-left")">
+                            @messageEntry.Message
+                        </span>
+                    }
+
+                    <span class="fa-stack fa-xl chat-message chat-message-left chat-message-executing @(CommandIsExecuting ? "" : "d-none")">
+                        <i class="fa-solid fa-comment fa-stack-2x"></i>
+                        <i class="fa-solid fa-circle fa-stack-1x chat-loading-dot fa-beat left-chat-dot"></i>
+                        <i class="fa-solid fa-circle fa-stack-1x chat-loading-dot fa-beat middle-chat-dot"></i>
+                        <i class="fa-solid fa-circle fa-stack-1x chat-loading-dot fa-beat right-chat-dot"></i>
+                    </span>
+                </div>
+
+                <div class="input-group">
+                    <input @ref="UserInput" id="chat-user-message-input" class="form-control" type="text" autocomplete="off" @bind="@CurrentMessage" @onkeyup="OnInputKeyUpAsync" />
+                    <div class="input-group-append">
+                        <button type="button" class="btn btn-primary" @onclick="HandleCurrentMessageAsync">
+                            <i class="fa-solid fa-paper-plane"></i>
+                        </button>
+                        <AsrAudioRecorder @ref="AsrAudioRecorder" OnNewAudioDataConverted="OnNewAudioRecorderDataAsync" DebugModeEnabled="DebugModusEnabled" />
+                        <button type="button" class="btn btn-secondary" @onclick="ToggleDebugModus">
+                            <i class="fa-solid @(DebugModusEnabled? "fa-bug" : "fa-bug-slash")"></i>
+                        </button>
+                    </div>
+                </div>
+            </ModalBody>
+        </ModalContent>
+    </Modal>
+</div>

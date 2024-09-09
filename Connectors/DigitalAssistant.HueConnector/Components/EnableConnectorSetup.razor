@@ -1,0 +1,53 @@
+﻿<div class="enable-connector-setup">
+
+    @if (CheckConnector)
+    {
+        <div class="modal-body">
+            <p>
+                @Localizer["Checking the availability of the Phillips Hue Connector..."]
+            </p>
+
+            <div class="text-center">
+                <LoadingIndicator Visible="true" />
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="modal-body">
+            <p>
+                @if (ConnectorIsAvailable)
+                {
+                    @Localizer["To connect the Phillips Hue to the Digital Assistant Server, press the button on the Phillips Hue Bridge and then click the \"Continue\" button in this setup."]
+                }
+                else
+                {
+                    @Localizer["The Phillips Hue Connector is not available. Make sure that the Hue Bridge is on and in the same network as the Digital Assistant Server."]
+                }
+            </p>
+
+            @if (!String.IsNullOrEmpty(ErrorMessage))
+            {
+                <p class="text-danger">
+                    @Localizer["An error occurred while connecting to the philips hue bridge:"]
+                    @ErrorMessage
+                </p>
+            }
+        </div>
+
+        <div class="modal-footer">
+
+            <button type="button" class="btn btn-secondary" @onclick="() => CloseSetup(false, null)">
+                @Localizer["Close"]
+            </button>
+
+            @if (ConnectorIsAvailable)
+            {
+                <button type="button" class="btn btn-primary" @onclick="EnableConnectorAsync">
+                    @Localizer["Continue"]
+                </button>
+            }
+        </div>
+    }
+
+</div>

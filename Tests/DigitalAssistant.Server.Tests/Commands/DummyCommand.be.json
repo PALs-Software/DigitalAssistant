@@ -1,0 +1,21 @@
+{
+  "Name": "",
+  "Description": "",
+  "Templates": [
+  ],
+  "Options": [
+    {
+      "Name": "DeltaDirection",
+      "Values": [
+        {
+          "Name": "Increase",
+          "LocalizedValues": [ "Increase", "Higher", "Raise", "Boost", "Brighter" ]
+        },
+        {
+          "Name": "Decrease",
+          "LocalizedValues": [ "Decrease", "Lower", "Reduce", "Darker" ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Remove="LightDeviceCommands.de.json" />
+		<None Remove="LightDeviceCommands.en.json" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Content Include="RadioCommands.de.json">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+		</Content>
+		<Content Include="RadioCommands.en.json">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+		</Content>
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="RadioBrowser" Version="0.7.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\Core\DigitalAssistant.Abstractions\DigitalAssistant.Abstractions.csproj" />
+	</ItemGroup>
+
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<ItemGroup>
+			<DllFiles Include="$(OutDir)\DigitalAssistant.MusicCommands.*" />
+			<RadioBrowserDllFiles Include="$(OutDir)\RadioBrowser.*" />
+			<TranslationFiles Include="$(OutDir)\**\*.json" />
+		</ItemGroup>
+		<Copy SourceFiles="@(DllFiles)" DestinationFolder="$(ProjectDir)..\..\Core\DigitalAssistant.Server\bin\Debug\net8.0\Commands\DigitalAssistant.MusicCommands" />
+		<Copy SourceFiles="@(RadioBrowserDllFiles)" DestinationFolder="$(ProjectDir)..\..\Core\DigitalAssistant.Server\bin\Debug\net8.0\Commands\DigitalAssistant.MusicCommands" />
+		<Copy SourceFiles="@(TranslationFiles)" DestinationFolder="$(ProjectDir)..\..\Core\DigitalAssistant.Server\bin\Debug\net8.0\Commands\DigitalAssistant.MusicCommands\%(RecursiveDir)" />
+	</Target>
+
+</Project>

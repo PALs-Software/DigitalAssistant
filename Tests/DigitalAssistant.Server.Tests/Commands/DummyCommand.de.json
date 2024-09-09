@@ -1,0 +1,34 @@
+{
+  "Name": "",
+  "Description": "",
+  "Templates": [
+  ],
+  "Options": [
+    {
+      "Name": "DeltaDirection",
+      "Values": [
+        {
+          "Name": "Increase",
+          "LocalizedValues": [ "Erhöhe", "Steigere", "Hebe", "Heller" ]
+        },
+        {
+          "Name": "Decrease",
+          "LocalizedValues": [ "Reduziere", "Verringere", "Senke", "Dunkler" ]
+        }
+      ]
+    },
+    {
+      "Name": "State",
+      "Values": [
+        {
+          "Name": "On",
+          "LocalizedValues": [ "An", "Einschalten" ]
+        },
+        {
+          "Name": "Off",
+          "LocalizedValues": [ "Aus", "Ausschalten" ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+﻿<div class="connector-display-item card">
+    <h5 class="card-header p-2">
+        <img src="data:image/jpg;base64,@Connector.Base64JpgImage" class="img-fluid rounded-circle float-left mr-auto" width="30" height="30">
+
+        <span class="connector-name mr-auto">
+            @Connector.Name
+        </span>
+
+        <span class="ml-auto">
+        </span>
+    </h5>
+    <div class="card-body p-2">
+        <p class="card-text">@Connector.Description</p>
+    </div>
+    <div class="card-footer p-2">
+        @if (Connector.Enabled)
+        {
+            <button type="button" class="btn btn-danger btn-enable-disable-connector" @onclick="DisableConnectorAsync">
+                @Localizer["Disable"]
+            </button>
+        }
+        else
+        {
+            <button type="button" class="btn btn-primary btn-enable-disable-connector" @onclick="EnableConnectorAsync">
+                @Localizer["Enable"]
+            </button>
+        }
+    </div>
+</div>

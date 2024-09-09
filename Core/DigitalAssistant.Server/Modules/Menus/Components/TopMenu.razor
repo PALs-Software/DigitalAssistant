@@ -1,0 +1,66 @@
+﻿@using DigitalAssistant.Server.Modules.Menus.Enums
+
+<div>
+    <ChatModal @ref="ChatModal" />
+
+    <nav class="top-menu navbar navbar-expand nav">
+        <ul class="navbar-nav align-self-start">
+            <li class="top-menu-item nav-item">
+            </li>
+        </ul>
+
+        <ul class="brand-center navbar-nav align-self-center">
+            <li class="top-menu-item nav-item top-menu-item-disable-hover-background-color">
+                <a href="/" class="menu-item-center-header">
+                    <h4>Digital Assistant</h4>
+                </a>
+            </li>
+        </ul>
+
+        <ul class="navbar-nav justify-content-end">
+
+            <li class="top-menu-item nav-item chat-modal-btn" @onclick="() => ChatModal?.Show()">
+                <a>
+                    <i class="fa-solid fa-comments fa-2x"></i>
+                </a>
+            </li>
+
+            <li class="top-menu-item nav-item">
+                <AudioRecorderCommandProcessor />
+            </li>
+
+            <li class="top-menu-item nav-item">
+                <i class=" fas fa-lg fa-bell" />
+            </li>
+
+            <li class="top-menu-item nav-item" @onclick="() => ToogleSideMenu(TopSideMenuType.Settings)">
+                <i class=" fas fa-lg fa-cog" />
+            </li>
+
+            <AuthorizeView>
+                <Authorized>
+                    <li class="top-menu-item nav-item" @onclick="() => ToogleSideMenu(TopSideMenuType.UserMenu)">
+                        <UserProfilImage />
+                    </li>
+                </Authorized>
+                <NotAuthorized>
+                    <a class="btn top-menu-item nav-item top-menu-login-in-btn" href="@Options.LoginControllerPath">@Localizer["Log in"]</a>
+                </NotAuthorized>
+            </AuthorizeView>
+
+        </ul>
+    </nav>
+
+    <div class="side-panel @(SideMenuType == TopSideMenuType.Hide ? "" : "show")">
+        @if (SideMenuType == TopSideMenuType.Settings)
+        {
+            <SettingsMenu />
+        }
+        else
+        {
+            <UserMenu />
+        }
+    </div>
+
+    <BackPanel @ref="BackPanel" OnBackPanelClicked="OnBackPanelClicked" />
+</div>

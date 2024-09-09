@@ -1,0 +1,19 @@
+﻿<div class="user-menu">
+    <div class="user-menu-start">
+        <h3 class="pb-2">@Localizer["User"]</h3>
+
+        <AuthorizeView>
+            <Authorized>
+                <span class="btn side-panel-item">@Greeting @(UserName)!</span>
+                <a class="btn side-panel-item" href="javascript:$('#logout-form').submit()">@Localizer["Log out"]</a>
+                <form id="logout-form" method="post" action="@Options.LogoutControllerPath"></form>
+            </Authorized>
+            <NotAuthorized>
+                <a class="btn side-panel-item" href="@Options.LoginControllerPath">@Localizer["Log in"]</a>
+            </NotAuthorized>
+        </AuthorizeView>
+    </div>
+
+    <div class="user-menu-end">
+    </div>
+</div>
