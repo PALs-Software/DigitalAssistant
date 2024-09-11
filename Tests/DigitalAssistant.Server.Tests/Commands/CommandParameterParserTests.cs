@@ -74,7 +74,7 @@ public class CommandParameterParserTests : DigitalAssistantTestContext
         var match = commandTemplate.Regex.Match("Schalte das Licht an");
 
         // Act
-        (bool success, ICommandParameters? parameters) = await ParameterParser.ParseParametersFromMatchAsync(commandTemplate, match, Language, ClientBase.Browser);
+        (bool success, ICommandParameters? parameters) = await ParameterParser.ParseParametersFromMatchAsync(commandTemplate, match, language, ClientBase.Browser);
 
         // Assert
         Assert.IsTrue(success);
@@ -323,13 +323,4 @@ public class CommandParameterParserTests : DigitalAssistantTestContext
         Assert.AreEqual(switchDevice.Name, ((ISwitchDevice)parameters.Parameters["SwitchDevice"].Value!).Name);
         Assert.AreEqual(DeviceType.Switch, ((ISwitchDevice)parameters.Parameters["SwitchDevice"].Value!).Type);
     }
-
-    #region MISC
-    protected void SwitchToLanguage(string langugae)
-    {
-        Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo(langugae);
-        CultureInfo.DefaultThreadCurrentCulture = Thread.CurrentThread.CurrentCulture;
-        CultureInfo.DefaultThreadCurrentUICulture = Thread.CurrentThread.CurrentCulture;
-    }
-    #endregion
 }

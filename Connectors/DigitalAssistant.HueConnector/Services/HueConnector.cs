@@ -14,9 +14,11 @@ using Microsoft.Extensions.Logging;
 using System.Net.Http.Json;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Runtime.Versioning;
 
 namespace DigitalAssistant.HueConnector.Services;
 
+[UnsupportedOSPlatform("browser")]
 public class HueConnector : IConnector
 {
     #region Properties
@@ -117,9 +119,7 @@ public class HueConnector : IConnector
             GenerateClientKey = true
         };
 
-#pragma warning disable CA1416 // Plattformkompatibilität überprüfen
         using var handler = new HttpClientHandler() { ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator };
-#pragma warning restore CA1416 // Plattformkompatibilität überprüfen
         using var client = new HttpClient(handler);
         var uri = GenerateHueApiUri(settings, GENERATE_HUE_API_KEY_ENDPOINT);
         var responseMessage = await client.PostAsJsonAsync(uri, request).ConfigureAwait(false);
@@ -319,9 +319,7 @@ public class HueConnector : IConnector
         if (String.IsNullOrEmpty(Settings?.AccessKeyEncrypted))
             return;
 
-#pragma warning disable CA1416 // Plattformkompatibilität überprüfen
         using var handler = new HttpClientHandler() { ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator };
-#pragma warning restore CA1416 // Plattformkompatibilität überprüfen
         using var infiniteClient = new HttpClient(handler);
         infiniteClient.DefaultRequestHeaders.Add("hue-application-key", DataProtectionService.Unprotect(Settings?.AccessKeyEncrypted));
         infiniteClient.Timeout = Timeout.InfiniteTimeSpan;
@@ -462,9 +460,7 @@ public class HueConnector : IConnector
 
         if (Client == null)
         {
-#pragma warning disable CA1416 // Plattformkompatibilität überprüfen
             var handler = new HttpClientHandler() { ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator };
-#pragma warning restore CA1416 // Plattformkompatibilität überprüfen
             Client = new HttpClient(handler);
             Client.DefaultRequestHeaders.Add("hue-application-key", DataProtectionService.Unprotect(Settings.AccessKeyEncrypted));
         }

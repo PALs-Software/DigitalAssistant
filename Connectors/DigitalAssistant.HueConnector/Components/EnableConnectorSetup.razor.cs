@@ -1,9 +1,11 @@
 ﻿using DigitalAssistant.Abstractions.Connectors;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Localization;
+using System.Runtime.Versioning;
 
 namespace DigitalAssistant.HueConnector.Components;
 
+[UnsupportedOSPlatform("browser")]
 public partial class EnableConnectorSetup
 {
     #region Parameter

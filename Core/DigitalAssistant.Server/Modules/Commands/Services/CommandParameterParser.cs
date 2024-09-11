@@ -153,8 +153,13 @@ public class CommandParameterParser
                     convertedValue = ((DateTime)convertedValue!).TimeOfDay;
                 break;
             case CommandParameterType.Color:
+                var normalizedColorValue = value.Trim().ToLower();
                 var localizedColorNames = TemplateParserLocalizer["ColorRegexTemplate"].ToString().Split("|").ToList();
-                var index = localizedColorNames.IndexOf(value);
+                var localizedColorName = localizedColorNames.Where(entry => entry.ToLower() == normalizedColorValue).FirstOrDefault();
+                if (localizedColorName == null)
+                    break;
+
+                var index = localizedColorNames.IndexOf(localizedColorName);
                 if (index == -1)
                     break;
 
@@ -165,8 +170,13 @@ public class CommandParameterParser
                     convertedValue = color;
                 break;
             case CommandParameterType.ColorTemperatureColor:
+                var normalizedColorTemperatureValue = value.Trim().ToLower();
                 var localizedColorTemperatureNames = TemplateParserLocalizer["ColorTemperatureRegexTemplate"].ToString().Split("|").ToList();
-                var temperatureIndex = localizedColorTemperatureNames.IndexOf(value);
+                var localizedColorTemperatureName = localizedColorTemperatureNames.Where(entry => entry.ToLower() == normalizedColorTemperatureValue).FirstOrDefault();
+                if (localizedColorTemperatureName == null)
+                    break;
+
+                var temperatureIndex = localizedColorTemperatureNames.IndexOf(localizedColorTemperatureName);
                 if (temperatureIndex == -1)
                     break;
 

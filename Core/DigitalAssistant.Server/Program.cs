@@ -98,7 +98,7 @@ switch (databaseProvider)
 
 await webApplication.RunAsync();
 
-void ConfigureDatabase<TDatabaseContext>(WebApplicationBuilder builder, string databaseProvider, string connectionString) where TDatabaseContext : ApplicationDbContext
+void ConfigureDatabase<TDatabaseContext>(WebApplicationBuilder builder, string databaseProvider, string? connectionString) where TDatabaseContext : ApplicationDbContext
 {
     var serviceProviderInterceptor = new ServiceProviderInterceptor();
 

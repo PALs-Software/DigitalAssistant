@@ -222,13 +222,4 @@ public class TemplateParserParameterSectionTests : DigitalAssistantTestContext
         SwitchToLanguage("be");
         var commandTemplate = TemplateParser.ParseTemplate(DummyCommand, template, Language);
     }
-
-    #region MISC
-    protected void SwitchToLanguage(string langugae)
-    {
-        Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo(langugae);
-        CultureInfo.DefaultThreadCurrentCulture = Thread.CurrentThread.CurrentCulture;
-        CultureInfo.DefaultThreadCurrentUICulture = Thread.CurrentThread.CurrentCulture;
-    }
-    #endregion
 }

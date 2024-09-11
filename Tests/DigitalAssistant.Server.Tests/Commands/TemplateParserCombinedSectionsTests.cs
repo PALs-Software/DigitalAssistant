@@ -8,7 +8,6 @@ using DigitalAssistant.Server.Modules.Commands.Services;
 using DigitalAssistant.Server.Modules.Devices.Models;
 using DigitalAssistant.Server.Modules.Localization;
 using Microsoft.Extensions.Localization;
-using System;
 using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
@@ -40,22 +39,43 @@ public class TemplateParserCombinedSectionsTests : DigitalAssistantTestContext
         var localizer = (IStringLocalizer)Services.GetRequiredService(typeof(IStringLocalizer<>).MakeGenericType(typeof(DummyCommand)));
         var jsonLocalizer = (IJsonStringLocalizer)Services.GetRequiredService(typeof(JsonStringLocalizer<>).MakeGenericType(typeof(DummyCommand)));
         DummyCommand = new DummyCommand(localizer, jsonLocalizer);
-
-    }
-    [TestMethod]
-    [Timeout(100000)]
-    public async Task TestAlternativeParametersAsync()
-    {
-        // alternative parameter einmal testen für doku
-       throw new NotImplementedException();
     }
 
     [TestMethod]
     [Timeout(100000)]
-    public async Task TestOptionalParametersAsync()
+    public void TestAlternativeParameters()
     {
-        // optionsal parameter einmal testen für doku
-        throw new NotImplementedException();
+        // Arrange
+        var template = "Turn the brightness to [{IntegerValue:Integer}|{DecimalValue:Decimal}]";
+
+        // Act
+        var commandTemplate = TemplateParser.ParseTemplate(DummyCommand, template, Language);
+
+        // Assert
+        Assert.AreEqual(2, commandTemplate.Parameters.Count);
+        Assert.AreEqual(1, commandTemplate.Parameters["DecimalValue"].AlternativeParameters.Count);
+        Assert.AreEqual(1, commandTemplate.Parameters["IntegerValue"].AlternativeParameters.Count);
+        Assert.AreEqual(commandTemplate.Parameters["IntegerValue"], commandTemplate.Parameters["DecimalValue"].AlternativeParameters[0]);
+        Assert.AreEqual(commandTemplate.Parameters["DecimalValue"], commandTemplate.Parameters["IntegerValue"].AlternativeParameters[0]);
+        Assert.AreEqual("Turn the brightness to (?:(?'IntegerValue'\\d+)|(?'DecimalValue'\\d+\\.?\\d*))", commandTemplate.Regex.ToString());
+    }
+
+    [TestMethod]
+    [Timeout(100000)]
+    public void TestOptionalParameters()
+    {
+        // Arrange
+        var template = "Turn the {Light:LightDevice} ({State:Boolean})";
+        TemplateParser.SetTemplateNames([], [("light", [], DeviceType.Light), ("light2", [], DeviceType.Light), ("switch", [], DeviceType.Switch)]);
+
+        // Act
+        var commandTemplate = TemplateParser.ParseTemplate(DummyCommand, template, Language);
+
+        // Assert
+        Assert.AreEqual(2, commandTemplate.Parameters.Count);
+        Assert.IsFalse(commandTemplate.Parameters["Light"].IsOptional);
+        Assert.IsTrue(commandTemplate.Parameters["State"].IsOptional);
+        Assert.AreEqual("Turn the (?'Light'light|light2)(?: (?'State'0|false|off|down|switch off|turn off|1|true|on|up|switch on|turn on))?", commandTemplate.Regex.ToString());
     }
 
     [TestMethod]
@@ -67,7 +87,7 @@ public class TemplateParserCombinedSectionsTests : DigitalAssistantTestContext
         var template = "[Schalte|Setze|Wechsle|Ändere|Stelle] ([das|die]) {Light:LightDevice}( )(Licht) (auf) {State:Boolean}";
         SwitchToLanguage(language);
         TemplateParser.SetTemplateNames([], [("Küchenlicht", [], DeviceType.Light), ("light", [], DeviceType.Light), ("switch", [], DeviceType.Switch)]);
-        var commandTemplate = TemplateParser.ParseTemplate(DummyCommand, template, Language);
+        var commandTemplate = TemplateParser.ParseTemplate(DummyCommand, template, language);
         var match = commandTemplate.Regex.Match("Schalte das Küchenlicht an");
 
         var lightDevice = new LightDevice { InternalId = "123", Name = "Küchenlicht", Type = DeviceType.Light, Status = DeviceStatus.Online, Connector = "LightConnector", Manufacturer = "Light Manufacturer", ProductName = "Light" };
@@ -75,7 +95,7 @@ public class TemplateParserCombinedSectionsTests : DigitalAssistantTestContext
         await DbContext.SaveChangesAsync();
 
         // Act
-        (bool success, ICommandParameters? parameters) = await ParameterParser.ParseParametersFromMatchAsync(commandTemplate, match, Language, ClientBase.Browser);
+        (bool success, ICommandParameters? parameters) = await ParameterParser.ParseParametersFromMatchAsync(commandTemplate, match, language, ClientBase.Browser);
 
         // Assert
         Assert.IsTrue(success);
@@ -85,13 +105,4 @@ public class TemplateParserCombinedSectionsTests : DigitalAssistantTestContext
         Assert.AreEqual(true, parameters.Parameters["State"].Value);
         Assert.AreEqual(lightDevice.Name, ((ILightDevice)parameters.Parameters["Light"].Value!).Name);
     }
-
-    #region MISC
-    protected void SwitchToLanguage(string langugae)
-    {
-        Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo(langugae);
-        CultureInfo.DefaultThreadCurrentCulture = Thread.CurrentThread.CurrentCulture;
-        CultureInfo.DefaultThreadCurrentUICulture = Thread.CurrentThread.CurrentCulture;
-    }
-    #endregion
 }
