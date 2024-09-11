@@ -1,0 +1,18 @@
+﻿.inital-setup-wizard {
+    width: 100%;
+    display: flex;
+    flex: auto;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+::deep .inital-setup-wizard-layout {
+    height: 100dvh;
+    width: 100%;
+    max-width: 1000px;
+}
+
+::deep .text-break-spaces {
+    white-space: break-spaces;
+}

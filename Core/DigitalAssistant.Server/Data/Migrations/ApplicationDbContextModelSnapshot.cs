@@ -26,49 +26,6 @@ namespace DigitalAssistant.Server.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("DigitalAssistant.Server.Modules.Api.Models.AccessToken", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("LastModifiedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("ModifiedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(250)
-                        .HasColumnType("nvarchar(250)");
-
-                    b.Property<string>("TokenHash")
-                        .IsRequired()
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
-
-                    b.Property<int>("Type")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("ValidUntil")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CreatedOn");
-
-                    b.HasIndex("TokenHash");
-
-                    b.ToTable("AccessTokens");
-                });
-
             modelBuilder.Entity("DigitalAssistant.Server.Modules.Clients.Models.Client", b =>
                 {
                     b.Property<Guid>("Id")
@@ -280,6 +237,9 @@ namespace DigitalAssistant.Server.Migrations
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("InitalSetupCompleted")
+                        .HasColumnType("bit");
+
                     b.Property<int>("InterpreterLanguage")
                         .HasColumnType("int");
 
@@ -302,45 +262,6 @@ namespace DigitalAssistant.Server.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Setup");
-                });
-
-            modelBuilder.Entity("DigitalAssistant.Server.Modules.Telemetry.Tasks.ApiTelemetryEntry", b =>
-                {
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("EntryNo")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EntryNo"));
-
-                    b.Property<int>("Count")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("ErrorCount")
-                        .HasColumnType("int");
-
-                    b.Property<string>("LastErrorMessage")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("LastErrorRequest")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("LastRequest")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("ModifiedOn")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Name", "EntryNo");
-
-                    b.HasIndex("CreatedOn");
-
-                    b.ToTable("ApiTelemetryEntries");
                 });
 
             modelBuilder.Entity("DigitalAssistant.Server.Modules.Users.User", b =>
@@ -371,6 +292,9 @@ namespace DigitalAssistant.Server.Migrations
                     b.Property<bool?>("PrefersDarkMode")
                         .HasColumnType("bit");
 
+                    b.Property<Guid?>("ProfileImageId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("UserName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -378,6 +302,8 @@ namespace DigitalAssistant.Server.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("IdentityUserId");
+
+                    b.HasIndex("ProfileImageId");
 
                     b.ToTable("DbUsers");
                 });
@@ -644,7 +570,13 @@ namespace DigitalAssistant.Server.Migrations
                         .WithMany()
                         .HasForeignKey("IdentityUserId");
 
+                    b.HasOne("DigitalAssistant.Server.Modules.Files.ServerFile", "ProfileImage")
+                        .WithMany()
+                        .HasForeignKey("ProfileImageId");
+
                     b.Navigation("IdentityUser");
+
+                    b.Navigation("ProfileImage");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

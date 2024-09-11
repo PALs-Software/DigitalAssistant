@@ -22,7 +22,7 @@ public partial class SideMenu : ComponentBase
     protected List<NavigationEntry> AdministrationNavigationEntries = [];
     protected List<NavigationEntry> GeneralNavigationEntries = [];
 
-    protected string? IndexLink = "/";
+    protected string? DashboardLink = "/Dashboard";
 
     private bool Visible = true;
     #endregion
@@ -36,7 +36,6 @@ public partial class SideMenu : ComponentBase
         {
             AdministrationNavigationEntries.AddRange([
                 new(Localizer[$"Setup"], "Setup", FontAwesomeIcons.Wrench),
-                new(Localizer[$"Access Tokens"], "AccessTokens", FontAwesomeIcons.Key),
                 new(Localizer[$"Clients"], "Clients", "fa-television"),
                 new(Localizer[$"Files"], "ServerFiles", FontAwesomeIcons.FolderOpen),
                 new(Localizer[$"Users"], "Users", FontAwesomeIcons.Users),

@@ -1,0 +1,31 @@
+{
+  "DatabaseProvider": "SQLite",
+  "ConnectionStrings": {
+    "DefaultConnection": "Data Source=DigitalAssistantServer.db"
+  },
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+  "AllowedHosts": "*",
+  "Kestrel": {
+    "Certificates": {
+      "Default": {
+        "Path": "./Certificates/digitalassistant-ssl.crt",
+        "KeyPath": "./Certificates/digitalassistant-ssl.key"
+      }
+    }
+  },
+  "ClientConnection": {
+    "Port": 59142,
+    "Certificate": {
+       "Path": "./Certificates/digitalassistant-ssl.crt",
+        "KeyPath": "./Certificates/digitalassistant-ssl.key"
+    }
+  },
+  "FileStorePath": "./DigitalAssistant.Server_FileStore/",
+  "TempFileStorePath": "./DigitalAssistantServer/DigitalAssistant.Server_FileStore/Temp/",
+  "ModelsDirectoryPath": "./DigitalAssistantServer/Models/"
+}

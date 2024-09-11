@@ -49,10 +49,11 @@
 	</ItemGroup>
 
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<Message Importance="High" Text="COPY HueConnector output to Server output" />
 		<ItemGroup>
 			<MySourceFiles Include="$(OutDir)\DigitalAssistant.HueConnector.*" />
 		</ItemGroup>
-		<Copy SourceFiles="@(MySourceFiles)" DestinationFolder="$(ProjectDir)..\..\Core\DigitalAssistant.Server\bin\Debug\net8.0\Connectors\HueConnector" />
+		<Copy SourceFiles="@(MySourceFiles)" DestinationFolder="$(ProjectDir)..\..\Core\DigitalAssistant.Server\bin\$(Configuration)\net8.0\Connectors\HueConnector" />
 	</Target>
 	
 </Project>

@@ -117,10 +117,34 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ChangePassword" xml:space="preserve">
+    <value>Change Password</value>
+  </data>
+  <data name="ChangePasswordToolTip" xml:space="preserve">
+    <value>Changes the password of the selected user</value>
+  </data>
+  <data name="IdentityUserIdNullErr" xml:space="preserve">
+    <value>Please save the user once before you create the password</value>
+  </data>
+  <data name="PasswordChangeInputCaption" xml:space="preserve">
+    <value>Enter the new password:</value>
+  </data>
+  <data name="PasswordChangeRequestTitle" xml:space="preserve">
+    <value>Change password</value>
+  </data>
+  <data name="PasswordChangeSuccessfulMessage" xml:space="preserve">
+    <value>The password of user {0} has been successfully changed.</value>
+  </data>
+  <data name="PasswordChangeSuccessfulTitle" xml:space="preserve">
+    <value>Password change successful</value>
+  </data>
   <data name="PreferredCulture" xml:space="preserve">
     <value>Preferred Culture</value>
   </data>
   <data name="PrefersDarkMode" xml:space="preserve">
     <value>Prefers Dark Mode</value>
+  </data>
+  <data name="ProfileImage" xml:space="preserve">
+    <value>Profile Image</value>
   </data>
 </root>

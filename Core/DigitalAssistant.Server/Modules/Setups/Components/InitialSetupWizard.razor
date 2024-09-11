@@ -1,0 +1,83 @@
+﻿@using DigitalAssistant.Server.Modules.Setups.Models
+@using DigitalAssistant.Server.Modules.Users
+
+<div class="inital-setup-wizard">
+    <Layout class="inital-setup-wizard-layout" Padding="Padding.Is4.OnAll">
+        <LayoutHeader>
+            <Heading Alignment="TextAlignment.Center" Size="HeadingSize.Is2" Padding="Padding.Is5.FromBottom">@Localizer["SetupHeader"]</Heading>
+        </LayoutHeader>
+        <LayoutContent>
+            <Carousel @ref="Carousel" SelectedSlide="@MaxAllowedSlide.ToString()" ElementId="SetupCarousel" ShowControls="false" ShowIndicators="false" Autoplay="false" Margin="Margin.Is5.OnX" data-interval="false" data-wrap="false">
+                <CarouselSlide Name="Welcome">
+                    <Text Alignment="TextAlignment.Center" Padding="Padding.Is4.FromBottom">@Localizer["WelcomeMessage"]</Text>
+
+                    <Text Alignment="TextAlignment.Center" Margin="Margin.Is3.FromTop">
+                        <Button Color="Color.Primary" Clicked="() => OnWelcomeStepNextClicked()">@Localizer["Next"]</Button>
+                    </Text>
+                </CarouselSlide>
+                <CarouselSlide Name="Admin">
+                    <Text Alignment="TextAlignment.Center" Padding="Padding.Is4.FromBottom">@Localizer["CreateAdminAccountMessage"]</Text>
+
+                    <BaseCard @ref="UserCard" TModel="User" ShowActions="false" ShowEntryByStart="true" EntryToBeShownByStart="GetAdminUser" Embedded="true" OnAfterGetVisibleProperties="UserCardOnAfterGetVisiblePropertiesArgs" />
+
+                    <Text Alignment="TextAlignment.Center" Margin="Margin.Is3.FromTop">
+                        <Button Color="Color.Primary" Clicked="() => OnCreateAdminClicked()">@CreateAdminButtonText</Button>
+                    </Text>
+                </CarouselSlide>
+                <CarouselSlide Name="SetAdminPassword">
+                    <Text Alignment="TextAlignment.Center" Padding="Padding.Is4.FromBottom">@Localizer["SetupAdminPasswordMessage"]</Text>
+
+                    <Alert Class="invalid-summary-feedback" Color="Color.Danger" Visible="ShowUserFeedback">
+                        @UserFeedback
+                    </Alert>
+
+                    <TextEdit Role="TextRole.Password" @bind-Text="AdminPassword" />
+
+                    <Text Alignment="TextAlignment.Center" Margin="Margin.Is3.FromTop">
+                        <Button Color="Color.Primary" Clicked="() => OnSetAdminPasswordClicked()">@Localizer["SetAdministratorPassword"]</Button>
+                    </Text>
+                </CarouselSlide>
+                <CarouselSlide Name="SetupSettings">
+                    <Text Class="text-break-spaces" Alignment="TextAlignment.Center" Padding="Padding.Is4.FromBottom">@Localizer["SetupSettingsMessage"]</Text>
+                    <Text Class="text-break-spaces" Alignment="TextAlignment.Center" Padding="Padding.Is4.FromBottom">@Localizer["GPUSettingsNote"]</Text>
+
+                    <div class="text-center">
+                        <a href="https://onnxruntime.ai/docs/execution-providers/CUDA-ExecutionProvider.html">ONNX Cuda Version Overview</a> / 
+                        <a href="https://docs.nvidia.com/cuda/cuda-installation-guide-microsoft-windows/index.html">Windows</a> / 
+                        <a href="https://docs.nvidia.com/cuda/cuda-installation-guide-linux/">Linux</a> / 
+                        <a href="https://docs.nvidia.com/cuda/archive/10.1/cuda-installation-guide-mac-os-x/index.html">MAC</a>
+                    </div>
+
+                    <br />
+                    <BaseCard @ref="SetupCard" TModel="Setup" ShowActions="false" ShowEntryByStart="true" EntryToBeShownByStart="GetSetup" Embedded="true" OnAfterGetVisibleProperties="SetupCardOnAfterGetVisiblePropertiesArgs" />
+
+                    <Text Alignment="TextAlignment.Center" Margin="Margin.Is3.FromTop">
+                        <Button Color="Color.Primary" Clicked="() => OnSaveSetupClicked()">@Localizer["SaveSetupAndDownloadModels"]</Button>
+                    </Text>
+                </CarouselSlide>
+                <CarouselSlide Name="CompleteSetup">
+                    <Text Alignment="TextAlignment.Center" Padding="Padding.Is4.FromBottom">@Localizer["SuccessMessage"]</Text>
+
+                    <Text Alignment="TextAlignment.Center" Margin="Margin.Is3.FromTop">
+                        <Button Color="Color.Primary" Clicked="() => OnCompleteSetupClicked()">@Localizer["Finish"]</Button>
+                    </Text>
+                </CarouselSlide>
+            </Carousel>
+
+        </LayoutContent>
+        <LayoutFooter Padding="Padding.Is5">
+            @if (ShowGoLeftButton)
+
+            {
+                <Button Float="Float.Left" Color="Color.Primary" Clicked="() => GoLeftAsync()"><Blazorise.Icon Name="IconName.ChevronLeft" /></Button>
+            }
+            @if (ShowGoRightButton)
+
+            {
+                <Button Float="Float.Right" Color="Color.Primary" Clicked="() => GoRightAsync()"><Blazorise.Icon Name="IconName.ChevronRight" /></Button>
+            }
+        </LayoutFooter>
+
+         <form id="logout-form" method="post" action="@UserOptions.LogoutControllerPath"></form>
+    </Layout>
+</div>

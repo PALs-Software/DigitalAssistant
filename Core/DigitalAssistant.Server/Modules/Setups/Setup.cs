@@ -14,6 +14,7 @@ using DigitalAssistant.Server.Modules.CacheModule;
 using DigitalAssistant.Server.Modules.Clients.Models;
 using DigitalAssistant.Server.Modules.MessageHandling.Components;
 using DigitalAssistant.Server.Modules.Setups.Enums;
+using DigitalAssistant.Server.Modules.Users;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
 using System.ComponentModel.DataAnnotations;
@@ -45,6 +46,10 @@ public partial class Setup : BaseModel
     [Key]
     [Required]
     public Guid Id { get; set; }
+    #endregion
+
+    #region General
+    public bool InitalSetupCompleted { get; set; }
     #endregion
 
     #region Asr Model
@@ -95,6 +100,7 @@ public partial class Setup : BaseModel
     #region Members
     private bool AsrSettingsChanged = false;
     private bool TtsSettingsChanged = false;
+    private bool SkipLoadingOfChangedModels = false;
     #endregion
 
     #region CRUD
@@ -102,23 +108,45 @@ public partial class Setup : BaseModel
     public override async Task OnBeforeAddEntry(OnBeforeAddEntryArgs args)
     {
         Id = await args.EventServices.DbContext.GetNewPrimaryKeyAsync(GetType());
+
+        var success = await DownloadModelsAsync(args.EventServices);
+        args.AbortAdding = !success;
     }
 
     public override async Task OnBeforeUpdateEntry(OnBeforeUpdateEntryArgs args)
     {
         await base.OnBeforeUpdateEntry(args);
 
-        var serviceProvider = args.EventServices.ServiceProvider;
-        var localizer = args.EventServices.Localizer;
+        var success = await DownloadModelsAsync(args.EventServices);
+        args.AbortUpdating = !success;
+    }
+
+    protected async Task<bool> DownloadModelsAsync(EventServices eventServices)
+    {
+        bool success = true;
+        var serviceProvider = eventServices.ServiceProvider;
+        var localizer = eventServices.Localizer;
         var fileDownloadService = serviceProvider.GetRequiredService<FileDownloadService>();
         var tasks = new List<Task<bool>>();
 
         if (AsrSettingsChanged)
         {
-            //  var asrService = serviceProvider.GetRequiredService<AsrService>();
-            //  var asrModelPath = asrService.GetModelPath(this);
-            //  if (!File.Exists(asrModelPath))
-            //      tasks.Add(fileDownloadService.DownloadFileAsync(Path.GetFileName(asrModelPath), "THE URL", asrModelPath));
+            var asrService = serviceProvider.GetRequiredService<AsrService>();
+            var modelSelectionService = serviceProvider.GetRequiredService<AsrModelSelectionService>();
+            var asrModelPath = asrService.GetModelPath(this);
+            if (!File.Exists(asrModelPath))
+            {
+                var modelUrl = modelSelectionService.GetCompleteDownloadLinkForModel(AsrModel, AsrMode, AsrPrecision);
+                if (!await fileDownloadService.TestFileExistsAsync(modelUrl))
+                    throw new CRUDException(localizer["AsrModelNotExistErr"]);
+
+                tasks.Add(fileDownloadService.DownloadFileAsync(Path.GetFileName(asrModelPath), modelUrl, asrModelPath));
+            }
+
+            var asrExtendedModelDataPath = Path.Join(Path.GetDirectoryName(asrModelPath), "model_with_beam_search.onnx.data");
+            var extendedModelDataUrl = modelSelectionService.GetCompleteDownloadLinkForModel(AsrModel, AsrMode, AsrPrecision, dataModel: true);
+            if (!File.Exists(asrExtendedModelDataPath) && await fileDownloadService.TestFileExistsAsync(extendedModelDataUrl))
+                tasks.Add(fileDownloadService.DownloadFileAsync(Path.GetFileName(asrExtendedModelDataPath), extendedModelDataUrl, asrExtendedModelDataPath));
         }
 
         if (TtsSettingsChanged)
@@ -132,7 +160,11 @@ public partial class Setup : BaseModel
                 var ttsModel = modelSelectionService.GetModel(TtsLanguage, TtsModel, TtsModelQuality);
                 if (ttsModel != null)
                 {
-                    tasks.Add(fileDownloadService.DownloadFileAsync(Path.GetFileName(ttsModelPath), modelSelectionService.GetCompleteDownloadLinkForModel(ttsModel), ttsModelPath));
+                    var ttsModelUrl = modelSelectionService.GetCompleteDownloadLinkForModel(ttsModel);
+                    if (!await fileDownloadService.TestFileExistsAsync(ttsModelUrl))
+                        throw new CRUDException(localizer["TtsModelNotExistErr"]);
+
+                    tasks.Add(fileDownloadService.DownloadFileAsync(Path.GetFileName(ttsModelPath), ttsModelUrl, ttsModelPath));
 
                     if (!File.Exists(jsonModelPath))
                         tasks.Add(fileDownloadService.DownloadFileAsync(Path.GetFileName(jsonModelPath), modelSelectionService.GetCompleteDownloadLinkForModel(ttsModel, jsonFile: true), jsonModelPath));
@@ -143,11 +175,11 @@ public partial class Setup : BaseModel
         if (tasks.Count > 0)
         {
             var results = await Task.WhenAll(tasks);
-            args.AbortUpdating = results.Any(result => !result);
-            if (args.AbortUpdating)
+            success = !results.Any(result => !result);
+            if (!success)
             {
                 var messageHandler = serviceProvider.GetRequiredService<IMessageHandler>();
-                messageHandler.ShowMessage(localizer["Download cancelled"], localizer["The download was cancelled. If you have not cancelled the download yourself, please check your internet connection. The selected settings cannot be used without downloading the selected models."], MessageType.Error);
+                messageHandler.ShowMessage(localizer["DownloadCancelledTitle"], localizer["DownloadCancelledMsg"], MessageType.Error);
             }
         }
 
@@ -159,9 +191,9 @@ public partial class Setup : BaseModel
             var jsonText = File.ReadAllText(jsonModelPath, Encoding.UTF8);
             var modelConfiguration = JsonSerializer.Deserialize<ModelConfiguration>(jsonText);
             if (modelConfiguration == null || modelConfiguration.Audio.SampleRate == 0)
-                throw new CRUDException(args.EventServices.Localizer["The sample rate of the configuration file {0} can not be read properly. Make sure that the model is valid or try another one.", jsonModelPath]);
+                throw new CRUDException(localizer["SampleRateCanNotBeReadErr", jsonModelPath]);
 
-            var clientsWhichNeedsUpdate = await args.EventServices.DbContext
+            var clientsWhichNeedsUpdate = await eventServices.DbContext
                 .WhereAsync<Client>(entry => entry.VoiceAudioOutputSampleRate != modelConfiguration.Audio.SampleRate);
 
             foreach (var client in clientsWhichNeedsUpdate)
@@ -170,6 +202,8 @@ public partial class Setup : BaseModel
                 client.ClientNeedSettingsUpdate = true;
             }
         }
+
+        return success;
     }
 
     public override async Task OnAfterCardSaveChanges(OnAfterCardSaveChangesArgs args)
@@ -178,6 +212,9 @@ public partial class Setup : BaseModel
 
         var serviceProvider = args.EventServices.ServiceProvider;
         await Cache.SetupCache.RefreshSetupCacheAsync(serviceProvider);
+
+        if (SkipLoadingOfChangedModels)
+            return;
 
         if (AsrSettingsChanged)
         {
@@ -280,6 +317,36 @@ public partial class Setup : BaseModel
         return Task.CompletedTask;
     }
 
+    #endregion
+
+    #region Inital Setup
+    public void SetSettingsFromInitialSetup()
+    {
+        AsrSettingsChanged = true;
+        TtsSettingsChanged = true;
+        SkipLoadingOfChangedModels = true;
+    }
+
+    public static async Task<bool> InitialSetupCompletedAsync(IBaseDbContext dbContext)
+    {
+        var setup = await dbContext.FirstOrDefaultAsync<Setup>(asNoTracking: true);
+        var user = dbContext.FirstOrDefaultAsync<User>(asNoTracking: true);
+
+        return setup != null && user != null && setup.InitalSetupCompleted;
+    }
+
+    public static async Task SetInitialSetupToCompletedAsync(IBaseDbContext dbContext)
+    {
+        var setup = await dbContext.FirstOrDefaultAsync<Setup>();
+        if (setup == null)
+        {
+            setup = new Setup();
+            await dbContext.AddAsync(setup);
+        }
+
+        setup.InitalSetupCompleted = true;
+        await dbContext.SaveChangesAsync();
+    }
     #endregion
 
     #region MISC

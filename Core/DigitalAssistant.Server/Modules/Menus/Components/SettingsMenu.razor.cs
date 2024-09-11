@@ -14,7 +14,7 @@ public partial class SettingsMenu
     #region Injects
     [Inject] protected IStringLocalizer<SettingsMenu> Localizer { get; set; } = null!;
     [Inject] protected UserService UserService { get; set; } = null!;
-    [Inject] protected IBaseDbContext DbContext { get; set; } = null!;
+    [Inject] protected IServiceProvider ServiceProvider { get; set; } = null!;
     #endregion
 
     #region Members
@@ -24,7 +24,8 @@ public partial class SettingsMenu
 
     protected override async Task OnInitializedAsync()
     {
-        var currentUser = await UserService.GetCurrentUserAsync(DbContext, asNoTracking: false);
+        var dbContext = ServiceProvider.GetRequiredService<IBaseDbContext>();
+        var currentUser = await UserService.GetCurrentUserAsync(dbContext, asNoTracking: false);
         if (currentUser == null || currentUser.PrefersDarkMode == null)
             UserPrefersDarkMode = ThemeSelector?.GetUserPrefersDarkMode() ?? false;
         else
@@ -41,11 +42,12 @@ public partial class SettingsMenu
             return;
 
         UserPrefersDarkMode = userPrefersDarkMode;
-        var currentUser = await UserService.GetCurrentUserAsync(DbContext, asNoTracking: false);
+        var dbContext = ServiceProvider.GetRequiredService<IBaseDbContext>();
+        var currentUser = await UserService.GetCurrentUserAsync(dbContext, asNoTracking: false);
         if (currentUser != null)
         {
             currentUser.PrefersDarkMode = UserPrefersDarkMode;
-            await DbContext.SaveChangesAsync();
+            await dbContext.SaveChangesAsync();
         }
 
         ThemeSelector?.SetUserPrefersDarkMode(UserPrefersDarkMode);

@@ -34,14 +34,15 @@
 	</ItemGroup>
 
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<Message Importance="High" Text="COPY MusicCommands output to Server output" />
 		<ItemGroup>
 			<DllFiles Include="$(OutDir)\DigitalAssistant.MusicCommands.*" />
 			<RadioBrowserDllFiles Include="$(OutDir)\RadioBrowser.*" />
 			<TranslationFiles Include="$(OutDir)\**\*.json" />
 		</ItemGroup>
-		<Copy SourceFiles="@(DllFiles)" DestinationFolder="$(ProjectDir)..\..\Core\DigitalAssistant.Server\bin\Debug\net8.0\Commands\DigitalAssistant.MusicCommands" />
-		<Copy SourceFiles="@(RadioBrowserDllFiles)" DestinationFolder="$(ProjectDir)..\..\Core\DigitalAssistant.Server\bin\Debug\net8.0\Commands\DigitalAssistant.MusicCommands" />
-		<Copy SourceFiles="@(TranslationFiles)" DestinationFolder="$(ProjectDir)..\..\Core\DigitalAssistant.Server\bin\Debug\net8.0\Commands\DigitalAssistant.MusicCommands\%(RecursiveDir)" />
+		<Copy SourceFiles="@(DllFiles)" DestinationFolder="$(ProjectDir)..\..\Core\DigitalAssistant.Server\bin\$(Configuration)\net8.0\Commands\DigitalAssistant.MusicCommands" />
+		<Copy SourceFiles="@(RadioBrowserDllFiles)" DestinationFolder="$(ProjectDir)..\..\Core\DigitalAssistant.Server\bin\$(Configuration)\net8.0\Commands\DigitalAssistant.MusicCommands" />
+		<Copy SourceFiles="@(TranslationFiles)" DestinationFolder="$(ProjectDir)..\..\Core\DigitalAssistant.Server\bin\$(Configuration)\net8.0\Commands\DigitalAssistant.MusicCommands\%(RecursiveDir)" />
 	</Target>
 
 </Project>

@@ -5,11 +5,12 @@
         <AuthorizeView>
             <Authorized>
                 <span class="btn side-panel-item">@Greeting @(UserName)!</span>
-                <a class="btn side-panel-item" href="javascript:$('#logout-form').submit()">@Localizer["Log out"]</a>
+                <a href="/User/Manage" class="btn side-panel-item">@Localizer["ManageProfile"]</a>
+                <a class="btn side-panel-item" href="javascript:$('#logout-form').submit()">@Localizer["LogOut"]</a>
                 <form id="logout-form" method="post" action="@Options.LogoutControllerPath"></form>
             </Authorized>
             <NotAuthorized>
-                <a class="btn side-panel-item" href="@Options.LoginControllerPath">@Localizer["Log in"]</a>
+                <a class="btn side-panel-item" href="@Options.LoginControllerPath">@Localizer["LogIn"]</a>
             </NotAuthorized>
         </AuthorizeView>
     </div>

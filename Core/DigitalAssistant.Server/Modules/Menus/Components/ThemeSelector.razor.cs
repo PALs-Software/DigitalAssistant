@@ -11,7 +11,6 @@ public partial class ThemeSelector
     #region Injects
     [Inject] protected IServiceProvider ServiceProvider { get; set; } = null!;
     [Inject] protected UserService UserService { get; set; } = null!;
-    [Inject] protected IBaseDbContext DbContext { get; set; } = null!;
     [Inject] protected IJSRuntime JSRuntime { get; set; } = null!;
     [CascadingParameter] protected Task<AuthenticationState> AuthenticationState { get; set; } = null!;
     #endregion
@@ -37,14 +36,16 @@ public partial class ThemeSelector
 
         if (!firstRender)
             return;
-        
-        var user = await UserService.GetCurrentUserAsync(DbContext, asNoTracking: false);
+
+        var dbContext = ServiceProvider.GetRequiredService<IBaseDbContext>();
+        var user = await UserService.GetCurrentUserAsync(dbContext, asNoTracking: false);
         if (user == null || user.PrefersDarkMode != null)
             return;
 
         UserPrefersDarkMode = await JSRuntime.InvokeAsync<bool>("DA.GetUserPrefersDarkMode");
         user.PrefersDarkMode = UserPrefersDarkMode;
-        await DbContext.SaveChangesAsync();
+        await dbContext.SaveChangesAsync();
+
         _ = InvokeAsync(StateHasChanged);
     }
 

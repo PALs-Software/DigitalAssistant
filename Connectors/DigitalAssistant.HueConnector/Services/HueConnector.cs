@@ -466,7 +466,7 @@ public class HueConnector : IConnector
             var handler = new HttpClientHandler() { ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator };
 #pragma warning restore CA1416 // Plattformkompatibilität überprüfen
             Client = new HttpClient(handler);
-            Client.DefaultRequestHeaders.Add("hue-application-key", Settings.AccessKeyEncrypted!.DecryptStringToInsecureString());
+            Client.DefaultRequestHeaders.Add("hue-application-key", DataProtectionService.Unprotect(Settings.AccessKeyEncrypted));
         }
     }
 

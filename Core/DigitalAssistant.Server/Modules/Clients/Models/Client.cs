@@ -9,7 +9,6 @@ using BlazorBase.MessageHandling.Interfaces;
 using DigitalAssistant.Abstractions.Clients.Interfaces;
 using DigitalAssistant.Base.ClientServerConnection;
 using DigitalAssistant.Base.ClientServerConnection.MessageTransferModels;
-using DigitalAssistant.Server.Modules.Api.Services;
 using DigitalAssistant.Server.Modules.CacheModule;
 using DigitalAssistant.Server.Modules.Clients.Services;
 using Microsoft.AspNetCore.Authorization;

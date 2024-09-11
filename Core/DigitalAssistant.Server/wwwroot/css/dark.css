@@ -27,4 +27,6 @@
     --side-panel-language-background-color: #7c7c7c;
     --side-panel-language-dropdown-background-color: var(--side-panel-language-background-color);
     --side-panel-language-dropdown-background-color-hover: #a5a3a3;
+    /*Connector List*/
+    --connector-list-bg-color: #252525;
 }

@@ -1,6 +1,6 @@
-﻿@if (ProfileImageBase64String != null)
+﻿@if (ProfileImageLink != null)
 {
-    <img class="user-profile-image img-fluid rounded-circle" src="data:image/png;base64,@ProfileImageBase64String" />
+    <img class="user-profile-image img-fluid rounded-circle" src="@ProfileImageLink" />
 }
 else
 {

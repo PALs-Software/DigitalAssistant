@@ -19,7 +19,6 @@ using DigitalAssistant.Server.Data;
 using DigitalAssistant.Server.Modules.Ai.Asr.Services;
 using DigitalAssistant.Server.Modules.Ai.TextToSpeech;
 using DigitalAssistant.Server.Modules.Ai.TextToSpeech.Enums;
-using DigitalAssistant.Server.Modules.Api.Services;
 using DigitalAssistant.Server.Modules.AudioPlayer;
 using DigitalAssistant.Server.Modules.BackgroundJobs;
 using DigitalAssistant.Server.Modules.CacheModule;
@@ -29,6 +28,7 @@ using DigitalAssistant.Server.Modules.Commands.Services;
 using DigitalAssistant.Server.Modules.Connectors.Services;
 using DigitalAssistant.Server.Modules.Devices.Services;
 using DigitalAssistant.Server.Modules.Files;
+using DigitalAssistant.Server.Modules.General;
 using DigitalAssistant.Server.Modules.Localization;
 using DigitalAssistant.Server.Modules.MainComponents;
 using DigitalAssistant.Server.Modules.MessageHandling.Components;
@@ -241,10 +241,10 @@ void ConfigureServices(WebApplicationBuilder builder)
         .SetApplicationName("DigitalAssistant.Server");
 
     builder.Services
-        .AddSingleton<BruteForceDelayServiceFactory>()
         .AddSingleton<DigitalAssistant.Base.General.BaseErrorService>()
         .AddSingleton<AudioService>()
         .AddSingleton<AsrService>()
+        .AddSingleton<AsrModelSelectionService>()
         .AddSingleton<TtsModelSelectionService>()
         .AddSingleton<CommandTemplateParser>()
         .AddSingleton<ClientInformationService>()
@@ -255,6 +255,7 @@ void ConfigureServices(WebApplicationBuilder builder)
         .AddSingleton<IDeviceChangeArgsFactory, DeviceChangeArgsFactory>()
         .AddSingleton<IDataProtectionService, DataProtectionService>()
 
+        .AddScoped<ScopedEventService>()
         .AddScoped<CircuitHandler, ExtendedCircuitHandlerService>()
         .AddScoped<WebAudioPlayer>()
         .AddScoped<FileDownloadService>()
@@ -284,7 +285,6 @@ async Task OnStartupAsync(WebApplication app)
     await DatabaseSeeder.SeedDataAsync(scope.ServiceProvider);
     await Cache.SetupCache.RefreshSetupCacheAsync(scope.ServiceProvider);
     await Cache.UserCache.InitUserCacheAsync(scope.ServiceProvider);
-    await Cache.ApiCache.InitAccessTokenCacheAsync(scope.ServiceProvider);
     await Cache.ClientCache.InitClientCacheAsync(scope.ServiceProvider);
 
     var textToSpeechConfiguration = scope.ServiceProvider.GetRequiredService<TextToSpeechConfiguration>();

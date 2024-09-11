@@ -37,6 +37,8 @@ public class AsrService : IDisposable
     {
         Session?.Dispose();
         SessionOptions?.Dispose();
+        Session = null;
+        SessionOptions = null;
     }
 
     protected void InitSession()
@@ -97,7 +99,11 @@ public class AsrService : IDisposable
     public async Task<string?> ConvertSpeechToTextAsync(Memory<float> samples, int sampleRate = 16000, CancellationToken cancellationToken = default)
     {
         if (Session == null)
-            return null;
+        {
+            await ReInitModelAsync();
+            if (Session == null)
+                return null;
+        }
 
         await Semaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
         try

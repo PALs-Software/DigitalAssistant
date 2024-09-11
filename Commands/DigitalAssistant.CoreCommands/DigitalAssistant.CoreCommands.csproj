@@ -33,12 +33,13 @@
 	</ItemGroup>
 
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<Message Importance="High" Text="COPY CoreCommands output to Server output" />
 		<ItemGroup>
 			<DllFiles Include="$(OutDir)\DigitalAssistant.CoreCommands.*" />
 			<TranslationFiles Include="$(OutDir)\**\*.json" />
 		</ItemGroup>
-		<Copy SourceFiles="@(DllFiles)" DestinationFolder="$(ProjectDir)..\..\Core\DigitalAssistant.Server\bin\Debug\net8.0\Commands\DigitalAssistant.CoreCommands" />
-		<Copy SourceFiles="@(TranslationFiles)" DestinationFolder="$(ProjectDir)..\..\Core\DigitalAssistant.Server\bin\Debug\net8.0\Commands\DigitalAssistant.CoreCommands\%(RecursiveDir)" />
+		<Copy SourceFiles="@(DllFiles)" DestinationFolder="$(ProjectDir)..\..\Core\DigitalAssistant.Server\bin\$(Configuration)\net8.0\Commands\DigitalAssistant.CoreCommands" />
+		<Copy SourceFiles="@(TranslationFiles)" DestinationFolder="$(ProjectDir)..\..\Core\DigitalAssistant.Server\bin\$(Configuration)\net8.0\Commands\DigitalAssistant.CoreCommands\%(RecursiveDir)" />
 	</Target>
 
 </Project>

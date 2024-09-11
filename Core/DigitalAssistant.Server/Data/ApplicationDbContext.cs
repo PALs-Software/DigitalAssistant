@@ -1,10 +1,8 @@
-﻿using DigitalAssistant.Server.Modules.Api.Models;
-using DigitalAssistant.Server.Modules.Clients.Models;
+﻿using DigitalAssistant.Server.Modules.Clients.Models;
 using DigitalAssistant.Server.Modules.Connectors.Models;
 using DigitalAssistant.Server.Modules.Devices.Models;
 using DigitalAssistant.Server.Modules.Files;
 using DigitalAssistant.Server.Modules.Setups.Models;
-using DigitalAssistant.Server.Modules.Telemetry.Tasks;
 using DigitalAssistant.Server.Modules.Users;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -21,18 +19,10 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
     public DbSet<Setup> Setup { get; set; } = null!;
 
-
     #endregion
 
-    #region Api/Clients
-    public DbSet<AccessToken> AccessTokens { get; set; } = null!;
+    #region Clients
     public DbSet<Client> Clients { get; set; } = null!;
-    #endregion
-
-    #region Telemetry
-
-    public DbSet<ApiTelemetryEntry> ApiTelemetryEntries { get; set; } = null!;
-
     #endregion
 
     #region Devices
@@ -46,8 +36,6 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     {
         base.OnModelCreating(modelBuilder);
         modelBuilder.UseCollation("Latin1_General_CS_AS"); // Make sure database is case sensitiv!
-
-        modelBuilder.Entity<ApiTelemetryEntry>().HasKey(entry => new { entry.Name, entry.EntryNo });
 
         #region Devices
         modelBuilder.Entity<Device>()            

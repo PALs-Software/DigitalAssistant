@@ -123,4 +123,7 @@
   <data name="PrefersDarkMode" xml:space="preserve">
     <value>Bevorzugt Dunklen Modus</value>
   </data>
+  <data name="ProfileImage" xml:space="preserve">
+    <value>Profilbild</value>
+  </data>
 </root>

@@ -3,6 +3,9 @@
     OpenLinkInNewTab: function (url) {
         window.open(url, '_blank').focus();
     },
+    SubmitForm: function (id) {
+        document.getElementById(id).submit();
+    },
     GetUserPrefersDarkMode: function () {
         if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches)
             return true;

@@ -1,37 +1,32 @@
 ﻿@using DigitalAssistant.Server.Modules.Clients.Components
 @using DigitalAssistant.Server.Modules.Menus.Components
-@layout BaseAuthorizedLayout
+@layout BaseLayout
 @inherits LayoutComponentBase
-
-<PageTitle>DA</PageTitle>
 
 <ThemeSelector @ref="ThemeSelector" />
 <CascadingValue Value="ThemeSelector">
-
-    <TopMenu />
-
-    <Layout Sider="true">
-        <SideMenu />
-        <Layout>
-            <LayoutContent Padding="Padding.Is4.OnX">
-
-                @Body
-
-            </LayoutContent>
-        </Layout>
-    </Layout>
-
-</CascadingValue>
-
-@code {
-    [Inject] protected ClientStatusPopup ClientStatusPopup { get; set; } = null!;
-    protected ThemeSelector? ThemeSelector;
-
-    protected override Task OnAfterRenderAsync(bool firstRender)
+    @if (InitialSetupCompleted)
     {
-        if (firstRender)
-            InvokeAsync(StateHasChanged);
+        <AuthorizeView>
+            <Authorized>
+                <TopMenu />
 
-        return base.OnAfterRenderAsync(firstRender);
+                <Layout Sider="true">
+                    <SideMenu />
+                    <Layout>
+                        <LayoutContent Padding="Padding.Is4.OnX">
+                            @Body
+                        </LayoutContent>
+                    </Layout>
+                </Layout>
+            </Authorized>
+            <NotAuthorized>
+                @Localizer["NotAuthorized"]
+            </NotAuthorized>
+        </AuthorizeView>
     }
-}
+    else
+    {
+        <InitialSetupWizard />
+    }
+</CascadingValue>

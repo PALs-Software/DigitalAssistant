@@ -40,6 +40,8 @@ public class TextToSpeechService : IDisposable
     {
         Session?.Dispose();
         SessionOptions?.Dispose();
+        Session = null;
+        SessionOptions = null;
     }
 
     protected virtual void InitSession()
@@ -104,7 +106,12 @@ public class TextToSpeechService : IDisposable
     public async Task<BufferList<float>?> ConvertTextToSpeechAsync(string text, CancellationToken cancellationToken = default)
     {
         if (Session == null || ModelConfiguration == null)
-            return null;
+        {
+            await ReInitModelAsync();
+            if (Session == null || ModelConfiguration == null)
+                return null;
+        }
+
         ArgumentNullException.ThrowIfNull(ModelConfiguration.Espeak.Voice);
 
         await Semaphore.WaitAsync(cancellationToken).ConfigureAwait(false);

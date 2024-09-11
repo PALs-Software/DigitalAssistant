@@ -1,5 +1,5 @@
 ﻿::deep .accordion-body {
-    background-color: #252525;
+    background-color: var(--connector-list-bg-color);
 }
 
 ::deep .accordion-body .card-body {

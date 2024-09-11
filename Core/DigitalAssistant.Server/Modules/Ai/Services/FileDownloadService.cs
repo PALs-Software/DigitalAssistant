@@ -11,6 +11,13 @@ public class FileDownloadService(IStringLocalizer<FileDownloadService> localizer
     protected readonly IMessageHandler MessageHandler = messageHandler;
     #endregion
 
+    public async Task<bool> TestFileExistsAsync(string uri)
+    {
+        var client = new HttpClient();
+        var response = await client.SendAsync(new HttpRequestMessage(HttpMethod.Head, uri));
+        return response.IsSuccessStatusCode;
+    }
+
     public async Task<bool> DownloadFileAsync(string fileName, string uri, string destination)
     {
         using var cancellationTokenSource = new CancellationTokenSource();
@@ -19,7 +26,7 @@ public class FileDownloadService(IStringLocalizer<FileDownloadService> localizer
         var progress = 0;
 
         var directory = Path.GetDirectoryName(destination);
-        ArgumentNullException.ThrowIfNullOrEmpty(directory);        
+        ArgumentNullException.ThrowIfNullOrEmpty(directory);
         if (!Directory.Exists(directory))
             Directory.CreateDirectory(directory);
 

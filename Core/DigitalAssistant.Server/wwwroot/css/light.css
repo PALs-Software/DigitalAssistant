@@ -1,3 +1,35 @@
 :root {
-   
+    /*Primary Color*/
+    --primary-color: #fff;
+    --primary-bg-color: #a0c053;
+    --primary-border-color: #889f50;
+    --primary-bg-color-hover: #91ce00;
+    --primary-border-color-hover: #495825;
+    --primary-bg-color-focus: #91ce00;
+    --primary-bg-color-active: #638d00;
+    --primary-bg-color-shadow: rgb(33 132 20 / 50%);
+    /*Danger Color*/
+    --danger-color: #fff;
+    --danger-bg-color: #e0081c;
+    --danger-border-color: #a10010;
+    --danger-bg-color-hover: #c10013;
+    --danger-border-color-hover: #85000d;
+    --danger-bg-color-focus: #c82333;
+    --danger-bg-color-active: #bd2130;
+    --danger-bg-color-shadow: rgba(225,83,97,.5);
+    /*Top Menu*/
+    --top-menu-bg: #add057;
+    --top-menu-bg-hover: #90b832;
+    /*Side Panel*/
+    --side-panel-background-color: var(--b-bar-dark-background);
+    --side-panel-border-color: var(--table-border-color);
+    --side-panel-language-background-color: #f1f1f1;
+    --side-panel-language-dropdown-background-color: var(--side-panel-language-background-color);
+    --side-panel-language-dropdown-background-color-hover: #d0d0d0;
+    /*Connector List*/
+    --connector-list-bg-color: #ffffff;
+}
+
+.top-menu-root .menu-item-center-header, .top-menu-root .navbar-nav i {
+    color: #fff !important;
 }

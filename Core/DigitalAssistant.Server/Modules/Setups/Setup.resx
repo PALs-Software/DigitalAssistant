@@ -117,37 +117,31 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="HostPasswordEncrypted" xml:space="preserve">
-    <value>Host Password</value>
-  </data>
   <data name="Setup" xml:space="preserve">
     <value>Setup</value>
   </data>
   <data name="Setup_Plural" xml:space="preserve">
     <value>Setup</value>
   </data>
-  <data name="Error" xml:space="preserve">
-    <value>Fehler</value>
-  </data>
-  <data name="EnableSSL" xml:space="preserve">
-    <value>Enable SSL</value>
-  </data>
-  <data name="SenderAddress" xml:space="preserve">
-    <value>Sender Address</value>
-  </data>
-  <data name="UseDefaultCredentials" xml:space="preserve">
-    <value>Use Default Credentials</value>
-  </data>
-  <data name="WebsiteName" xml:space="preserve">
-    <value>Website Name</value>
-  </data>
-  <data name="AdminNotificationReceivers" xml:space="preserve">
-    <value>Admin Notification Receivers</value>
-  </data>
   <data name="AsrModel" xml:space="preserve">
     <value>Speech Recognition Model</value>
   </data>
   <data name="AsrLanguage" xml:space="preserve">
     <value>Speech Recognition Language</value>
+  </data>
+  <data name="AsrModelNotExistErr" xml:space="preserve">
+    <value>The current selected speech recognition model does not exist in the huggingface repository https://huggingface.co/PALs-Software/DigitalAssistant.AsrModels. Please select another model configuration and try again.</value>
+  </data>
+  <data name="TtsModelNotExistErr" xml:space="preserve">
+    <value>The current selected text-to-speech model does not exist in the huggingface repository https://huggingface.co/rhasspy/piper-voices. Please select another model configuration and try again.</value>
+  </data>
+  <data name="DownloadCancelledMsg" xml:space="preserve">
+    <value>The download was cancelled. If you have not cancelled the download yourself, please check your internet connection. The selected settings cannot be used without downloading the selected models.</value>
+  </data>
+  <data name="DownloadCancelledTitle" xml:space="preserve">
+    <value>Download cancelled</value>
+  </data>
+  <data name="SampleRateCanNotBeReadErr" xml:space="preserve">
+    <value>The sample rate of the configuration file {0} can not be read properly. Make sure that the model is valid or try another one.</value>
   </data>
 </root>
