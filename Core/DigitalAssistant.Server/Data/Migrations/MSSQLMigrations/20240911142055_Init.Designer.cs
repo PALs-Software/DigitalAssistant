@@ -9,11 +9,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace DigitalAssistant.Server.Migrations
+namespace DigitalAssistant.Server.Data.Migrations.MSSQLMigrations
 {
-    [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240911130500_RemoveAccessTokensAndApiTelemetryEntriesTables")]
-    partial class RemoveAccessTokensAndApiTelemetryEntriesTables
+    [DbContext(typeof(MSSQLDbContext))]
+    [Migration("20240911142055_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

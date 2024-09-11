@@ -116,7 +116,8 @@ public partial class InitialSetupWizard : ComponentBase
         {
             nameof(User.PreferredCulture),
             nameof(User.PrefersDarkMode),
-            nameof(User.IdentityRole)
+            nameof(User.IdentityRole),
+            nameof(User.ProfileImage)
         };
 
         args.VisibleProperties.RemoveAll(property => propertiesToRemove.Contains(property.Name));

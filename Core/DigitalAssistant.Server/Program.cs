@@ -47,26 +47,62 @@ var webApplicationBuilder = WebApplication.CreateBuilder(args);
 webApplicationBuilder.Configuration.AddJsonFile("appsettings.User.json");
 #endif
 
-ConfigureDatabase(webApplicationBuilder);
-ConfigureIdentity(webApplicationBuilder);
+var databaseProvider = webApplicationBuilder.Configuration["DatabaseProvider"];
+var connectionString = webApplicationBuilder.Configuration.GetConnectionString("DefaultConnection");
+
+#if CREATESQLITEMIGRATIONS
+//Add-Migration -Name Init -Context SQLiteDbContext -OutputDir Data\Migrations\SQLiteMigrations
+databaseProvider = "SQLite";
+connectionString = "Data Source=DigitalAssistant_DEV.db";
+#elif CREATEMSSQLMIGRATIONS
+//Add-Migration -Name Init -Context MSSQLDbContext -OutputDir Data\Migrations\MSSQLMigrations
+databaseProvider = "MSSQL";
+connectionString = "Server=localhost;Database=DigitalAssistantServer_DEV;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True";
+#endif
+
+switch (databaseProvider)
+{
+    case "SQLite":
+        ConfigureDatabase<SQLiteDbContext>(webApplicationBuilder, databaseProvider, connectionString);
+        ConfigureIdentity<SQLiteDbContext>(webApplicationBuilder);
+        ConfigureBlazorBase<SQLiteDbContext>(webApplicationBuilder);
+        break;
+    case "MSSQL":
+        ConfigureDatabase<MSSQLDbContext>(webApplicationBuilder, databaseProvider, connectionString);
+        ConfigureIdentity<MSSQLDbContext>(webApplicationBuilder);
+        ConfigureBlazorBase<MSSQLDbContext>(webApplicationBuilder);
+        break;
+    default:
+        throw new NotImplementedException($"The database provider '{databaseProvider}' is currently not supported. Choose one of the following providers: SQLite, MSSQL");
+}
+
 ConfigureAspDotNetBasics(webApplicationBuilder);
-ConfigureBlazorBase(webApplicationBuilder);
 ConfigureLogging(webApplicationBuilder);
 ConfigureServices(webApplicationBuilder);
 
 var webApplication = webApplicationBuilder.Build();
 ConfigureApp(webApplication);
 ConfigureBlazorBaseAppSettings(webApplication);
-await OnStartupAsync(webApplication);
+
+switch (databaseProvider)
+{
+    case "SQLite":
+        await OnStartupAsync<SQLiteDbContext>(webApplication);
+        break;
+    case "MSSQL":
+        await OnStartupAsync<MSSQLDbContext>(webApplication);
+        break;
+    default:
+        throw new NotImplementedException($"The database provider '{databaseProvider}' is currently not supported. Choose one of the following providers: SQLite, MSSQL");
+}
+
 await webApplication.RunAsync();
 
-void ConfigureDatabase(WebApplicationBuilder builder)
+void ConfigureDatabase<TDatabaseContext>(WebApplicationBuilder builder, string databaseProvider, string connectionString) where TDatabaseContext : ApplicationDbContext
 {
     var serviceProviderInterceptor = new ServiceProviderInterceptor();
-    var databaseProvider = builder.Configuration["DatabaseProvider"];
-    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
-    builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    builder.Services.AddDbContext<TDatabaseContext>(options =>
     {
         options.UseLazyLoadingProxies();
         switch (databaseProvider)
@@ -94,7 +130,7 @@ void ConfigureDatabase(WebApplicationBuilder builder)
 #endif
 }
 
-void ConfigureIdentity(WebApplicationBuilder builder)
+void ConfigureIdentity<TDatabaseContext>(WebApplicationBuilder builder) where TDatabaseContext : ApplicationDbContext
 {
     builder.Services
         .AddDefaultIdentity<IdentityUser>(options =>
@@ -105,7 +141,7 @@ void ConfigureIdentity(WebApplicationBuilder builder)
             options.SignIn.RequireConfirmedAccount = false;
         })
         .AddRoles<IdentityRole>()
-        .AddEntityFrameworkStores<ApplicationDbContext>();
+        .AddEntityFrameworkStores<TDatabaseContext>();
 }
 
 void ConfigureAspDotNetBasics(WebApplicationBuilder builder)
@@ -118,7 +154,7 @@ void ConfigureAspDotNetBasics(WebApplicationBuilder builder)
     builder.Services.AddCascadingAuthenticationState();
 }
 
-void ConfigureBlazorBase(WebApplicationBuilder builder)
+void ConfigureBlazorBase<TDatabaseContext>(WebApplicationBuilder builder) where TDatabaseContext : ApplicationDbContext
 {
     builder.Services.AddBlazorise(options => { options.ChangeTextOnKeyPress = true; })
             .AddBootstrapProviders()
@@ -130,7 +166,7 @@ void ConfigureBlazorBase(WebApplicationBuilder builder)
                 options.ShortWebsiteName = "DA";
             })
             .AddBlazorBaseBackup(UserRole.Admin.ToString())
-            .AddBlazorBaseCRUD<ApplicationDbContext>(options =>
+            .AddBlazorBaseCRUD<TDatabaseContext>(options =>
             {
                 options.UseAsyncDbContextMethodsPerDefaultInBaseDbContext = false;
             })
@@ -151,12 +187,6 @@ void ConfigureBlazorBase(WebApplicationBuilder builder)
             )
 
             .AddBlazorBaseAudioRecorderWithoutCRUDSupport()
-    /*
-    .AddBlazorBaseDataUpgrade(
-        allowedUserAccessRoles: [UserRole.Admin.ToString()],
-        typeof(Test)
-    )
-    */
     ;
 }
 
@@ -275,13 +305,12 @@ void ConfigureServices(WebApplicationBuilder builder)
         ;
 }
 
-async Task OnStartupAsync(WebApplication app)
+async Task OnStartupAsync<TDatabaseContext>(WebApplication app) where TDatabaseContext : ApplicationDbContext
 {
-    DatabaseMigrationService.MigrateDatabase<ApplicationDbContext>(app);
+    DatabaseMigrationService.MigrateDatabase<TDatabaseContext>(app);
 
     using var scope = app.Services.CreateAsyncScope();
 
-    //await DataUpgradeService.StartDataUpgradeAsync(scope.ServiceProvider);
     await DatabaseSeeder.SeedDataAsync(scope.ServiceProvider);
     await Cache.SetupCache.RefreshSetupCacheAsync(scope.ServiceProvider);
     await Cache.UserCache.InitUserCacheAsync(scope.ServiceProvider);

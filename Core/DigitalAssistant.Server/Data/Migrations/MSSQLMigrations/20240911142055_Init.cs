@@ -1,10 +1,9 @@
 ﻿using System;
-using DigitalAssistant.Server.Extensions;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace DigitalAssistant.Server.Migrations
+namespace DigitalAssistant.Server.Data.Migrations.MSSQLMigrations
 {
     /// <inheritdoc />
     public partial class Init : Migration
@@ -13,52 +12,13 @@ namespace DigitalAssistant.Server.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "AccessTokens",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
-                    Type = table.Column<int>(type: "int", nullable: false),
-                    TokenHash = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
-                    ValidUntil = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedBy = table.Column<string>(type: migrationBuilder.GetMaxStringType(), nullable: true),
-                    LastModifiedBy = table.Column<string>(type: migrationBuilder.GetMaxStringType(), nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AccessTokens", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ApiTelemetryEntries",
-                columns: table => new
-                {
-                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    EntryNo = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Count = table.Column<int>(type: "int", nullable: false),
-                    ErrorCount = table.Column<int>(type: "int", nullable: false),
-                    LastErrorMessage = table.Column<string>(type: migrationBuilder.GetMaxStringType(), nullable: true),
-                    LastRequest = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    LastErrorRequest = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ApiTelemetryEntries", x => new { x.Name, x.EntryNo });
-                });
-
-            migrationBuilder.CreateTable(
                 name: "AspNetRoles",
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    ConcurrencyStamp = table.Column<string>(type: migrationBuilder.GetMaxStringType(), nullable: true)
+                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -75,10 +35,10 @@ namespace DigitalAssistant.Server.Migrations
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedEmail = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     EmailConfirmed = table.Column<bool>(type: "bit", nullable: false),
-                    PasswordHash = table.Column<string>(type: migrationBuilder.GetMaxStringType(), nullable: true),
-                    SecurityStamp = table.Column<string>(type: migrationBuilder.GetMaxStringType(), nullable: true),
-                    ConcurrencyStamp = table.Column<string>(type: migrationBuilder.GetMaxStringType(), nullable: true),
-                    PhoneNumber = table.Column<string>(type: migrationBuilder.GetMaxStringType(), nullable: true),
+                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SecurityStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PhoneNumberConfirmed = table.Column<bool>(type: "bit", nullable: false),
                     TwoFactorEnabled = table.Column<bool>(type: "bit", nullable: false),
                     LockoutEnd = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
@@ -102,8 +62,8 @@ namespace DigitalAssistant.Server.Migrations
                     PlayRequestSound = table.Column<bool>(type: "bit", nullable: false),
                     VoiceAudioOutputSampleRate = table.Column<int>(type: "int", nullable: false),
                     OutputAudioVolume = table.Column<float>(type: "real", nullable: false),
-                    OutputDeviceId = table.Column<string>(type: migrationBuilder.GetMaxStringType(), nullable: true),
-                    InputDeviceId = table.Column<string>(type: migrationBuilder.GetMaxStringType(), nullable: true),
+                    OutputDeviceId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    InputDeviceId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     SqlRowVersion = table.Column<byte[]>(type: "rowversion", rowVersion: true, nullable: true),
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -120,8 +80,8 @@ namespace DigitalAssistant.Server.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Type = table.Column<string>(type: migrationBuilder.GetMaxStringType(), nullable: false),
-                    SettingsAsJson = table.Column<string>(type: migrationBuilder.GetMaxStringType(), nullable: true),
+                    Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    SettingsAsJson = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
@@ -135,16 +95,16 @@ namespace DigitalAssistant.Server.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    InternalId = table.Column<string>(type: migrationBuilder.GetMaxStringType(), nullable: false),
-                    Name = table.Column<string>(type: migrationBuilder.GetMaxStringType(), nullable: false),
-                    AlternativeNames = table.Column<string>(type: migrationBuilder.GetMaxStringType(), nullable: false),
+                    InternalId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    AlternativeNames = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CustomName = table.Column<bool>(type: "bit", nullable: false),
                     Type = table.Column<int>(type: "int", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
-                    Connector = table.Column<string>(type: migrationBuilder.GetMaxStringType(), nullable: false),
-                    Manufacturer = table.Column<string>(type: migrationBuilder.GetMaxStringType(), nullable: false),
-                    ProductName = table.Column<string>(type: migrationBuilder.GetMaxStringType(), nullable: false),
-                    AdditionalJsonData = table.Column<string>(type: migrationBuilder.GetMaxStringType(), nullable: true),
+                    Connector = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Manufacturer = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ProductName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    AdditionalJsonData = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModelType = table.Column<string>(type: "nvarchar(13)", maxLength: 13, nullable: false),
@@ -156,7 +116,7 @@ namespace DigitalAssistant.Server.Migrations
                     LightDevice_MinimumColorTemperature = table.Column<int>(type: "int", nullable: true),
                     LightDevice_MaximumColorTemperature = table.Column<int>(type: "int", nullable: true),
                     LightDevice_ColorIsAdjustable = table.Column<bool>(type: "bit", nullable: true),
-                    LightDevice_Color = table.Column<string>(type: migrationBuilder.GetMaxStringType(), nullable: true),
+                    LightDevice_Color = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     SwitchDevice_On = table.Column<bool>(type: "bit", nullable: true)
                 },
                 constraints: table =>
@@ -172,12 +132,12 @@ namespace DigitalAssistant.Server.Migrations
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
                     SortIndex = table.Column<int>(type: "int", nullable: false),
-                    FileName = table.Column<string>(type: migrationBuilder.GetMaxStringType(), nullable: false),
-                    Description = table.Column<string>(type: migrationBuilder.GetMaxStringType(), nullable: true),
-                    BaseFileType = table.Column<string>(type: migrationBuilder.GetMaxStringType(), nullable: false),
-                    MimeFileType = table.Column<string>(type: migrationBuilder.GetMaxStringType(), nullable: false),
+                    FileName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    BaseFileType = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    MimeFileType = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     FileSize = table.Column<long>(type: "bigint", nullable: false),
-                    Hash = table.Column<string>(type: migrationBuilder.GetMaxStringType(), nullable: true)
+                    Hash = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -189,12 +149,13 @@ namespace DigitalAssistant.Server.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    InitalSetupCompleted = table.Column<bool>(type: "bit", nullable: false),
                     AsrLanguage = table.Column<int>(type: "int", nullable: false),
                     AsrModel = table.Column<int>(type: "int", nullable: false),
                     AsrMode = table.Column<int>(type: "int", nullable: false),
                     AsrPrecision = table.Column<int>(type: "int", nullable: false),
                     TtsLanguage = table.Column<int>(type: "int", nullable: false),
-                    TtsModel = table.Column<string>(type: migrationBuilder.GetMaxStringType(), nullable: false),
+                    TtsModel = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     TtsModelQuality = table.Column<int>(type: "int", nullable: false),
                     TtsMode = table.Column<int>(type: "int", nullable: false),
                     InterpreterLanguage = table.Column<int>(type: "int", nullable: false),
@@ -213,8 +174,8 @@ namespace DigitalAssistant.Server.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     RoleId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ClaimType = table.Column<string>(type: migrationBuilder.GetMaxStringType(), nullable: true),
-                    ClaimValue = table.Column<string>(type: migrationBuilder.GetMaxStringType(), nullable: true)
+                    ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -234,8 +195,8 @@ namespace DigitalAssistant.Server.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ClaimType = table.Column<string>(type: migrationBuilder.GetMaxStringType(), nullable: true),
-                    ClaimValue = table.Column<string>(type: migrationBuilder.GetMaxStringType(), nullable: true)
+                    ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -254,7 +215,7 @@ namespace DigitalAssistant.Server.Migrations
                 {
                     LoginProvider = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
                     ProviderKey = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
-                    ProviderDisplayName = table.Column<string>(type: migrationBuilder.GetMaxStringType(), nullable: true),
+                    ProviderDisplayName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
@@ -299,7 +260,7 @@ namespace DigitalAssistant.Server.Migrations
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     LoginProvider = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
                     Name = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
-                    Value = table.Column<string>(type: migrationBuilder.GetMaxStringType(), nullable: true)
+                    Value = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -317,12 +278,13 @@ namespace DigitalAssistant.Server.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ProfileImageId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     PreferredCulture = table.Column<int>(type: "int", nullable: false),
                     PrefersDarkMode = table.Column<bool>(type: "bit", nullable: true),
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModifiedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Email = table.Column<string>(type: migrationBuilder.GetMaxStringType(), nullable: false),
-                    UserName = table.Column<string>(type: migrationBuilder.GetMaxStringType(), nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UserName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IdentityUserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     IdentityRole = table.Column<int>(type: "int", nullable: false)
                 },
@@ -334,22 +296,12 @@ namespace DigitalAssistant.Server.Migrations
                         column: x => x.IdentityUserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_DbUsers_ServerFiles_ProfileImageId",
+                        column: x => x.ProfileImageId,
+                        principalTable: "ServerFiles",
+                        principalColumn: "Id");
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AccessTokens_CreatedOn",
-                table: "AccessTokens",
-                column: "CreatedOn");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AccessTokens_TokenHash",
-                table: "AccessTokens",
-                column: "TokenHash");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ApiTelemetryEntries_CreatedOn",
-                table: "ApiTelemetryEntries",
-                column: "CreatedOn");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -396,6 +348,11 @@ namespace DigitalAssistant.Server.Migrations
                 column: "IdentityUserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_DbUsers_ProfileImageId",
+                table: "DbUsers",
+                column: "ProfileImageId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Devices_ModelType",
                 table: "Devices",
                 column: "ModelType");
@@ -409,12 +366,6 @@ namespace DigitalAssistant.Server.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "AccessTokens");
-
-            migrationBuilder.DropTable(
-                name: "ApiTelemetryEntries");
-
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 
@@ -443,9 +394,6 @@ namespace DigitalAssistant.Server.Migrations
                 name: "Devices");
 
             migrationBuilder.DropTable(
-                name: "ServerFiles");
-
-            migrationBuilder.DropTable(
                 name: "Setup");
 
             migrationBuilder.DropTable(
@@ -453,6 +401,9 @@ namespace DigitalAssistant.Server.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "ServerFiles");
         }
     }
 }

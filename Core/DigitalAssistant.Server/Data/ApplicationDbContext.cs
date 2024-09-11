@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DigitalAssistant.Server.Data;
 
-public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : IdentityDbContext(options)
+public class ApplicationDbContext(DbContextOptions options) : IdentityDbContext(options)
 {
     #region Basics
 

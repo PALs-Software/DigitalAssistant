@@ -7,6 +7,15 @@
     <FileVersion>1.0.1.0</FileVersion>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <UserSecretsId>f5ca69a5-ad0d-46cf-b721-c67a48689660</UserSecretsId>
+    <Configurations>Debug;Release;CreateMSSQLMigrations;CreateSQLiteMigrations</Configurations>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='CreateMSSQLMigrations|AnyCPU'">
+    <DefineConstants>$(DefineConstants);DEBUG</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='CreateSQLiteMigrations|AnyCPU'">
+    <DefineConstants>$(DefineConstants);DEBUG</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
