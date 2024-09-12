@@ -363,3 +363,4 @@ MigrationBackup/
 FodyWeavers.xsd
 Core/DigitalAssistant.Client/appsettings.User.json
 Core/DigitalAssistant.Server/appsettings.User.json
+Docs/_site/

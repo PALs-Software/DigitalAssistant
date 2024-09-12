@@ -8,7 +8,6 @@ using DigitalAssistant.Server.Modules.Commands.Services;
 using DigitalAssistant.Server.Modules.Devices.Models;
 using DigitalAssistant.Server.Modules.Localization;
 using Microsoft.Extensions.Localization;
-using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
 

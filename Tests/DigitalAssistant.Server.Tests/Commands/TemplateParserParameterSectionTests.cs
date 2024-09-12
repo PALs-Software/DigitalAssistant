@@ -7,7 +7,6 @@ using DigitalAssistant.Server.Modules.Commands.Services;
 using DigitalAssistant.Server.Modules.Localization;
 using Microsoft.Extensions.Localization;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Text.RegularExpressions;
 using System.Threading;
 
