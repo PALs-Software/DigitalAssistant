@@ -138,4 +138,11 @@ public class ClientConnectionHandler : BackgroundService
                 ClientInformationService.RemoveClient(clientConnection.Client.Id, clientConnection);
         }
     }
+
+    #region Misc
+    public string GetServerCertificateSubject()
+    {
+        return ServerCertificate.Subject[3..]; // Remove the "CN=" at the beginning
+    }
+    #endregion
 }

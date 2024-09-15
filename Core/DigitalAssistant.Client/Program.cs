@@ -1,11 +1,11 @@
-using DigitalAssistant.Base;
-using DigitalAssistant.Base.Audio;
-using DigitalAssistant.Base.General;
 using DigitalAssistant.Abstractions.Services;
+using DigitalAssistant.Base.Audio;
 using DigitalAssistant.Base.ClientServerConnection;
+using DigitalAssistant.Base.General;
 using DigitalAssistant.Client.Modules.Audio.Interfaces;
 using DigitalAssistant.Client.Modules.Audio.Linux;
 using DigitalAssistant.Client.Modules.Audio.Windows;
+using DigitalAssistant.Client.Modules.ServerConnection.Models;
 using DigitalAssistant.Client.Modules.ServerConnection.Services;
 using DigitalAssistant.Client.Modules.SpeechRecognition.Services;
 using DigitalAssistant.Client.Modules.State;
@@ -40,6 +40,11 @@ builder.Services
     {
         var config = serviceProvider.GetRequiredService<IConfiguration>();
         return config.GetRequiredSection("ClientSettings").Get<ClientSettings>() ?? new();
+    })
+    .AddSingleton((serviceProvider) =>
+    {
+        var config = serviceProvider.GetRequiredService<IConfiguration>();
+        return config.GetRequiredSection("ServerConnection").Get<ServerConnectionSettings>() ?? new();
     })
     .AddSingleton<ClientState>()
     .AddSingleton<AudioService>()

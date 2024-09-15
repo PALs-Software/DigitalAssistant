@@ -13,7 +13,7 @@ public class DiscoverAndUpdateDevices(ConnectorService connectorService, ILogger
     protected readonly ConnectorService ConnectorService = connectorService;
     #endregion
 
-    protected override Task OnTimerElapsedAsync()
+    protected override Task OnTimerElapsedAsync(CancellationToken stoppingToken)
     {
         return ConnectorService.DiscoverAndUpdateDevicesAsync();
     }

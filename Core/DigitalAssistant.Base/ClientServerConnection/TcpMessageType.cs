@@ -2,6 +2,8 @@
 
 public enum TcpMessageType
 {
+    AvailableClientToSetup,
+    SetupClientWithServer,
     Authentication,
     AudioData,
     Action,

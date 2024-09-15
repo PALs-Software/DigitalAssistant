@@ -1,16 +1,12 @@
-﻿using DigitalAssistant.Base;
-using DigitalAssistant.Base.Audio;
+﻿using DigitalAssistant.Base.Audio;
 using DigitalAssistant.Base.BackgroundServiceAbstracts;
 using DigitalAssistant.Base.ClientServerConnection;
 using DigitalAssistant.Base.General;
-using DigitalAssistant.Client.Modules.Audio;
 using DigitalAssistant.Client.Modules.Audio.Enums;
 using DigitalAssistant.Client.Modules.Audio.Interfaces;
-using DigitalAssistant.Client.Modules.General;
 using DigitalAssistant.Client.Modules.ServerConnection.Services;
 using Microsoft.ML.OnnxRuntime;
 using Microsoft.ML.OnnxRuntime.Tensors;
-using NAudio.Wave;
 using System.Diagnostics;
 using System.Reflection;
 
@@ -79,8 +75,11 @@ public class WakeWordListener : TimerBackgroundService
         Session = new InferenceSession(wakeWordModelPath, options);
     }
 
-    protected override async Task OnTimerElapsedAsync()
+    protected override async Task OnTimerElapsedAsync(CancellationToken stoppingToken)
     {
+        if (!Settings.ClientIsInitialized)
+            return;
+
         if (!await AudioRecorder.CheckIsStillRunningAsync().ConfigureAwait(false))
         {
             await Task.Delay(10000, StopServiceToken).ConfigureAwait(false); // wait 10 seconds to delay the next try

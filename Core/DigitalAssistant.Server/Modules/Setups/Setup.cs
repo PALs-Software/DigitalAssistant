@@ -64,7 +64,7 @@ public partial class Setup : BaseModel
     public AsrMode AsrMode { get; set; } = AsrMode.Cpu;
 
     [Visible(DisplayGroup = "Speech Recognition Model", DisplayOrder = 400)]
-    public AsrPrecision AsrPrecision { get; set; } = AsrPrecision.INT8;
+    public AsrPrecision AsrPrecision { get; set; } = AsrPrecision.FP32;
 
     #endregion
 

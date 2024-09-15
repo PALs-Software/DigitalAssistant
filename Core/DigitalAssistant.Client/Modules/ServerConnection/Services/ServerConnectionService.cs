@@ -10,8 +10,7 @@ public class ServerConnectionService
     #region Properties
     public TcpClient? TcpClient { get; set; }
     public SslStream? SslStream { get; set; }
-    public bool ConnectionIsAuthenticated { get; set; }
-    public SecureString? ServerAccessToken { get; set; }
+    public bool ConnectionIsAuthenticated { get; set; }    
     #endregion
 
     #region Member
@@ -24,7 +23,10 @@ public class ServerConnectionService
         if (TcpClient == null || SslStream == null)
             return (false, null);
 
-        if (!ConnectionIsAuthenticated && message.Type != TcpMessageType.Authentication)
+        if (!ConnectionIsAuthenticated &&
+            message.Type != TcpMessageType.AvailableClientToSetup &&
+            message.Type != TcpMessageType.SetupClientWithServer &&
+            message.Type != TcpMessageType.Authentication)
             return (false, null);
 
         await Semaphore.WaitAsync(cancellationToken).ConfigureAwait(false);

@@ -14,7 +14,7 @@ public class ClientInformationService
     {
         if (Clients.TryAdd(clientId, client))
         {
-            if (!String.IsNullOrEmpty(client.Client?.Name))
+            if (!String.IsNullOrEmpty(client.Client?.Name) && client.Client.HasBeenInitialized)
                 GlobalEventService.InvokeClientConnected(client.Client.Name);
             return true;
         }
@@ -28,13 +28,13 @@ public class ClientInformationService
                 }
                 catch (Exception) { }
 
-            if (!String.IsNullOrEmpty(oldClientConnection?.Client?.Name))
+            if (!String.IsNullOrEmpty(oldClientConnection?.Client?.Name) && oldClientConnection.Client.HasBeenInitialized)
                 GlobalEventService.InvokeClientDisconnected(oldClientConnection.Client.Name);
         }
 
         var success = Clients.TryAdd(clientId, client);
 
-        if (success && !String.IsNullOrEmpty(client.Client?.Name))
+        if (success && !String.IsNullOrEmpty(client.Client?.Name) && client.Client.HasBeenInitialized)
             GlobalEventService.InvokeClientConnected(client.Client.Name);
 
         return success;
@@ -48,7 +48,7 @@ public class ClientInformationService
 
         var success = Clients.TryRemove(clientId, out var clientConnection);
 
-        if (!String.IsNullOrEmpty(clientConnection?.Client?.Name))
+        if (!String.IsNullOrEmpty(clientConnection?.Client?.Name) && clientConnection.Client.HasBeenInitialized)
             GlobalEventService.InvokeClientDisconnected(clientConnection.Client.Name);
 
         return success;
@@ -60,5 +60,10 @@ public class ClientInformationService
             return client;
 
         return null;
+    }
+
+    public List<ClientConnection> GetAvailableClientsToSetup()
+    {
+        return Clients.Values.Where(entry => entry.IsAvailableClientForSetup).ToList();
     }
 }

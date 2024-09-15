@@ -29,7 +29,7 @@ public abstract class TimerBackgroundService : BaseBackgroundService
             {
                 try
                 {
-                    await OnTimerElapsedAsync().ConfigureAwait(false);
+                    await OnTimerElapsedAsync(stoppingToken).ConfigureAwait(false);
                 }
                 catch (Exception) { }
             } while (!stoppingToken.IsCancellationRequested && await PeriodicTimer.WaitForNextTickAsync(stoppingToken));
@@ -46,6 +46,6 @@ public abstract class TimerBackgroundService : BaseBackgroundService
         }
     }
 
-    protected abstract Task OnTimerElapsedAsync();
+    protected abstract Task OnTimerElapsedAsync(CancellationToken stoppingToken);
 
 }

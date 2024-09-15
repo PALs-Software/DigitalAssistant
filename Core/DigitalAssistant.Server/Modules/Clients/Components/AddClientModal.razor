@@ -1,0 +1,43 @@
+﻿@using BlazorBase.CRUD.Models;
+@using Blazorise.Icons.FontAwesome
+@using DigitalAssistant.Server.Modules.Clients.Models
+
+<div class="add-client-modal">
+    <BaseModalCard @ref="ClientModalCard" TModel="Client" ExplainText="AddClientManuallyExplainText" OnCardClosed="OnCardClosedAsync" />
+
+    @if (!ShowClientCard)
+    {
+        <Modal @ref="Modal" Visible="true" Closing="async (args) => await OnModalClosing(args)" Style="z-index:9999" ShowBackdrop="false">
+            <ModalContent Centered="true" Size="ModalSize.Large">
+                <ModalHeader>
+                    <ModalTitle>
+                        @Localizer["ModalTitle"]
+                    </ModalTitle>
+                    <CloseButton />
+                </ModalHeader>
+                <ModalBody>
+                    <div>
+                        @if (AvailableClients.Count == 0)
+                        {
+                            @Localizer["NoClientsAvailableMessage"]
+                        }
+                        else
+                        {
+                            <label for="client-select" class="form-label">@Localizer["AvailableClients"]</label>
+                            <select @bind="SelectedClientId" class="custom-select form-control" id="client-select">
+                                @foreach (var clientConnection in AvailableClients)
+                                {
+                                    <option value="@clientConnection.Client?.Id">@clientConnection.Client?.Name</option>
+                                }
+                            </select>
+                        }
+                    </div>
+                </ModalBody>
+                <ModalFooter>
+                    <Button Color="Color.Secondary" Clicked="OnAddNewClientManuallyButtonClickedAsync">@Localizer["AddClientManuallyButton"]</Button>
+                    <Button Color="Color.Primary" Disabled="@(AvailableClients.Count == 0)" Clicked="OnAddSelectedClientButtonClickedAsync">@Localizer["AddSelectedClientButton"]</Button>
+                </ModalFooter>
+            </ModalContent>
+        </Modal>
+    }
+</div>

@@ -279,6 +279,7 @@ void ConfigureServices(WebApplicationBuilder builder)
         .AddSingleton<CommandTemplateParser>()
         .AddSingleton<ClientInformationService>()
         .AddSingleton<ClientTaskExecutionService>()
+        .AddSingleton<ClientConnectionHandler>()
         .AddSingleton<ConnectorService>()
         .AddSingleton<CommandHandler>()
         .AddSingleton<IDeviceFactory, DeviceFactory>()
@@ -299,7 +300,8 @@ void ConfigureServices(WebApplicationBuilder builder)
         ;
 
     builder.Services
-        .AddHostedService<ClientConnectionHandler>()
+        .AddHostedService(serviceProvider => serviceProvider.GetRequiredService<ClientConnectionHandler>())
+        .AddHostedService<ClientDiscoveryService>()
         .AddHostedService(serviceProvider => serviceProvider.GetRequiredService<ClientTaskExecutionService>())
         .AddHostedService<DiscoverAndUpdateDevices>()
         ;

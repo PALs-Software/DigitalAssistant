@@ -23,7 +23,7 @@ namespace DigitalAssistant.Server.Modules.Clients.Models;
 
 [Route("/Clients")]
 [Authorize(Roles = "Admin")]
-public class Client : ClientBase, IClient, IClientSettings
+public partial class Client : ClientBase, IClient, IClientSettings
 {
     #region Properties
 
@@ -113,6 +113,9 @@ public class Client : ClientBase, IClient, IClientSettings
 
     public async Task<bool> UpdateSettingsOnClientAsync(EventServices eventServices, bool skipSettingClientNeedSettingsUpdateOnFailure = false)
     {
+        if (!HasBeenInitialized)
+            return false;
+
         var success = await HandleUpdateSettingsOnClientAsync(eventServices, skipSettingClientNeedSettingsUpdateOnFailure);
         await UpdateClientCacheAsync(eventServices.DbContext);
         return success;
@@ -137,7 +140,7 @@ public class Client : ClientBase, IClient, IClientSettings
         var bytes = Encoding.UTF8.GetBytes(json);
 
         await connection.SendMessageToClientAsync(new TcpMessage(TcpMessageType.UpdateClientSettings, eventId, bytes));
-        var success = await connection.GetResponseDataAsync<bool>(eventId, timeoutInMilliseconds: 5000);
+        var success = await connection.GetResponseDataAsync<bool>(eventId, timeoutInMilliseconds: 10000);
         if (success)
         {
             var messageHandler = eventServices.ServiceProvider.GetRequiredService<IMessageHandler>();

@@ -1,19 +1,16 @@
-﻿using DigitalAssistant.Base;
-using DigitalAssistant.Base.Extensions;
+﻿using DigitalAssistant.Abstractions.Services;
 using DigitalAssistant.Base.BackgroundServiceAbstracts;
 using DigitalAssistant.Base.ClientServerConnection;
+using DigitalAssistant.Base.Extensions;
 using DigitalAssistant.Base.General;
-using DigitalAssistant.Client.Modules.ServerConnection.Models;
 using DigitalAssistant.Client.Modules.General;
-using DigitalAssistant.Abstractions.Services;
+using DigitalAssistant.Client.Modules.ServerConnection.Models;
+using System.Net;
 using System.Net.Security;
 using System.Net.Sockets;
-using System.Security;
 using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
-
-using Microsoft.AspNetCore.DataProtection;
 
 
 namespace DigitalAssistant.Client.Modules.ServerConnection.Services;
@@ -31,45 +28,41 @@ public class ServerConnectionHandler : TimerBackgroundService
     protected readonly IDataProtectionService DataProtectionService;
     protected readonly ServerConnectionService ServerConnectionService;
     protected readonly ServerTaskExecutionService ServerTaskExecutionService;
+    protected readonly ClientSettings ClientSettings;
+    protected readonly ServerConnectionSettings ServerConnectionSettings;
+
     #endregion
 
     #region Members
-    protected bool ClientIsInitialized;
-    protected string ServerName;
-    protected int ServerPort;
-    protected bool ignoreServerCertificateErrors;
     protected TcpClient? Client;
     protected SslStream? SslStream;
 
     protected Task? ReadTask;
+
+    protected byte[] ServerDiscoveryRequestData = Encoding.UTF8.GetBytes("GetDigitalAssistantServerIpAddress");
     #endregion
 
-    public ServerConnectionHandler(IServiceProvider serviceProvider, IDataProtectionService dataProtectionService, ServerConnectionService serverConnectionService, ServerTaskExecutionService serverTaskExecutionService, IConfiguration configuration, ILogger<ServerConnectionHandler> logger, BaseErrorService baseErrorService) : base(logger, baseErrorService)
+    public ServerConnectionHandler(IServiceProvider serviceProvider, IDataProtectionService dataProtectionService, ServerConnectionService serverConnectionService, ServerTaskExecutionService serverTaskExecutionService, ClientSettings clientSettings, ServerConnectionSettings serverConnectionSettings, ILogger<ServerConnectionHandler> logger, BaseErrorService baseErrorService) : base(logger, baseErrorService)
     {
         ServiceProvider = serviceProvider;
         DataProtectionService = dataProtectionService;
         ServerConnectionService = serverConnectionService;
         ServerTaskExecutionService = serverTaskExecutionService;
+        ClientSettings = clientSettings;
+        ServerConnectionSettings = serverConnectionSettings;
 
-        ClientIsInitialized = configuration.GetValue<bool>("ClientIsInitialized");
-        var settings = configuration.GetRequiredSection("ServerConnection").Get<ServerConnectionSettings>();
-        ArgumentNullException.ThrowIfNull(settings);
-        var serverAccessToken = settings.ServerAccessToken;
-        ignoreServerCertificateErrors = settings.IgnoreServerCertificateErrors;
-        ArgumentNullException.ThrowIfNull(serverAccessToken);
-
-        if (!ClientIsInitialized)
-            serverAccessToken = DataProtectionService.Protect(serverAccessToken);
-        ServerConnectionService.ServerAccessToken = serverAccessToken?.ToSecureString();
-
-        if (String.IsNullOrEmpty(settings.ServerName))
-            throw new Exception("The configured \"ServerName\" must be a valid machine name or IP address.");
-
-        if (settings.ServerPort < 1024 || settings.ServerPort > 65535)
+        ArgumentNullException.ThrowIfNull(ServerConnectionSettings);
+        ArgumentNullException.ThrowIfNull(ServerConnectionSettings.ServerPort);
+        if (ServerConnectionSettings.ServerPort < 1024 || ServerConnectionSettings.ServerPort > 65535)
             throw new Exception("The configured Port must be the configured port on the host machine and between 1024 and 65535.");
 
-        ServerName = settings.ServerName;
-        ServerPort = settings.ServerPort;
+        var serverAccessToken = String.IsNullOrWhiteSpace(ServerConnectionSettings.ServerAccessToken) ? null : ServerConnectionSettings.ServerAccessToken;
+        if (!ClientSettings.ClientIsInitialized && !String.IsNullOrWhiteSpace(ServerConnectionSettings.ServerAccessToken) && !String.IsNullOrWhiteSpace(ServerConnectionSettings.ServerName))
+            serverAccessToken = DataProtectionService.Protect(serverAccessToken);
+
+        ServerConnectionSettings.SecureServerAccessToken = serverAccessToken?.ToSecureString();
+        ServerConnectionSettings.ServerAccessToken = null;
+        serverAccessToken = null;
 
         SoftRestartService.OnSoftRestart += async (sender, args) => await OnSoftRestartAsync();
     }
@@ -84,38 +77,49 @@ public class ServerConnectionHandler : TimerBackgroundService
         return Task.CompletedTask;
     }
 
-    protected override Task OnTimerElapsedAsync()
+    protected override async Task OnTimerElapsedAsync(CancellationToken stoppingToken)
     {
         if (Client != null && Client.Connected)
-            return Task.CompletedTask;
+            return;
 
-        return EstablishConnectionToServerAsync();
+        if (!ClientSettings.ClientIsInitialized && String.IsNullOrWhiteSpace(ServerConnectionSettings.ServerName))
+            await DiscoverServerAsync(stoppingToken).ConfigureAwait(false);
+
+        await EstablishConnectionToServerAsync().ConfigureAwait(false);
     }
+
+    #region Tcp Client Communication
 
     protected async Task<bool> EstablishConnectionToServerAsync()
     {
         try
         {
-            var client = new TcpClient(ServerName, ServerPort);
+            var client = new TcpClient(ServerConnectionSettings.ServerName!, ServerConnectionSettings.ServerPort);
             var sslStream = new SslStream(client.GetStream(), false, new RemoteCertificateValidationCallback(ValidateServerCertificate), null);
-            sslStream.AuthenticateAsClient(new SslClientAuthenticationOptions() { TargetHost = ServerName, EnabledSslProtocols = SslProtocols.Tls13 });
+            sslStream.AuthenticateAsClient(new SslClientAuthenticationOptions() { TargetHost = ServerConnectionSettings.ServerName, EnabledSslProtocols = SslProtocols.Tls13 });
 
             ServerConnectionService.TcpClient = Client = client;
             ServerConnectionService.SslStream = SslStream = sslStream;
 
-            var tokenBytes = Encoding.UTF8.GetBytes(DataProtectionService.Unprotect(ServerConnectionService.ServerAccessToken?.ToInsecureString()) ?? String.Empty);
-            await ServerConnectionService.SendMessageToServerAsync(new TcpMessage(TcpMessageType.Authentication, Guid.NewGuid(), tokenBytes));
+            if (ServerConnectionSettings.SecureServerAccessToken != null)
+            {
+                var tokenBytes = Encoding.UTF8.GetBytes(DataProtectionService.Unprotect(ServerConnectionSettings.SecureServerAccessToken?.ToInsecureString()) ?? String.Empty);
+                await ServerConnectionService.SendMessageToServerAsync(new TcpMessage(TcpMessageType.Authentication, Guid.NewGuid(), tokenBytes));
+                if (ClientSettings.ClientIsInitialized)
+                    ServerConnectionService.ConnectionIsAuthenticated = true;
+            }
+            else
+            {
+                var machineNameBytes = Encoding.UTF8.GetBytes(Environment.MachineName);
+                await ServerConnectionService.SendMessageToServerAsync(new TcpMessage(TcpMessageType.AvailableClientToSetup, Guid.NewGuid(), machineNameBytes));
+            }
 
-            if (ClientIsInitialized)
-                ServerConnectionService.ConnectionIsAuthenticated = true;
-
-            ClientIsInitialized = true;
             ReadTask = Task.Factory.StartNew(async () => await ProcessRequestsFromServerAsync(client, sslStream).ConfigureAwait(false), TaskCreationOptions.LongRunning);
         }
         catch (Exception e)
         {
             if (Logger.IsEnabled(LogLevel.Error))
-                Logger.LogError(e, "Error by connecting to the server {ServerName} on port {ServerPort}", ServerName, ServerPort);
+                Logger.LogError(e, "Error by connecting to the server {ServerName} on port {ServerPort}", ServerConnectionSettings.ServerName, ServerConnectionSettings.ServerPort);
 
             SslStream?.Close();
             Client?.Close();
@@ -125,14 +129,14 @@ public class ServerConnectionHandler : TimerBackgroundService
         }
 
         if (Logger.IsEnabled(LogLevel.Information))
-            Logger.LogInformation("Established connection to the server {ServerName} on port {ServerPort}", ServerName, ServerPort);
+            Logger.LogInformation("Established connection to the server {ServerName} on port {ServerPort}", ServerConnectionSettings.ServerName, ServerConnectionSettings.ServerPort);
 
         return true;
     }
 
     protected bool ValidateServerCertificate(object sender, X509Certificate? certificate, X509Chain? chain, SslPolicyErrors sslPolicyErrors)
     {
-        if (ignoreServerCertificateErrors)
+        if (ServerConnectionSettings.IgnoreServerCertificateErrors)
         {
             if (Logger.IsEnabled(LogLevel.Warning))
                 Logger.LogWarning("Client is configured to ignore server certificate errors. The following errors will be ignored: {SSLPolicyErrors}", sslPolicyErrors);
@@ -167,4 +171,48 @@ public class ServerConnectionHandler : TimerBackgroundService
             client.Close();
         }
     }
+
+    #endregion
+
+    #region Server Discovery
+    protected async Task DiscoverServerAsync(CancellationToken stoppingToken)
+    {
+        if (Logger.IsEnabled(LogLevel.Information))
+            Logger.LogInformation("Start server discovery at: {time}", DateTimeOffset.Now);
+
+        while (!stoppingToken.IsCancellationRequested)
+        {
+            try
+            {
+                var client = new UdpClient
+                {
+                    EnableBroadcast = true
+                };
+
+                await client.SendAsync(ServerDiscoveryRequestData, ServerDiscoveryRequestData.Length, new IPEndPoint(IPAddress.Broadcast, ServerConnectionSettings.ServerPort)).ConfigureAwait(false);
+
+                using CancellationTokenSource cancellationTokenSource = new();
+                cancellationTokenSource.CancelAfter(5000);
+                var response = await client.ReceiveAsync(cancellationTokenSource.Token).ConfigureAwait(false);
+
+                var serverResponseData = Encoding.UTF8.GetString(response.Buffer);
+                if (Logger.IsEnabled(LogLevel.Information))
+                    Logger.LogInformation("Server discovery received {serverRequest} from {remoteEndPointAddress}", serverResponseData, response.RemoteEndPoint.Address.ToString());
+
+                client.Close();
+                ServerConnectionSettings.ServerName = serverResponseData;
+                break;
+            }
+            catch (OperationCanceledException)
+            {
+
+            }
+            catch (Exception e)
+            {
+                if (Logger.IsEnabled(LogLevel.Error))
+                    Logger.LogError(e, "Error by processing server discovery");
+            }
+        }
+    }
+    #endregion
 }

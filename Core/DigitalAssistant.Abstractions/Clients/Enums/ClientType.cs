@@ -3,7 +3,7 @@
 public enum ClientType
 {
     Browser,
-    Service,
+    Computer,
     Mobile,
     Microcontroller
 }

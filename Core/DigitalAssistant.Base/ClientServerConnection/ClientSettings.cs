@@ -4,6 +4,8 @@ namespace DigitalAssistant.Base.ClientServerConnection;
 
 public class ClientSettings : IClientSettings
 {
+    public bool ClientIsInitialized { get; set; }
+
     public bool PlayRequestSound { get; set; } = true;
 
     public int VoiceAudioOutputSampleRate { get; set; } = 22050;

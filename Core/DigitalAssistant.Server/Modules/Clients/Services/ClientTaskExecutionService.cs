@@ -59,14 +59,17 @@ public class ClientTaskExecutionService(IServiceProvider serviceProvider,
         ClientMessages.Enqueue(message);
     }
 
-    protected override async Task OnTimerElapsedAsync()
+    protected override async Task OnTimerElapsedAsync(CancellationToken stoppingToken)
     {
         if (ClientMessages.Count == 0)
             return;
 
         while (ClientMessages.TryDequeue(out var message))
         {
-            if ((!message.ClientConnection.ClientIsAuthenticated || message.ClientConnection.Client == null) && message.Type != TcpMessageType.Authentication)
+            if ((!message.ClientConnection.ClientIsAuthenticated || message.ClientConnection.Client == null) &&
+                message.Type != TcpMessageType.Authentication &&
+                message.Type != TcpMessageType.AvailableClientToSetup &&
+                message.Type != TcpMessageType.SetupClientWithServer)
             {
                 CloseTcpConnection(message, $"Client \"{message.ClientConnection.TcpClient.Client.RemoteEndPoint as IPEndPoint}\" is not authenticated to use this method \"{message.Type}\", client connection will be closed");
                 continue;
@@ -74,6 +77,12 @@ public class ClientTaskExecutionService(IServiceProvider serviceProvider,
 
             switch (message.Type)
             {
+                case TcpMessageType.AvailableClientToSetup:
+                    ProcessAvailableClientToSetup(message);
+                    break;
+                case TcpMessageType.SetupClientWithServer:
+                    await ProcessSetupClientWithServerAsync(message);
+                    break;
                 case TcpMessageType.Authentication:
                     await ProcessAuthenticationMessageAsync(message);
                     break;
@@ -90,6 +99,18 @@ public class ClientTaskExecutionService(IServiceProvider serviceProvider,
                     throw new NotImplementedException();
             }
         }
+    }
+
+    protected void ProcessAvailableClientToSetup(ClientTcpMessage message)
+    {
+        message.ClientConnection.IsAvailableClientForSetup = true;
+        message.ClientConnection.Client = new Client { Id = Guid.NewGuid(), Name = Encoding.UTF8.GetString(message.Data) };
+        ClientInformationService.AddClient(message.ClientConnection.Client.Id, message.ClientConnection);
+    }
+
+    protected async Task ProcessSetupClientWithServerAsync(ClientTcpMessage message)
+    {
+        await message.ClientConnection.AddResponseDataAsync(message.EventId, message.Data[0]);
     }
 
     protected async Task ProcessAuthenticationMessageAsync(ClientTcpMessage message)

@@ -1,4 +1,7 @@
-﻿namespace DigitalAssistant.Client.Modules.ServerConnection.Models;
+﻿using System.Security;
+using System.Text.Json.Serialization;
+
+namespace DigitalAssistant.Client.Modules.ServerConnection.Models;
 
 public class ServerConnectionSettings
 {
@@ -6,4 +9,7 @@ public class ServerConnectionSettings
     public int ServerPort { get; set; }
     public string? ServerAccessToken { get; set; }
     public bool IgnoreServerCertificateErrors { get; set; }
+
+    [JsonIgnore]
+    internal SecureString? SecureServerAccessToken { get; set; }
 }

@@ -11,7 +11,7 @@
 		<None Update="espeak-ng-data\**">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
-		<ContentWithTargetPath Include="Libs\piper-phonemize\windows\**" Condition="$([MSBuild]::IsOSPlatform('Windows'))">
+		<ContentWithTargetPath Include="Libs\piper-phonemize-windows-bin\**">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 			<TargetPath>%(Filename)%(Extension)</TargetPath>
 		</ContentWithTargetPath>

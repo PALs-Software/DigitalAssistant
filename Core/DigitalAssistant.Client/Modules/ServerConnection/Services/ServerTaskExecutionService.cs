@@ -1,8 +1,8 @@
 ﻿using BlazorBase.Abstractions.CRUD.Extensions;
 using DigitalAssistant.Abstractions.Clients.Arguments;
+using DigitalAssistant.Abstractions.Clients.Enums;
 using DigitalAssistant.Abstractions.Clients.Interfaces;
 using DigitalAssistant.Abstractions.Services;
-using DigitalAssistant.Base;
 using DigitalAssistant.Base.BackgroundServiceAbstracts;
 using DigitalAssistant.Base.ClientServerConnection;
 using DigitalAssistant.Base.ClientServerConnection.MessageTransferModels;
@@ -21,18 +21,29 @@ using System.Text.Json.Nodes;
 
 namespace DigitalAssistant.Client.Modules.ServerConnection.Services;
 
-public class ServerTaskExecutionService : TimerBackgroundService
+public class ServerTaskExecutionService(
+    ServerConnectionService serverConnectionService,
+    ClientSettings settings,
+    ServerConnectionSettings serverConnectionSettings,
+    ClientState clientState,
+    WakeWordListener wakeWordListener,
+    IAudioPlayer audioPlayer,
+    IAudioDeviceService audioDeviceService,
+    IDataProtectionService dataProtectionService,
+    ILogger<ServerTaskExecutionService> logger,
+    BaseErrorService baseErrorService) : TimerBackgroundService(logger, baseErrorService)
 {
     protected override TimeSpan TimerInterval => TimeSpan.FromMilliseconds(25);
 
     #region Injects
-    protected readonly ServerConnectionService ServerConnectionService;
-    protected readonly ClientSettings Settings;
-    protected readonly ClientState ClientState;
-    protected readonly WakeWordListener WakeWordListener;
-    protected readonly IAudioPlayer AudioPlayer;
-    protected readonly IAudioDeviceService AudioDeviceService;
-    protected readonly IDataProtectionService DataProtectionService;
+    protected readonly ServerConnectionService ServerConnectionService = serverConnectionService;
+    protected readonly ClientSettings Settings = settings;
+    protected readonly ServerConnectionSettings ServerConnectionSettings = serverConnectionSettings;
+    protected readonly ClientState ClientState = clientState;
+    protected readonly WakeWordListener WakeWordListener = wakeWordListener;
+    protected readonly IAudioPlayer AudioPlayer = audioPlayer;
+    protected readonly IAudioDeviceService AudioDeviceService = audioDeviceService;
+    protected readonly IDataProtectionService DataProtectionService = dataProtectionService;
     #endregion
 
     #region Member
@@ -41,27 +52,9 @@ public class ServerTaskExecutionService : TimerBackgroundService
 
     protected Task? TurnUpMusicStreamVolumeTask;
     protected JsonSerializerOptions JsonSerializerOptions = new() { IncludeFields = true };
-    #endregion
 
+    #endregion
     #region Init
-    public ServerTaskExecutionService(ServerConnectionService serverConnectionService,
-        ClientSettings settings,
-        ClientState clientState,
-        WakeWordListener wakeWordListener,
-        IAudioPlayer audioPlayer,
-        IAudioDeviceService audioDeviceService,
-        IDataProtectionService dataProtectionService,
-        ILogger<ServerTaskExecutionService> logger,
-        BaseErrorService baseErrorService) : base(logger, baseErrorService)
-    {
-        ServerConnectionService = serverConnectionService;
-        Settings = settings;
-        ClientState = clientState;
-        WakeWordListener = wakeWordListener;
-        AudioPlayer = audioPlayer;
-        AudioDeviceService = audioDeviceService;
-        DataProtectionService = dataProtectionService;
-    }
     #endregion
 
     public void ScheduleServerMessage(TcpMessage message)
@@ -69,15 +62,18 @@ public class ServerTaskExecutionService : TimerBackgroundService
         ServerMessages.Enqueue(message);
     }
 
-    protected override async Task OnTimerElapsedAsync()
+    protected override async Task OnTimerElapsedAsync(CancellationToken stoppingToken)
     {
-        if (ServerMessages.Count == 0)
+        if (ServerMessages.IsEmpty)
             return;
 
         while (ServerMessages.TryDequeue(out var message))
         {
             switch (message.Type)
             {
+                case TcpMessageType.SetupClientWithServer:
+                    await ProcessSetupClientWithServerAsync(message);
+                    break;
                 case TcpMessageType.Authentication:
                     await ProcessAuthenticationMessageAsync(message);
                     break;
@@ -99,6 +95,40 @@ public class ServerTaskExecutionService : TimerBackgroundService
         }
     }
 
+    protected async Task ProcessSetupClientWithServerAsync(TcpMessage message)
+    {
+        try
+        {
+            var finalToken = Encoding.UTF8.GetString(message.Data).ToSecureString();
+#if DEBUG
+            var filePath = Path.Combine(AppContext.BaseDirectory, "appsettings.User.json");
+#else
+            var filePath = Path.Combine(AppContext.BaseDirectory, "appsettings.json");
+#endif
+            var appSettingsJson = await File.ReadAllTextAsync(filePath);
+            var jsonNode = JsonNode.Parse(appSettingsJson)!;
+
+            jsonNode["ClientSettings"]!["ClientIsInitialized"] = true;
+            jsonNode["ServerConnection"]!["ServerName"] = ServerConnectionSettings.ServerName;
+            jsonNode["ServerConnection"]!["ServerAccessToken"] = DataProtectionService.Protect(finalToken.ToInsecureString());
+
+            await File.WriteAllTextAsync(filePath, jsonNode.ToJsonString(new JsonSerializerOptions { WriteIndented = true }));
+            ServerConnectionSettings.SecureServerAccessToken = DataProtectionService.Protect(finalToken.ToInsecureString())?.ToSecureString();
+            
+            await ServerConnectionService.SendMessageToServerAsync(new TcpMessage(TcpMessageType.SetupClientWithServer, message.EventId, [(byte)ClientType.Computer+1]));
+
+            Settings.ClientIsInitialized = true;
+            ServerConnectionService.ConnectionIsAuthenticated = true;
+        }
+        catch (Exception e)
+        {
+            await ServerConnectionService.SendMessageToServerAsync(new TcpMessage(TcpMessageType.SetupClientWithServer, message.EventId, [0]));
+
+            Logger.LogError(e, "Error by connecting client with the server. Please make sure that the service has write access to the appsettings.json file and the appsettings.json is in a valid json format and contains all of the necessary base settings.");
+            Environment.Exit(5);
+        }
+    }
+
     protected async Task ProcessAuthenticationMessageAsync(TcpMessage message)
     {
         try
@@ -112,12 +142,13 @@ public class ServerTaskExecutionService : TimerBackgroundService
             var appSettingsJson = await File.ReadAllTextAsync(filePath);
             var jsonNode = JsonNode.Parse(appSettingsJson)!;
 
-            jsonNode["ClientIsInitialized"] = true;
+            jsonNode["ClientSettings"]!["ClientIsInitialized"] = true;
             jsonNode["ServerConnection"]!["ServerAccessToken"] = DataProtectionService.Protect(finalToken.ToInsecureString());
 
             await File.WriteAllTextAsync(filePath, jsonNode.ToJsonString(new JsonSerializerOptions { WriteIndented = true }));
-            ServerConnectionService.ServerAccessToken = DataProtectionService.Protect(finalToken.ToInsecureString())?.ToSecureString();
+            ServerConnectionSettings.SecureServerAccessToken = DataProtectionService.Protect(finalToken.ToInsecureString())?.ToSecureString();
             ServerConnectionService.ConnectionIsAuthenticated = true;
+            Settings.ClientIsInitialized = true;
         }
         catch (Exception e)
         {
@@ -173,7 +204,7 @@ public class ServerTaskExecutionService : TimerBackgroundService
 
     protected async Task ProcessUpdateClientSettingsMessageAsync(TcpMessage message)
     {
-        if (message.Data == null || message.Data.Length == 0)
+        if (!Settings.ClientIsInitialized || message.Data == null || message.Data.Length == 0)
         {
             await ServerConnectionService.SendMessageToServerAsync(new TcpMessage(TcpMessageType.UpdateClientSettings, message.EventId, [0]));
             return;
@@ -189,6 +220,7 @@ public class ServerTaskExecutionService : TimerBackgroundService
 
         try
         {
+            clientSettings.ClientIsInitialized = true;
             clientSettings.TransferPropertiesTo(Settings);
 #if DEBUG
             var appsettingsFilePath = Path.Combine(AppContext.BaseDirectory, "appsettings.User.json");

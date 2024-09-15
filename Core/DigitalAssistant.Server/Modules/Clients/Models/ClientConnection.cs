@@ -10,6 +10,7 @@ public record ClientConnection(TcpClient TcpClient, SslStream SslStream)
     #region Properties
     public Client? Client { get; set; }
     public bool ClientIsAuthenticated { get; set; }
+    public bool IsAvailableClientForSetup { get; set; }
     #endregion
 
     #region Member
