@@ -1,0 +1,9 @@
+{
+  "Name": "Get Timer",
+  "Description": "Commands to retrieve timers",
+  "Templates": [
+    "How much time is left",
+    "How much time is left on the timer ({Name:Text})"
+  ],
+  "Options": []
+}

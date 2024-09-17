@@ -1,0 +1,10 @@
+{
+  "Name": "Volume Decrease Commands",
+  "Description": "Command to decrease the client's volume",
+  "Templates": [
+    "Quieter",
+    "[Decrease|Lower] (the) volume",
+    "Make it quieter"
+  ],
+  "Options": []
+}

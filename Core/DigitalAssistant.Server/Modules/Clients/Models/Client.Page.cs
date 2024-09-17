@@ -31,9 +31,10 @@ public partial class Client
                         RenderComponentByActionArgs = new RenderComponentByActionArgs()
                         {
                             ComponentType = typeof(AddClientModal),
-                            OnComponentRemoved = async (source, eventServices, model, result) =>
+                            OnComponentRemoved = (source, eventServices, model, result) =>
                             {
                                 _ = InvokeAsync(StateHasChanged);
+                                return Task.CompletedTask;
                             }
                         }
                     }

@@ -39,5 +39,13 @@
 
         this.Audio = new Audio(url);
         this.Audio.play();
+    },
+    PauseAudio: function () {
+        if (this.Audio)
+            this.Audio.pause();
+    },
+    ResumeAudio: function () {
+        if (this.Audio)
+            this.Audio.resume();
     }
 };

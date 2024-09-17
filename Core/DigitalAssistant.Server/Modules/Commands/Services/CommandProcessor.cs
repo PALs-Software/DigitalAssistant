@@ -6,11 +6,13 @@ using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Text.Json;
 using System.Globalization;
+using DigitalAssistant.Abstractions.Commands.Abstracts;
 
 namespace DigitalAssistant.Server.Modules.Commands.Services;
 
 public class CommandProcessor(IServiceProvider serviceProvider,
     CommandHandler commandHandler,
+    CommandParameterParser commandParameterParser,
     ConnectorService connectorService,
     ClientCommandService clientCommandService,
     IStringLocalizer<CommandProcessor> localizer,
@@ -19,25 +21,23 @@ public class CommandProcessor(IServiceProvider serviceProvider,
     #region Injects
     protected readonly IServiceProvider ServiceProvider = serviceProvider;
     protected readonly CommandHandler CommandHandler = commandHandler;
+    protected readonly CommandParameterParser CommandParameterParser = commandParameterParser;
     protected readonly ConnectorService ConnectorService = connectorService;
     protected readonly ClientCommandService ClientCommandService = clientCommandService;
     protected readonly IStringLocalizer<CommandProcessor> Localizer = localizer;
     protected readonly ILogger<CommandProcessor> Logger = logger;
     #endregion
 
-    public async Task<string> ProcessUserCommandAsync(string userCommand, string language, IClient client)
+    public async Task<string?> ProcessUserCommandAsync(string userCommand, string language, IClient client, IServiceProvider serviceProvider)
     {
         var currentUICulture = CultureInfo.CurrentUICulture;
         try
         {
             CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo(language);
-
-            var parameterParser = ServiceProvider.GetRequiredService<CommandParameterParser>();
             var templates = await CommandHandler.GetLocalizedCommandTemplatesAsync(language);
-
 #if DEBUG
-        var stopwatch = new Stopwatch();
-        stopwatch.Start();
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
 #endif
 
             ConcurrentBag<(ICommand Command, ICommandParameters? Parameters)> matchedTemplates = [];
@@ -49,7 +49,7 @@ public class CommandProcessor(IServiceProvider serviceProvider,
                     if (!match.Success)
                         continue;
 
-                    (bool success, ICommandParameters? parsedCommandParameters) = await parameterParser.ParseParametersFromMatchAsync(commandTemplate, match, language, client);
+                    (bool success, ICommandParameters? parsedCommandParameters) = await CommandParameterParser.ParseParametersFromMatchAsync(commandTemplate, match, language, client);
                     if (!success)
                         continue;
 
@@ -59,8 +59,8 @@ public class CommandProcessor(IServiceProvider serviceProvider,
             });
 
 #if DEBUG
-        stopwatch.Stop();
-        Logger.LogInformation("Parsing and matching command '{UserCommand}' took {ElapsedMilliseconds}ms", userCommand, stopwatch.ElapsedMilliseconds);
+            stopwatch.Stop();
+            Logger.LogInformation("Parsing and matching command '{UserCommand}' took {ElapsedMilliseconds}ms", userCommand, stopwatch.ElapsedMilliseconds);
 #endif
 
             var matchedTemplate = matchedTemplates.OrderBy(entry => entry.Command.Priority).LastOrDefault();
@@ -69,15 +69,13 @@ public class CommandProcessor(IServiceProvider serviceProvider,
 
             var response = await matchedTemplate.Command.ExecuteAsync(matchedTemplate.Parameters);
 
-            if (!response.Success || String.IsNullOrEmpty(response.Response))
+            if (!response.Success)
                 return Localizer["No Command found for \"{0}\"", userCommand];
 
+            var clientActionResponses = new List<Task<ClientActionResponse>>();
             if (response.Success && response.ClientActions.Count > 0)
-                _ = Task.Run(async () =>
-                {
-                    foreach (var clientAction in response.ClientActions)
-                        await ClientCommandService.ExecuteClientActionAsync(clientAction.Client, clientAction.Action);
-                });
+                foreach (var clientAction in response.ClientActions)
+                    clientActionResponses.Add(ClientCommandService.ExecuteClientActionAsync(language, clientAction.Client, clientAction.Action, serviceProvider));
 
             if (response.Success && response.DeviceActions.Count > 0)
                 _ = Task.Run(async () =>
@@ -86,7 +84,16 @@ public class CommandProcessor(IServiceProvider serviceProvider,
                         await ConnectorService.ExecuteDeviceActionAsync(deviceAction.Device, deviceAction.Action);
                 });
 
-            return response.Response;
+            
+            var responseText = response.Response ?? String.Empty;
+            await Task.WhenAll(clientActionResponses);
+            foreach (var clientActionResponse in clientActionResponses)
+            {
+                if (!String.IsNullOrEmpty(clientActionResponse.Result.Response))
+                    responseText += clientActionResponse.Result.Response;
+            }
+
+            return responseText;
         }
         finally
         {
@@ -94,16 +101,14 @@ public class CommandProcessor(IServiceProvider serviceProvider,
         }
     }
 
-    public async Task<string> ProcessUserCommandDebugAsync(string userCommand, string language, IClient client)
+    public async Task<string> ProcessUserCommandDebugAsync(string userCommand, string language, IClient client, IServiceProvider serviceProvider)
     {
         var currentUICulture = CultureInfo.CurrentUICulture;
         try
         {
             CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo(language);
 
-            var parameterParser = ServiceProvider.GetRequiredService<CommandParameterParser>();
             var templates = await CommandHandler.GetLocalizedCommandTemplatesAsync(language);
-
             var stopwatch = new Stopwatch();
             stopwatch.Start();
 
@@ -117,7 +122,7 @@ public class CommandProcessor(IServiceProvider serviceProvider,
                         if (!match.Success)
                             continue;
 
-                        (bool success, ICommandParameters? parsedCommandParameters) = await parameterParser.ParseParametersFromMatchAsync(commandTemplate, match, language, client);
+                        (bool success, ICommandParameters? parsedCommandParameters) = await CommandParameterParser.ParseParametersFromMatchAsync(commandTemplate, match, language, client);
                         if (!success)
                             continue;
 
@@ -167,9 +172,9 @@ public class CommandProcessor(IServiceProvider serviceProvider,
                     response += $" - Action: {JsonSerializer.Serialize(clientAction.Action, clientAction.Action.GetType())}" + Environment.NewLine;
                     try
                     {
-                        var clientActionResult = await ClientCommandService.ExecuteClientActionAsync(clientAction.Client, clientAction.Action);
+                        var clientActionResult = await ClientCommandService.ExecuteClientActionAsync(language, clientAction.Client, clientAction.Action, serviceProvider);
                         response += $" - Success: {clientActionResult.Success}" + Environment.NewLine;
-                        response += $" - Error Message: {clientActionResult.ErrorMessage}" + Environment.NewLine;
+                        response += $" - Response: {clientActionResult.Response}" + Environment.NewLine;
 
                     }
                     catch (Exception e)

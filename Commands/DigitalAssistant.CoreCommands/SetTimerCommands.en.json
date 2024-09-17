@@ -1,0 +1,50 @@
+{
+  "Name": "Set Timer",
+  "Description": "Commands to create a timer",
+  "Templates": [
+    "([Set|Set up]) (a) timer ((named) {Name:Text}) [to|for|in] {Duration:Decimal} {DurationType:Option} (and {Duration2:Decimal} {DurationType2:Option})"
+  ],
+  "Options": [
+    {
+      "Name": "DurationType",
+      "Values": [
+        {
+          "Name": "Seconds",
+          "LocalizedValues": [ "Second", "Seconds" ]
+        },
+        {
+          "Name": "Minutes",
+          "LocalizedValues": [ "Minute", "Minutes" ]
+        },
+        {
+          "Name": "Hours",
+          "LocalizedValues": [ "Hour", "Hours" ]
+        }
+      ]
+    },
+    {
+      "Name": "DurationType2",
+      "Values": [
+        {
+          "Name": "Seconds",
+          "LocalizedValues": [ "Second", "Seconds" ]
+        },
+        {
+          "Name": "Minutes",
+          "LocalizedValues": [ "Minute", "Minutes" ]
+        },
+        {
+          "Name": "Hours",
+          "LocalizedValues": [ "Hour", "Hours" ]
+        }
+      ]
+    }
+  ],
+  "Seconds": "Seconds",
+  "Minutes": "Minutes",
+  "Hours": "Hours",
+  "SingleResponse": "A timer has been set for {0}.",
+  "DoubleResponse": "A timer has been set for {0} and {1}.",
+  "NamedSingleResponse": "A timer named {0} has been set for {1}.",
+  "NamedDoubleResponse": "A timer named {0} has been set for {1} and {2}."
+}

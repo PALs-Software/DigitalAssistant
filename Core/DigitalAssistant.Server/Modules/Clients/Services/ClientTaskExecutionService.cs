@@ -1,6 +1,7 @@
 ﻿using BlazorBase.Abstractions.CRUD.Interfaces;
 using BlazorBase.Abstractions.General.Extensions;
 using BlazorBase.CRUD.Extensions;
+using DigitalAssistant.Abstractions.Commands.Abstracts;
 using DigitalAssistant.Base.Audio;
 using DigitalAssistant.Base.BackgroundServiceAbstracts;
 using DigitalAssistant.Base.ClientServerConnection;
@@ -88,6 +89,9 @@ public class ClientTaskExecutionService(IServiceProvider serviceProvider,
                     break;
                 case TcpMessageType.AudioData:
                     await ProcessAudioDataMessageAsync(message);
+                    break;
+                case TcpMessageType.Action:
+                    await ProcessClientActionResponseMessageAsync(message);
                     break;
                 case TcpMessageType.TransferAudioDevices:
                     await ProcessTransferAudioDevicesMessageAsync(message);
@@ -212,8 +216,6 @@ public class ClientTaskExecutionService(IServiceProvider serviceProvider,
         var commandClientTask = (CommandClientTask)commandTask;
         commandClientTask.AudioData.AddRangeBinary(message.Data, sizeof(float));
 
-        var overallRMS = AudioService.CalculateRms(commandClientTask.AudioData.AsSpan());
-
         var speakerHasFinished = AudioService.SpeakerFinishedSpeaking(commandClientTask.AudioData.AsSpan(), SAMPLE_RATE, threshold: 40, maxDetectionDurationInSeconds: 15);
         if (!speakerHasFinished)
             return;
@@ -221,21 +223,38 @@ public class ClientTaskExecutionService(IServiceProvider serviceProvider,
         if (Logger.IsEnabled(LogLevel.Debug))
             Logger.LogDebug("Speaker finished speaking, start processing...");
 
-        AudioService.NormalizeAudioData(commandClientTask.AudioData.AsSpan());
-        var result = await AsrService.ConvertSpeechToTextAsync(commandClientTask.AudioData.AsMemory(), SAMPLE_RATE).ConfigureAwait(false);
-        if (result == null)
-            return;
-
-        var clientBase = new ClientBase(client);
-        var culturInfo = CultureInfo.GetCultureInfo((int?)Cache.SetupCache.Setup?.InterpreterLanguage ?? 9);
-        var commandResponse = await CommandProcessor.ProcessUserCommandAsync(result, culturInfo.TwoLetterISOLanguageName, clientBase).ConfigureAwait(false);
-        var audioResponse = await TextToSpeechService.ConvertTextToSpeechAsync(commandResponse).ConfigureAwait(false);
-        if (audioResponse == null)
-            return;
-
+        await message.ClientConnection.SendMessageToClientAsync(new TcpMessage(TcpMessageType.StopSendingAudioData, message.EventId, [])).ConfigureAwait(false);
         openTasks.Remove(commandTask);
         client.LastProcessedAudioMessageEventId = message.EventId;
-        await message.ClientConnection.SendMessageToClientAsync(new TcpMessage(TcpMessageType.AudioData, message.EventId, audioResponse.ToByteArray(sizeof(float)))).ConfigureAwait(false);
+
+        _ = Task.Factory.StartNew(async () =>
+        {
+            AudioService.NormalizeAudioData(commandClientTask.AudioData.AsSpan());
+            var result = await AsrService.ConvertSpeechToTextAsync(commandClientTask.AudioData.AsMemory(), SAMPLE_RATE).ConfigureAwait(false);
+            if (result == null)
+                return;
+
+            var clientBase = new ClientBase(client);
+            var culturInfo = CultureInfo.GetCultureInfo((int?)Cache.SetupCache.Setup?.InterpreterLanguage ?? 9);
+            var commandResponse = await CommandProcessor.ProcessUserCommandAsync(result, culturInfo.TwoLetterISOLanguageName, clientBase, ServiceProvider).ConfigureAwait(false);
+
+            if (String.IsNullOrEmpty(commandResponse))
+                return;
+            var audioResponse = await TextToSpeechService.ConvertTextToSpeechAsync(commandResponse).ConfigureAwait(false);
+            if (audioResponse == null)
+                return;
+            await message.ClientConnection.SendMessageToClientAsync(new TcpMessage(TcpMessageType.AudioData, message.EventId, audioResponse.ToByteArray(sizeof(float)))).ConfigureAwait(false);
+        });
+    }
+
+    protected async Task ProcessClientActionResponseMessageAsync(ClientTcpMessage message)
+    {
+        if (message.ClientConnection.Client == null || message.Data == null || message.Data.Length == 0)
+            return;
+
+        var json = Encoding.UTF8.GetString(message.Data);
+        var response = JsonSerializer.Deserialize<ClientActionResponse>(json, JsonSerializerOptions);
+        await message.ClientConnection.AddResponseDataAsync(message.EventId, response);
     }
 
     protected async Task ProcessTransferAudioDevicesMessageAsync(ClientTcpMessage message)

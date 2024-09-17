@@ -1,0 +1,10 @@
+{
+  "Name": "Volume Increase Command",
+  "Description": "Command to increase the client's volume",
+  "Templates": [
+    "Louder",
+    "[Increase|Raise] (the) volume",
+    "Make it louder"
+  ],
+  "Options": []
+}

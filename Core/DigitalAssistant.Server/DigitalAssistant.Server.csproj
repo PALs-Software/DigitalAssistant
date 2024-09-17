@@ -1,121 +1,153 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <FileVersion>1.0.1.0</FileVersion>
-    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-    <UserSecretsId>f5ca69a5-ad0d-46cf-b721-c67a48689660</UserSecretsId>
-    <Configurations>Debug;Release;CreateMSSQLMigrations;CreateSQLiteMigrations</Configurations>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<FileVersion>1.0.1.0</FileVersion>
+		<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+		<UserSecretsId>f5ca69a5-ad0d-46cf-b721-c67a48689660</UserSecretsId>
+		<Configurations>Debug;Release;CreateMSSQLMigrations;CreateSQLiteMigrations</Configurations>
+		<Platforms>AnyCPU;x64</Platforms>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='CreateMSSQLMigrations|AnyCPU'">
-    <DefineConstants>$(DefineConstants);DEBUG</DefineConstants>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='CreateMSSQLMigrations|AnyCPU'">
+		<DefineConstants>$(DefineConstants);DEBUG</DefineConstants>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='CreateSQLiteMigrations|AnyCPU'">
-    <DefineConstants>$(DefineConstants);DEBUG</DefineConstants>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='CreateMSSQLMigrations|x64'">
+		<DefineConstants>$(DefineConstants);DEBUG</DefineConstants>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <Content Remove="C:\Users\pal\.nuget\packages\blazorise\0.9.3.6\contentFiles\any\net5.0\Resources\Localization\Carousel\de.json" />
-    <Content Remove="C:\Users\pal\.nuget\packages\blazorise\0.9.3.6\contentFiles\any\net5.0\Resources\Localization\Carousel\en.json" />
-    <Content Remove="C:\Users\pal\.nuget\packages\blazorise\0.9.3.6\contentFiles\any\net5.0\Resources\Localization\Carousel\es.json" />
-    <Content Remove="C:\Users\pal\.nuget\packages\blazorise\0.9.3.6\contentFiles\any\net5.0\Resources\Localization\Carousel\fr.json" />
-    <Content Remove="C:\Users\pal\.nuget\packages\blazorise\0.9.3.6\contentFiles\any\net5.0\Resources\Localization\Carousel\hr.json" />
-    <Content Remove="C:\Users\pal\.nuget\packages\blazorise\0.9.3.6\contentFiles\any\net5.0\Resources\Localization\Carousel\it.json" />
-    <Content Remove="C:\Users\pal\.nuget\packages\blazorise\0.9.3.6\contentFiles\any\net5.0\Resources\Localization\Carousel\nl.json" />
-    <Content Remove="C:\Users\pal\.nuget\packages\blazorise\0.9.3.6\contentFiles\any\net5.0\Resources\Localization\Carousel\pt.json" />
-    <Content Remove="C:\Users\pal\.nuget\packages\blazorise\0.9.3.6\contentFiles\any\net5.0\Resources\Localization\FileEdit\de.json" />
-    <Content Remove="C:\Users\pal\.nuget\packages\blazorise\0.9.3.6\contentFiles\any\net5.0\Resources\Localization\FileEdit\en.json" />
-    <Content Remove="C:\Users\pal\.nuget\packages\blazorise\0.9.3.6\contentFiles\any\net5.0\Resources\Localization\FileEdit\es.json" />
-    <Content Remove="C:\Users\pal\.nuget\packages\blazorise\0.9.3.6\contentFiles\any\net5.0\Resources\Localization\FileEdit\fr.json" />
-    <Content Remove="C:\Users\pal\.nuget\packages\blazorise\0.9.3.6\contentFiles\any\net5.0\Resources\Localization\FileEdit\hr.json" />
-    <Content Remove="C:\Users\pal\.nuget\packages\blazorise\0.9.3.6\contentFiles\any\net5.0\Resources\Localization\FileEdit\it.json" />
-    <Content Remove="C:\Users\pal\.nuget\packages\blazorise\0.9.3.6\contentFiles\any\net5.0\Resources\Localization\FileEdit\nl.json" />
-    <Content Remove="C:\Users\pal\.nuget\packages\blazorise\0.9.3.6\contentFiles\any\net5.0\Resources\Localization\FileEdit\pt.json" />
-    <Content Remove="C:\Users\pal\.nuget\packages\pdfsharp.netstandard2\1.51.5185.2\contentFiles\any\netstandard2.0\SharpZipLib\ReadMe.txt" />
-    <Content Remove="C:\Users\patri\.nuget\packages\blazorise\0.9.3.6\contentFiles\any\net5.0\Resources\Localization\Carousel\de.json" />
-    <Content Remove="C:\Users\patri\.nuget\packages\blazorise\0.9.3.6\contentFiles\any\net5.0\Resources\Localization\Carousel\en.json" />
-    <Content Remove="C:\Users\patri\.nuget\packages\blazorise\0.9.3.6\contentFiles\any\net5.0\Resources\Localization\Carousel\es.json" />
-    <Content Remove="C:\Users\patri\.nuget\packages\blazorise\0.9.3.6\contentFiles\any\net5.0\Resources\Localization\Carousel\fr.json" />
-    <Content Remove="C:\Users\patri\.nuget\packages\blazorise\0.9.3.6\contentFiles\any\net5.0\Resources\Localization\Carousel\hr.json" />
-    <Content Remove="C:\Users\patri\.nuget\packages\blazorise\0.9.3.6\contentFiles\any\net5.0\Resources\Localization\Carousel\it.json" />
-    <Content Remove="C:\Users\patri\.nuget\packages\blazorise\0.9.3.6\contentFiles\any\net5.0\Resources\Localization\Carousel\nl.json" />
-    <Content Remove="C:\Users\patri\.nuget\packages\blazorise\0.9.3.6\contentFiles\any\net5.0\Resources\Localization\Carousel\pt.json" />
-    <Content Remove="C:\Users\patri\.nuget\packages\blazorise\0.9.3.6\contentFiles\any\net5.0\Resources\Localization\FileEdit\de.json" />
-    <Content Remove="C:\Users\patri\.nuget\packages\blazorise\0.9.3.6\contentFiles\any\net5.0\Resources\Localization\FileEdit\en.json" />
-    <Content Remove="C:\Users\patri\.nuget\packages\blazorise\0.9.3.6\contentFiles\any\net5.0\Resources\Localization\FileEdit\es.json" />
-    <Content Remove="C:\Users\patri\.nuget\packages\blazorise\0.9.3.6\contentFiles\any\net5.0\Resources\Localization\FileEdit\fr.json" />
-    <Content Remove="C:\Users\patri\.nuget\packages\blazorise\0.9.3.6\contentFiles\any\net5.0\Resources\Localization\FileEdit\hr.json" />
-    <Content Remove="C:\Users\patri\.nuget\packages\blazorise\0.9.3.6\contentFiles\any\net5.0\Resources\Localization\FileEdit\it.json" />
-    <Content Remove="C:\Users\patri\.nuget\packages\blazorise\0.9.3.6\contentFiles\any\net5.0\Resources\Localization\FileEdit\nl.json" />
-    <Content Remove="C:\Users\patri\.nuget\packages\blazorise\0.9.3.6\contentFiles\any\net5.0\Resources\Localization\FileEdit\pt.json" />
-    <Content Remove="C:\Users\patri\.nuget\packages\pdfsharp.netstandard2\1.51.5185.2\contentFiles\any\netstandard2.0\SharpZipLib\ReadMe.txt" />
-  </ItemGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='CreateSQLiteMigrations|AnyCPU'">
+		<DefineConstants>$(DefineConstants);DEBUG</DefineConstants>
+	</PropertyGroup>
 
-  <ItemGroup>    
-    <PackageReference Include="Azure.Identity" Version="1.11.4" />    
-    <PackageReference Include="Blazorise" Version="0.9.3.6" />
-    <PackageReference Include="Blazorise.Bootstrap" Version="0.9.3.6" />
-    <PackageReference Include="Blazorise.Components" Version="0.9.3.6" />
-    <PackageReference Include="Blazorise.Icons.FontAwesome" Version="0.9.3.6" />
-    <PackageReference Include="Blazorise.Sidebar" Version="0.9.3.6" />
-    <PackageReference Include="Blazorise.Snackbar" Version="0.9.3.6" />
-    <PackageReference Include="Magick.NET-Q16-AnyCPU" Version="13.6.0" />
-    <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="6.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.2" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="8.0.2" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.2" />
-    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.2" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.2" />
-    <PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.5" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.2" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="8.0.2" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.2" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.2" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.2">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.Extensions.Logging.EventLog" Version="8.0.0" />
-    <PackageReference Include="Microsoft.Identity.Web" Version="2.17.0" />
-    <PackageReference Include="Microsoft.Identity.Web.UI" Version="2.17.0" />
-    <PackageReference Include="Microsoft.ML.OnnxRuntime" Version="1.19.2" />
-    <PackageReference Include="Microsoft.ML.OnnxRuntime.Extensions" Version="0.12.0" />
-    <PackageReference Include="Microsoft.ML.OnnxRuntime.Gpu" Version="1.19.2" />
-    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.20.1" />
-    <PackageReference Include="PDFSharp.NetStandard2" Version="1.51.5185.2" />
-    <PackageReference Include="System.Formats.Asn1" Version="8.0.1" />
-    <PackageReference Include="System.Security.Cryptography.ProtectedData" Version="8.0.0" />
-    <PackageReference Include="System.Text.Json" Version="8.0.4" />
-  </ItemGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='CreateSQLiteMigrations|x64'">
+		<DefineConstants>$(DefineConstants);DEBUG</DefineConstants>
+	</PropertyGroup>
 
-  <ItemGroup>
-	<ProjectReference Include="..\..\..\BlazorBase\BlazorBase.AudioRecorder\BlazorBase.AudioRecorder.csproj" />
-	<ProjectReference Include="..\..\..\BlazorBase\BlazorBase.Backup\BlazorBase.Backup.csproj" />
-	<ProjectReference Include="..\..\..\BlazorBase\BlazorBase.CRUD\BlazorBase.CRUD.csproj" />
-	<ProjectReference Include="..\..\..\BlazorBase\BlazorBase.DataUpgrade\BlazorBase.DataUpgrade.csproj" />
-	<ProjectReference Include="..\..\..\BlazorBase\BlazorBase.Files\BlazorBase.Files.csproj" />
-	<ProjectReference Include="..\..\..\BlazorBase\BlazorBase.MessageHandling\BlazorBase.MessageHandling.csproj" />
-	<ProjectReference Include="..\..\..\BlazorBase\BlazorBase.RecurringJobQueue\BlazorBase.RecurringBackgroundJobQueue.csproj" />
-	<ProjectReference Include="..\..\..\BlazorBase\BlazorBase.Server\BlazorBase.Server.csproj" />
-	<ProjectReference Include="..\..\..\BlazorBase\BlazorBase.Themes\BlazorBase.Themes.csproj" />
-	<ProjectReference Include="..\..\..\BlazorBase\BlazorBase.User\BlazorBase.User.csproj" />
-	<ProjectReference Include="..\..\..\BlazorBase\BlazorBase\BlazorBase.csproj" />
-	<ProjectReference Include="..\..\Libs\Quickenshtein\Quickenshtein.csproj" />
-	<ProjectReference Include="..\..\Libs\TextToSpeech\TextToSpeech.csproj" />
-	<ProjectReference Include="..\DigitalAssistant.Abstractions\DigitalAssistant.Abstractions.csproj" />
-	<ProjectReference Include="..\DigitalAssistant.Base\DigitalAssistant.Base.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<Content Remove="C:\Users\pal\.nuget\packages\blazorise\0.9.3.6\contentFiles\any\net5.0\Resources\Localization\Carousel\de.json" />
+		<Content Remove="C:\Users\pal\.nuget\packages\blazorise\0.9.3.6\contentFiles\any\net5.0\Resources\Localization\Carousel\en.json" />
+		<Content Remove="C:\Users\pal\.nuget\packages\blazorise\0.9.3.6\contentFiles\any\net5.0\Resources\Localization\Carousel\es.json" />
+		<Content Remove="C:\Users\pal\.nuget\packages\blazorise\0.9.3.6\contentFiles\any\net5.0\Resources\Localization\Carousel\fr.json" />
+		<Content Remove="C:\Users\pal\.nuget\packages\blazorise\0.9.3.6\contentFiles\any\net5.0\Resources\Localization\Carousel\hr.json" />
+		<Content Remove="C:\Users\pal\.nuget\packages\blazorise\0.9.3.6\contentFiles\any\net5.0\Resources\Localization\Carousel\it.json" />
+		<Content Remove="C:\Users\pal\.nuget\packages\blazorise\0.9.3.6\contentFiles\any\net5.0\Resources\Localization\Carousel\nl.json" />
+		<Content Remove="C:\Users\pal\.nuget\packages\blazorise\0.9.3.6\contentFiles\any\net5.0\Resources\Localization\Carousel\pt.json" />
+		<Content Remove="C:\Users\pal\.nuget\packages\blazorise\0.9.3.6\contentFiles\any\net5.0\Resources\Localization\FileEdit\de.json" />
+		<Content Remove="C:\Users\pal\.nuget\packages\blazorise\0.9.3.6\contentFiles\any\net5.0\Resources\Localization\FileEdit\en.json" />
+		<Content Remove="C:\Users\pal\.nuget\packages\blazorise\0.9.3.6\contentFiles\any\net5.0\Resources\Localization\FileEdit\es.json" />
+		<Content Remove="C:\Users\pal\.nuget\packages\blazorise\0.9.3.6\contentFiles\any\net5.0\Resources\Localization\FileEdit\fr.json" />
+		<Content Remove="C:\Users\pal\.nuget\packages\blazorise\0.9.3.6\contentFiles\any\net5.0\Resources\Localization\FileEdit\hr.json" />
+		<Content Remove="C:\Users\pal\.nuget\packages\blazorise\0.9.3.6\contentFiles\any\net5.0\Resources\Localization\FileEdit\it.json" />
+		<Content Remove="C:\Users\pal\.nuget\packages\blazorise\0.9.3.6\contentFiles\any\net5.0\Resources\Localization\FileEdit\nl.json" />
+		<Content Remove="C:\Users\pal\.nuget\packages\blazorise\0.9.3.6\contentFiles\any\net5.0\Resources\Localization\FileEdit\pt.json" />
+		<Content Remove="C:\Users\pal\.nuget\packages\pdfsharp.netstandard2\1.51.5185.2\contentFiles\any\netstandard2.0\SharpZipLib\ReadMe.txt" />
+		<Content Remove="C:\Users\patri\.nuget\packages\blazorise\0.9.3.6\contentFiles\any\net5.0\Resources\Localization\Carousel\de.json" />
+		<Content Remove="C:\Users\patri\.nuget\packages\blazorise\0.9.3.6\contentFiles\any\net5.0\Resources\Localization\Carousel\en.json" />
+		<Content Remove="C:\Users\patri\.nuget\packages\blazorise\0.9.3.6\contentFiles\any\net5.0\Resources\Localization\Carousel\es.json" />
+		<Content Remove="C:\Users\patri\.nuget\packages\blazorise\0.9.3.6\contentFiles\any\net5.0\Resources\Localization\Carousel\fr.json" />
+		<Content Remove="C:\Users\patri\.nuget\packages\blazorise\0.9.3.6\contentFiles\any\net5.0\Resources\Localization\Carousel\hr.json" />
+		<Content Remove="C:\Users\patri\.nuget\packages\blazorise\0.9.3.6\contentFiles\any\net5.0\Resources\Localization\Carousel\it.json" />
+		<Content Remove="C:\Users\patri\.nuget\packages\blazorise\0.9.3.6\contentFiles\any\net5.0\Resources\Localization\Carousel\nl.json" />
+		<Content Remove="C:\Users\patri\.nuget\packages\blazorise\0.9.3.6\contentFiles\any\net5.0\Resources\Localization\Carousel\pt.json" />
+		<Content Remove="C:\Users\patri\.nuget\packages\blazorise\0.9.3.6\contentFiles\any\net5.0\Resources\Localization\FileEdit\de.json" />
+		<Content Remove="C:\Users\patri\.nuget\packages\blazorise\0.9.3.6\contentFiles\any\net5.0\Resources\Localization\FileEdit\en.json" />
+		<Content Remove="C:\Users\patri\.nuget\packages\blazorise\0.9.3.6\contentFiles\any\net5.0\Resources\Localization\FileEdit\es.json" />
+		<Content Remove="C:\Users\patri\.nuget\packages\blazorise\0.9.3.6\contentFiles\any\net5.0\Resources\Localization\FileEdit\fr.json" />
+		<Content Remove="C:\Users\patri\.nuget\packages\blazorise\0.9.3.6\contentFiles\any\net5.0\Resources\Localization\FileEdit\hr.json" />
+		<Content Remove="C:\Users\patri\.nuget\packages\blazorise\0.9.3.6\contentFiles\any\net5.0\Resources\Localization\FileEdit\it.json" />
+		<Content Remove="C:\Users\patri\.nuget\packages\blazorise\0.9.3.6\contentFiles\any\net5.0\Resources\Localization\FileEdit\nl.json" />
+		<Content Remove="C:\Users\patri\.nuget\packages\blazorise\0.9.3.6\contentFiles\any\net5.0\Resources\Localization\FileEdit\pt.json" />
+		<Content Remove="C:\Users\patri\.nuget\packages\pdfsharp.netstandard2\1.51.5185.2\contentFiles\any\netstandard2.0\SharpZipLib\ReadMe.txt" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <None Include="wwwroot\images\language-flags\de-DE-flag.svg" />
-    <None Include="wwwroot\images\language-flags\en-GB-flag.svg" />
-    <None Include="wwwroot\libs\bootstrap\css\bootstrap.min.css.map" />
-    <None Include="wwwroot\libs\bootstrap\js\bootstrap.min.js.map" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Azure.Identity" Version="1.11.4" />
+		<PackageReference Include="Blazorise" Version="0.9.3.6" />
+		<PackageReference Include="Blazorise.Bootstrap" Version="0.9.3.6" />
+		<PackageReference Include="Blazorise.Components" Version="0.9.3.6" />
+		<PackageReference Include="Blazorise.Icons.FontAwesome" Version="0.9.3.6" />
+		<PackageReference Include="Blazorise.Sidebar" Version="0.9.3.6" />
+		<PackageReference Include="Blazorise.Snackbar" Version="0.9.3.6" />
+		<PackageReference Include="Magick.NET-Q16-AnyCPU" Version="13.6.0" />
+		<PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="6.0.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.2" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="8.0.2" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.2" />
+		<PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.2" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.2" />
+		<PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.5" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.2" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="8.0.2" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.2" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.2" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.2">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.Extensions.Logging.EventLog" Version="8.0.0" />
+		<PackageReference Include="Microsoft.Identity.Web" Version="2.17.0" />
+		<PackageReference Include="Microsoft.Identity.Web.UI" Version="2.17.0" />
+		<PackageReference Include="Microsoft.ML.OnnxRuntime.Extensions" Version="0.12.0" />
+		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.20.1" />
+		<PackageReference Include="PDFSharp.NetStandard2" Version="1.51.5185.2" />
+		<PackageReference Include="System.Formats.Asn1" Version="8.0.1" />
+		<PackageReference Include="System.Security.Cryptography.ProtectedData" Version="8.0.0" />
+		<PackageReference Include="System.Text.Json" Version="8.0.4" />
+	</ItemGroup>
+
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<Message Importance="High" Text="Used Platform $(Platform) for the build" />
+	</Target>
+
+	<ItemGroup Condition="'$(Platform)'=='AnyCPU'">
+		<PackageReference Include="Microsoft.ML.OnnxRuntime" Version="1.18.1" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(Platform)'=='x64'">
+		<PackageReference Include="Microsoft.ML.OnnxRuntime.Gpu" Version="1.18.1" />
+	</ItemGroup>
+
+	<PropertyGroup Condition="$(Platform)=='x64'">
+		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+		<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+		<OutputPath>.\bin\Debug\net8.0</OutputPath>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\..\BlazorBase\BlazorBase.AudioRecorder\BlazorBase.AudioRecorder.csproj" />
+		<ProjectReference Include="..\..\..\BlazorBase\BlazorBase.Backup\BlazorBase.Backup.csproj" />
+		<ProjectReference Include="..\..\..\BlazorBase\BlazorBase.CRUD\BlazorBase.CRUD.csproj" />
+		<ProjectReference Include="..\..\..\BlazorBase\BlazorBase.DataUpgrade\BlazorBase.DataUpgrade.csproj" />
+		<ProjectReference Include="..\..\..\BlazorBase\BlazorBase.Files\BlazorBase.Files.csproj" />
+		<ProjectReference Include="..\..\..\BlazorBase\BlazorBase.MessageHandling\BlazorBase.MessageHandling.csproj" />
+		<ProjectReference Include="..\..\..\BlazorBase\BlazorBase.RecurringJobQueue\BlazorBase.RecurringBackgroundJobQueue.csproj" />
+		<ProjectReference Include="..\..\..\BlazorBase\BlazorBase.Server\BlazorBase.Server.csproj" />
+		<ProjectReference Include="..\..\..\BlazorBase\BlazorBase.Themes\BlazorBase.Themes.csproj" />
+		<ProjectReference Include="..\..\..\BlazorBase\BlazorBase.User\BlazorBase.User.csproj" />
+		<ProjectReference Include="..\..\..\BlazorBase\BlazorBase\BlazorBase.csproj" />
+		<ProjectReference Include="..\..\Libs\Quickenshtein\Quickenshtein.csproj" />
+		<ProjectReference Include="..\..\Libs\TextToSpeech\TextToSpeech.csproj" />
+		<ProjectReference Include="..\DigitalAssistant.Abstractions\DigitalAssistant.Abstractions.csproj" />
+		<ProjectReference Include="..\DigitalAssistant.Base\DigitalAssistant.Base.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="wwwroot\libs\bootstrap\css\bootstrap.min.css.map" />
+		<None Include="wwwroot\libs\bootstrap\js\bootstrap.min.js.map" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Content Update="wwwroot\audio\RequestSound.mp3">
+	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+	  </Content>
+	  <Content Update="wwwroot\audio\TimerRingtone.mp3">
+	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+	  </Content>
+	</ItemGroup>
 
 
 </Project>

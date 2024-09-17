@@ -9,24 +9,35 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\RequestSound.wav" />
+    <None Remove="Resources\TimerRingtone.wav" />
+    <None Remove="Resources\WakeWord.onnx" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Resources\RequestSound.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\TimerRingtone.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\WakeWord.onnx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.DataProtection" Version="8.0.8" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
-    <PackageReference Include="Microsoft.ML.OnnxRuntime" Version="1.18.0" />
+    <PackageReference Include="Microsoft.Extensions.Localization" Version="8.0.2" />
+    <PackageReference Include="Microsoft.ML.OnnxRuntime" Version="1.18.1" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.20.1" />
     <PackageReference Include="NAudio" Version="2.2.1" />
+    <PackageReference Include="System.Formats.Asn1" Version="8.0.1" />
     <PackageReference Include="System.Text.Json" Version="8.0.4" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\DigitalAssistant.Base\DigitalAssistant.Base.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="Resources\RequestSound.wav">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Resources\WakeWord.onnx">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 </Project>

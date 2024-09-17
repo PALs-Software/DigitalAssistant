@@ -5,5 +5,6 @@
     "[Spiel|Spiele] den Radiosender {RadioStation:Text}"
   ],
   "Options": [],
-  "PlayRadioStationResponse": "Der Radiosender {0} wird abgespielt"
+  "PlayRadioStationResponse": "Der Radiosender {0} wird abgespielt",
+  "NoRadioStationFound": "Es wurde kein Radiosender mit dem Namen {0} gefunden"
 }

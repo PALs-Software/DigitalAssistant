@@ -11,7 +11,7 @@ namespace DigitalAssistant.Server.Modules.Clients.Services;
 public class ClientConnectionHandler : BackgroundService
 {
     #region Injects
-    protected readonly IServiceProvider ServiceProvider;
+    protected readonly TcpMessageHandler TcpMessageHandler;
     protected readonly ClientInformationService ClientInformationService;
     protected readonly ClientTaskExecutionService ClientTaskExecutionService;
     protected readonly ILogger<ClientConnectionHandler> Logger;
@@ -23,9 +23,9 @@ public class ClientConnectionHandler : BackgroundService
     protected List<Task> ReadTasks = [];
     #endregion
 
-    public ClientConnectionHandler(IServiceProvider serviceProvider, ClientInformationService clientInformationService, ClientTaskExecutionService clientTaskExecutionService, IConfiguration configuration, ILogger<ClientConnectionHandler> logger)
+    public ClientConnectionHandler(TcpMessageHandler tcpMessageHandler, ClientInformationService clientInformationService, ClientTaskExecutionService clientTaskExecutionService, IConfiguration configuration, ILogger<ClientConnectionHandler> logger)
     {
-        ServiceProvider = serviceProvider;
+        TcpMessageHandler = tcpMessageHandler;
         ClientInformationService = clientInformationService;
         ClientTaskExecutionService = clientTaskExecutionService;
         Logger = logger;
@@ -122,9 +122,8 @@ public class ClientConnectionHandler : BackgroundService
     {
         var clientConnection = new ClientConnection(tcpClient, sslStream);
         try
-        {
-            var tcpMessageHandler = ServiceProvider.GetRequiredService<TcpMessageHandler>();
-            await tcpMessageHandler.ProcessIncomingRequestsAsync(tcpClient,
+        {            
+            await TcpMessageHandler.ProcessIncomingRequestsAsync(tcpClient,
                 sslStream,
                 (message) => ClientTaskExecutionService.ScheduleClientMessage(new ClientTcpMessage(clientConnection, message.Type, message.EventId, message.Data)))
                 .ConfigureAwait(false);

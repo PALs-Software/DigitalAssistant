@@ -5,7 +5,7 @@ using System.Text.Json;
 
 namespace DigitalAssistant.Base.ClientServerConnection;
 
-public record TcpMessageAction(TcpMessageActionType Type, IClientActionArgs Args)
+public record TcpMessageAction(TcpMessageActionType Type, IClientActionArgs Args, string Language)
 {
     public byte[] ToByteArray<TClientActionArgs>() where TClientActionArgs : IClientActionArgs
     {

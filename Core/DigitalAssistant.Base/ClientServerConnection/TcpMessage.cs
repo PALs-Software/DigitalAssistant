@@ -33,9 +33,9 @@ public record TcpMessage(TcpMessageType Type, Guid EventId, byte[] Data)
         return (type, eventId, messageLength);
     }
 
-    public static TcpMessage CreateActionMessage<TClientActionArgs>(TcpMessageActionType actionType, IClientActionArgs args) where TClientActionArgs: IClientActionArgs
+    public static TcpMessage CreateActionMessage<TClientActionArgs>(TcpMessageActionType actionType, IClientActionArgs args, string language) where TClientActionArgs: IClientActionArgs
     {
-        var tcpMessageAction = new TcpMessageAction(actionType, args);
+        var tcpMessageAction = new TcpMessageAction(actionType, args, language);
         return new TcpMessage(TcpMessageType.Action, Guid.NewGuid(), tcpMessageAction.ToByteArray<TClientActionArgs>());
     }
 }

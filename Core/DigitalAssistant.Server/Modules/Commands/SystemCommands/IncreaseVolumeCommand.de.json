@@ -1,0 +1,10 @@
+{
+  "Name": "Lautstärke Erhöhen Befehl",
+  "Description": "Befehl zum Erhöhen der Lautstärke des Clients",
+  "Templates": [
+    "Lauter",
+    "[Erhöhe|Steigere] (die) Lautstärke",
+    "Mach (es) lauter"
+  ],
+  "Options": []
+}

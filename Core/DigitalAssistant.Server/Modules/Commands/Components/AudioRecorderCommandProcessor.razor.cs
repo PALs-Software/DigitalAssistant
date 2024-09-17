@@ -1,5 +1,5 @@
 ﻿using BlazorBase.AudioRecorder.Services;
-using DigitalAssistant.Server.Modules.AudioPlayer;
+using DigitalAssistant.Server.Modules.Clients.BrowserClient.AudioPlayer;
 using DigitalAssistant.Server.Modules.Clients.Models;
 using DigitalAssistant.Server.Modules.Commands.Services;
 using Microsoft.AspNetCore.Components;
@@ -15,6 +15,7 @@ public partial class AudioRecorderCommandProcessor
     [Inject] protected AudioConverter AudioConverter { get; set; } = null!;
     [Inject] protected TextToSpeechService TextToSpeechService { get; set; } = null!;
     [Inject] protected WebAudioPlayer ClientAudioPlayer { get; set; } = null!;
+    [Inject] protected IServiceProvider ServiceProvider { get; set; } = null!;
     #endregion
 
     protected async Task OnNewAudioRecorderDataAsync(string? message)
@@ -23,8 +24,8 @@ public partial class AudioRecorderCommandProcessor
         if (String.IsNullOrEmpty(message))
             return;
 
-        var result = await CommandProcessor.ProcessUserCommandAsync(message, CultureInfo.CurrentUICulture.TwoLetterISOLanguageName, ClientBase.Browser);
-        if (result == null)
+        var result = await CommandProcessor.ProcessUserCommandAsync(message, CultureInfo.CurrentUICulture.TwoLetterISOLanguageName, ClientBase.Browser, ServiceProvider);
+        if (String.IsNullOrEmpty(result))
             return;
 
         var floats = await TextToSpeechService.ConvertTextToSpeechAsync(result);

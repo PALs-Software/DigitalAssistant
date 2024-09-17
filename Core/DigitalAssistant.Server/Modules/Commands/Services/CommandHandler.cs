@@ -20,14 +20,12 @@ namespace DigitalAssistant.Server.Modules.Commands.Services;
 public class CommandHandler(IServiceProvider serviceProvider,
     CommandTemplateParser commandTemplateParser,
     ConnectorService connectorService,
-    ClientCommandService clientCommandService,
     ILogger<CommandHandler> logger)
 {
     #region Injects
     protected readonly IServiceProvider ServiceProvider = serviceProvider;
     protected readonly ConnectorService ConnectorService = connectorService;
     protected readonly CommandTemplateParser CommandTemplateParser = commandTemplateParser;
-    protected readonly ClientCommandService ClientCommandService = clientCommandService;
     protected readonly ILogger<CommandHandler> Logger = logger;
     #endregion
 
@@ -68,6 +66,11 @@ public class CommandHandler(IServiceProvider serviceProvider,
         }
 
         Commands.Add(CreateCommand(typeof(StopCommand))!);
+        Commands.Add(CreateCommand(typeof(PauseCommand))!);
+        Commands.Add(CreateCommand(typeof(ContinueCommand))!);
+        Commands.Add(CreateCommand(typeof(IncreaseVolumeCommand))!);
+        Commands.Add(CreateCommand(typeof(DecreaseVolumeCommand))!);
+        Commands.Add(CreateCommand(typeof(SetVolumeCommand))!);
     }
 
     protected Assembly LoadCommand(string path)

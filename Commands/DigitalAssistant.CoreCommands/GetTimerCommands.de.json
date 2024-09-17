@@ -1,0 +1,9 @@
+{
+  "Name": "Timer abrufen",
+  "Description": "Befehle zum abrufen von Timern",
+  "Templates": [
+    "Wie [lang|lange] noch",
+    "Wie [lang|lange] geht der Timer ({Name:Text}) (noch)"
+  ],
+  "Options": []
+}

@@ -1,7 +1,6 @@
 ﻿using DigitalAssistant.Base.ClientServerConnection;
 using System.Net.Security;
 using System.Net.Sockets;
-using System.Security;
 
 namespace DigitalAssistant.Client.Modules.ServerConnection.Services;
 

@@ -1,0 +1,50 @@
+{
+  "Name": "Timer setzen",
+  "Description": "Befehle zum erstellen eines Timers",
+  "Templates": [
+    "([Stell|Stelle|Setz|Setze]) (einen) Timer ((mit (dem) Namen) {Name:Text}) [auf|für|in] {Duration:Decimal} {DurationType:Option} (und {Duration2:Decimal} {DurationType2:Option})"
+  ],
+  "Options": [
+    {
+      "Name": "DurationType",
+      "Values": [
+        {
+          "Name": "Seconds",
+          "LocalizedValues": [ "Sekunde", "Sekunden" ]
+        },
+        {
+          "Name": "Minutes",
+          "LocalizedValues": [ "Minute", "Minuten" ]
+        },
+        {
+          "Name": "Hours",
+          "LocalizedValues": [ "Stunde", "Stunden" ]
+        }
+      ]
+    },
+    {
+      "Name": "DurationType2",
+      "Values": [
+        {
+          "Name": "Seconds",
+          "LocalizedValues": [ "Sekunde", "Sekunden" ]
+        },
+        {
+          "Name": "Minutes",
+          "LocalizedValues": [ "Minute", "Minuten" ]
+        },
+        {
+          "Name": "Hours",
+          "LocalizedValues": [ "Stunde", "Stunden" ]
+        }
+      ]
+    }
+  ],
+  "Seconds": "Sekunden",
+  "Minutes": "Minuten",
+  "Hours": "Stunden",
+  "SingleResponse": "Es wurde ein Timer auf {0} gestellt.",
+  "DoubleResponse": "Es wurde ein Timer auf {0} und {1} gestellt.",
+  "NamedSingleResponse": "Es wurde ein Timer {0} auf {1} gestellt.",
+  "NamedDoubleResponse": "Es wurde ein Timer {0} auf {1} und {2} gestellt."
+}

@@ -1,6 +1,5 @@
 # docker build -t digital-assistant-server -f ./DigitalAssistant/Scripts/Build/Dockerfile .
-# docker create --name digital-assistant-server digital-assistant-server
-# docker start digital-assistant-server
+# docker run --name digital-assistant-server -p 8079:8079 -p 8080:8080 -v DigitalAssistantServer_Data:/app/DigitalAssistantServer -v DigitalAssistantServer_Keys:/home/app/.aspnet/DataProtection-Keys -d digital-assistant-server
 
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 ENV ASPNETCORE_URLS=http://+:8079;https://+:8080
@@ -26,6 +25,8 @@ COPY ./BlazorBase/ ./BlazorBase
 # Build wrapper and copy files
 FROM copy-files AS build-wrapper
 WORKDIR /src/DigitalAssistant/Libs/PhonemizeESpeakWrapper
+# check symlinks of library are ok under windows host -> if not check git config symlinks is enabled: git config core.symlinks true
+RUN ls -l ./Libs/piper-phonemize/linux_x86_64/lib
 RUN make export_x86_64
 RUN mkdir -p /app/publish/
 RUN mkdir -p /app/publish-connectors/
@@ -36,14 +37,17 @@ RUN cp ./Export/* /app/publish/
 FROM build-wrapper AS create-certificates
 WORKDIR /src/DigitalAssistant/Scripts/Build
 RUN /bin/bash -c 'source /src/DigitalAssistant/Scripts/Build/Assets/docker-create-certificates.sh'
-RUN mkdir -p /app/publish/Certificates/
-RUN cp ./digitalassistant-ssl.crt /app/publish/Certificates/digitalassistant-ssl.crt
-RUN cp ./digitalassistant-ssl.key /app/publish/Certificates/digitalassistant-ssl.key
+RUN mkdir -p /app/publish/DigitalAssistantServer/Certificates/
+RUN mkdir -p /app/publish/DigitalAssistantServer/Database/
+RUN cp ./digitalassistant-ssl.crt /app/publish/DigitalAssistantServer/Certificates/digitalassistant-ssl.crt
+RUN cp ./digitalassistant-ssl.key /app/publish/DigitalAssistantServer/Certificates/digitalassistant-ssl.key
 
-RUN chown root:app /app/publish/Certificates/digitalassistant-ssl.crt
-RUN chown root:app /app/publish/Certificates/digitalassistant-ssl.key
-RUN chmod 640 /app/publish/Certificates/digitalassistant-ssl.key
-RUN ls -l /app/publish/Certificates
+RUN chown -R app:app /app/publish/DigitalAssistantServer
+RUN chown root:app /app/publish/DigitalAssistantServer/Certificates/digitalassistant-ssl.crt
+RUN chown root:app /app/publish/DigitalAssistantServer/Certificates/digitalassistant-ssl.key
+RUN chmod 640 /app/publish/DigitalAssistantServer/Certificates/digitalassistant-ssl.key
+RUN ls -l /app/publish/DigitalAssistantServer
+RUN ls -l /app/publish/DigitalAssistantServer/Certificates
 
 # Publish connector projects
 FROM create-certificates AS build-connectors
@@ -77,8 +81,21 @@ RUN ls /app/publish/
 RUN tree /app/publish/Connectors
 RUN tree /app/publish/Commands
 
+# Create database
+FROM build-server AS create-database
+ARG BUILD_CONFIGURATION=Release
+WORKDIR /src/DigitalAssistant/Core/DigitalAssistant.Server
+RUN dotnet tool restore
+RUN dotnet ef database update --context SQLiteDbContext --configuration $BUILD_CONFIGURATION --no-build --connection "Data Source=/app/publish/DigitalAssistantServer/Database/DigitalAssistantServer.db"
+RUN chown -R app:app /app/publish/DigitalAssistantServer/Database
+RUN ls -l /app/publish/DigitalAssistantServer/Database
+RUN ls -l /app/publish/DigitalAssistantServer
+
 FROM base AS final
 WORKDIR /app
-COPY --from=build-server /app/publish .
+COPY --from=create-database /app/publish .
+RUN mkdir -p /home/app/.aspnet/DataProtection-Keys/
+RUN chown -R app:app /home/app/.aspnet/
+RUN ls -l /home/app/.aspnet/
 
 ENTRYPOINT ["dotnet", "DigitalAssistant.Server.dll"]

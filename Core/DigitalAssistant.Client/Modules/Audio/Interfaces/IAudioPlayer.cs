@@ -1,4 +1,5 @@
 
+using DigitalAssistant.Base.Audio;
 using DigitalAssistant.Client.Modules.Audio.Enums;
 
 namespace DigitalAssistant.Client.Modules.Audio.Interfaces;

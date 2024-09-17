@@ -1,7 +1,7 @@
 {
   "DatabaseProvider": "SQLite",
   "ConnectionStrings": {
-    "DefaultConnection": "Data Source=DigitalAssistantServer.db"
+    "DefaultConnection": "Data Source=./DigitalAssistantServer/Database/DigitalAssistantServer.db"
   },
   "Logging": {
     "LogLevel": {
@@ -13,19 +13,19 @@
   "Kestrel": {
     "Certificates": {
       "Default": {
-        "Path": "./Certificates/digitalassistant-ssl.crt",
-        "KeyPath": "./Certificates/digitalassistant-ssl.key"
+        "Path": "./DigitalAssistantServer/Certificates/digitalassistant-ssl.crt",
+        "KeyPath": "./DigitalAssistantServer/Certificates/digitalassistant-ssl.key"
       }
     }
   },
   "ClientConnection": {
     "Port": 59142,
     "Certificate": {
-       "Path": "./Certificates/digitalassistant-ssl.crt",
-        "KeyPath": "./Certificates/digitalassistant-ssl.key"
+       "Path": "./DigitalAssistantServer/Certificates/digitalassistant-ssl.crt",
+        "KeyPath": "./DigitalAssistantServer/Certificates/digitalassistant-ssl.key"
     }
   },
-  "FileStorePath": "./DigitalAssistant.Server_FileStore/",
+  "FileStorePath": "./DigitalAssistantServer/DigitalAssistant.Server_FileStore/",
   "TempFileStorePath": "./DigitalAssistantServer/DigitalAssistant.Server_FileStore/Temp/",
   "ModelsDirectoryPath": "./DigitalAssistantServer/Models/"
 }

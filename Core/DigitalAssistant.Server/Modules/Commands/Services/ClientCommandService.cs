@@ -1,80 +1,69 @@
 ﻿using DigitalAssistant.Abstractions.Clients.Arguments;
 using DigitalAssistant.Abstractions.Clients.Enums;
 using DigitalAssistant.Abstractions.Clients.Interfaces;
+using DigitalAssistant.Abstractions.Commands.Abstracts;
 using DigitalAssistant.Base.ClientServerConnection;
-using DigitalAssistant.Server.Modules.AudioPlayer;
+using DigitalAssistant.Server.Modules.Clients.BrowserClient.Services;
 using DigitalAssistant.Server.Modules.Clients.Services;
 using Microsoft.Extensions.Localization;
+using System.Globalization;
 
 namespace DigitalAssistant.Server.Modules.Commands.Services;
 
 public class ClientCommandService(ClientInformationService clientInformationService,
-    IServiceProvider serviceProvider,
     IStringLocalizer<ClientCommandService> localizer)
 {
     #region Injects
     protected readonly ClientInformationService ClientInformationService = clientInformationService;
-    protected readonly IServiceProvider ServiceProvider = serviceProvider;
     protected readonly IStringLocalizer<ClientCommandService> Localizer = localizer;
     #endregion
 
-    public Task<(bool Success, string? ErrorMessage)> ExecuteClientActionAsync(IClient client, IClientActionArgs args)
+    public Task<ClientActionResponse> ExecuteClientActionAsync(string language, IClient client, IClientActionArgs args, IServiceProvider serviceProvider)
     {
-        return args.GetType().Name switch
+        var currentUICulture = CultureInfo.CurrentUICulture;
+        try
         {
-            nameof(SystemActionArgs) => ProcessSystemActionArgsAsync(client, (SystemActionArgs)args),
-            nameof(MusicActionArgs) => ProcessMusicActionArgsAsync(client, (MusicActionArgs)args),
-            _ => throw new NotImplementedException(),
-        };
-    }
+            CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo(language);
 
-    public async Task<(bool Success, string? ErrorMessage)> ProcessSystemActionArgsAsync(IClient client, SystemActionArgs args)
-    {
-        if (client.Type == ClientType.Browser)
-        {
-            throw new NotImplementedException();
+            if (client.Type == ClientType.Browser)
+                return serviceProvider.GetRequiredService<BrowserCommandHandler>().ExecuteBrowserClientActionAsync(language, client, args);
+
+            return args.GetType().Name switch
+            {
+                nameof(SystemActionArgs) => ProcessActionArgsAsync(language, client, (SystemActionArgs)args, TcpMessageActionType.SystemAction),
+                nameof(MusicActionArgs) => ProcessMusicActionArgsAsync(language, client, (MusicActionArgs)args),
+                nameof(TimerActionArgs) => ProcessActionArgsAsync(language, client, (TimerActionArgs)args, TcpMessageActionType.TimerAction),
+                _ => throw new NotImplementedException(),
+            };
         }
-
-        var clientConnection = ClientInformationService.GetClientConnection(client.Id);
-        if (clientConnection == null)
-            return (false, Localizer["Client is currently not connected"]);
-
-        var tcpActionMessage = TcpMessage.CreateActionMessage<SystemActionArgs>(TcpMessageActionType.SystemAction, args);
-        var result = await clientConnection.SendMessageToClientAsync(tcpActionMessage)
-                                           .ConfigureAwait(false);
-
-        return (result.Success, result.Error?.Message);
+        finally
+        {
+            CultureInfo.CurrentUICulture = currentUICulture;
+        }
     }
 
-    public async Task<(bool Success, string? ErrorMessage)> ProcessMusicActionArgsAsync(IClient client, MusicActionArgs args)
+    public Task<ClientActionResponse> ProcessMusicActionArgsAsync(string language, IClient client, MusicActionArgs args)
     {
         if (string.IsNullOrEmpty(args.MusicStreamUrl))
-            return (false, Localizer["No music stream url was provided"]);
+            return Task.FromResult(new ClientActionResponse(false, Localizer["NoMusicStreamUrlError"]));
 
-        if (client.Type == ClientType.Browser)
-        {
-            try
-            {
-                var webAudioPlayer = ServiceProvider.GetRequiredService<WebAudioPlayer>();
-                await webAudioPlayer.PlayAudioFromUrlAsync(args.MusicStreamUrl)
-                           .ConfigureAwait(false);
+        return ProcessActionArgsAsync(language, client, args, TcpMessageActionType.MusicAction);
+    }
 
-                return (true, null);
-            }
-            catch (Exception e)
-            {
-                return (false, e.Message);
-            }
-        }
-
+    public async Task<ClientActionResponse> ProcessActionArgsAsync<TActionArgs>(string language, IClient client, TActionArgs args, TcpMessageActionType actionType) where TActionArgs: IClientActionArgs
+    {
         var clientConnection = ClientInformationService.GetClientConnection(client.Id);
         if (clientConnection == null)
-            return (false, Localizer["Client is currently not connected"]);
+            return new ClientActionResponse(false, Localizer["ClientNotConnectedError"]);
 
-        var tcpActionMessage = TcpMessage.CreateActionMessage<MusicActionArgs>(TcpMessageActionType.MusicAction, args);
-        var result = await clientConnection.SendMessageToClientAsync(tcpActionMessage)
-                                           .ConfigureAwait(false);
+        var tcpActionMessage = TcpMessage.CreateActionMessage<TActionArgs>(actionType, args, language);
+        var sendResponse = await clientConnection.SendMessageToClientAsync(tcpActionMessage).ConfigureAwait(false);
+        if (!sendResponse.Success)
+            return new ClientActionResponse(sendResponse.Success, sendResponse.Error?.Message);
 
-        return (result.Success, result.Error?.Message);
+        var re = await clientConnection.GetResponseDataAsync<ClientActionResponse>(tcpActionMessage.EventId, timeoutInMilliseconds: 15000).ConfigureAwait(false);
+
+
+        return re ?? new ClientActionResponse(false, Localizer["ClientNotRespondError"]);
     }
 }

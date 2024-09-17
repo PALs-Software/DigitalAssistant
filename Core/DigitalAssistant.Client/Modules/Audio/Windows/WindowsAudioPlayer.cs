@@ -1,4 +1,5 @@
-﻿using DigitalAssistant.Base.ClientServerConnection;
+﻿using DigitalAssistant.Base.Audio;
+using DigitalAssistant.Base.ClientServerConnection;
 using DigitalAssistant.Client.Modules.Audio.Enums;
 using DigitalAssistant.Client.Modules.Audio.Interfaces;
 using DigitalAssistant.Client.Modules.Audio.Windows.Provider;
@@ -157,13 +158,14 @@ public class WindowsAudioPlayer : IAudioPlayer
     {
         var outputDevice = OutputDevices[audioType];
         outputDevice?.Stop();
-
         if (audioType == AudioType.Stream)
         {
             StopStream = true;
             while (waitUntilStopped && StreamIsPlaying)
                 await Task.Delay(100);
         }
+        else
+            Mixer[audioType]?.RemoveAllMixerInputs();
     }
 
     public Task PauseAsync(AudioType audioType)

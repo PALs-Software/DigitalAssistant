@@ -5,10 +5,10 @@ using DigitalAssistant.Base.General;
 using DigitalAssistant.Client.Modules.Audio.Interfaces;
 using DigitalAssistant.Client.Modules.Audio.Linux;
 using DigitalAssistant.Client.Modules.Audio.Windows;
+using DigitalAssistant.Client.Modules.Commands;
 using DigitalAssistant.Client.Modules.ServerConnection.Models;
 using DigitalAssistant.Client.Modules.ServerConnection.Services;
 using DigitalAssistant.Client.Modules.SpeechRecognition.Services;
-using DigitalAssistant.Client.Modules.State;
 using Microsoft.AspNetCore.DataProtection;
 
 var builder = Host.CreateApplicationBuilder(args);
@@ -34,6 +34,8 @@ builder.Services
     .SetDefaultKeyLifetime(TimeSpan.FromDays(365 * 100))
     .SetApplicationName("DigitalAssistant.Client");
 
+builder.Services.AddLocalization();
+
 builder.Services
     .AddSingleton<BaseErrorService>()
     .AddSingleton((serviceProvider) =>
@@ -50,6 +52,9 @@ builder.Services
     .AddSingleton<AudioService>()
     .AddSingleton<ServerConnectionService>()
     .AddSingleton<ServerTaskExecutionService>()
+    .AddSingleton<SystemCommandHandler>()
+    .AddSingleton<MusicCommandHandler>()
+    .AddSingleton<TimerCommandHandler>()
     .AddSingleton<WakeWordListener>()
     .AddSingleton<IDataProtectionService, DataProtectionService>()
 

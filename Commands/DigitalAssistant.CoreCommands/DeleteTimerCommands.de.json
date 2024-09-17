@@ -1,0 +1,8 @@
+{
+  "Name": "Timer löschen",
+  "Description": "Befehle zum löschen von Timern",
+  "Templates": [
+    "[Lösch|Lösche] (den) Timer ({Name:Text})"
+  ],
+  "Options": []
+}

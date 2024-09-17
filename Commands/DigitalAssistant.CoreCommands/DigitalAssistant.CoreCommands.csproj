@@ -7,29 +7,45 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<None Remove="GetCurrentTime\GetCurrentTimeCommand.de.json" />
-		<None Remove="GetCurrentTime\GetCurrentTimeCommand.en.json" />
+	  <None Remove="DeleteTimerCommands.de.json" />
+	  <None Remove="DeleteTimerCommands.en.json" />
+	  <None Remove="GetCurrentTimeCommand.de.json" />
+	  <None Remove="GetCurrentTimeCommand.en.json" />
+	  <None Remove="GetTimerCommands.de.json" />
+	  <None Remove="GetTimerCommands.en.json" />
+	  <None Remove="SetTimerCommands.de.json" />
+	  <None Remove="SetTimerCommands.en.json" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<Content Include="GetCurrentTime\GetCurrentTimeCommand.de.json">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-		</Content>
-		<Content Include="GetCurrentTime\GetCurrentTimeCommand.en.json">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-		</Content>
+	  <Content Include="DeleteTimerCommands.de.json">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="DeleteTimerCommands.en.json">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="GetCurrentTimeCommand.de.json">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="GetCurrentTimeCommand.en.json">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="GetTimerCommands.de.json">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="GetTimerCommands.en.json">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="SetTimerCommands.de.json">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	  <Content Include="SetTimerCommands.en.json">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
 	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\Core\DigitalAssistant.Abstractions\DigitalAssistant.Abstractions.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<Folder Include="Timer\" />
 	</ItemGroup>
 
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">

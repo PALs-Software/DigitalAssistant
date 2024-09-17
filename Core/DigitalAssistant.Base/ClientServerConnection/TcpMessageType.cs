@@ -6,6 +6,7 @@ public enum TcpMessageType
     SetupClientWithServer,
     Authentication,
     AudioData,
+    StopSendingAudioData,
     Action,
     TransferAudioDevices,
     UpdateClientSettings

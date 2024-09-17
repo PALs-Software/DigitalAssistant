@@ -3,5 +3,6 @@
 public enum TcpMessageActionType
 {
     SystemAction,
-    MusicAction
+    MusicAction,
+    TimerAction
 }

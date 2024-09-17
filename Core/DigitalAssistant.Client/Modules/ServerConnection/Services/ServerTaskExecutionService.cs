@@ -10,11 +10,12 @@ using DigitalAssistant.Base.Extensions;
 using DigitalAssistant.Base.General;
 using DigitalAssistant.Client.Modules.Audio.Enums;
 using DigitalAssistant.Client.Modules.Audio.Interfaces;
+using DigitalAssistant.Client.Modules.Commands;
 using DigitalAssistant.Client.Modules.General;
 using DigitalAssistant.Client.Modules.ServerConnection.Models;
 using DigitalAssistant.Client.Modules.SpeechRecognition.Services;
-using DigitalAssistant.Client.Modules.State;
 using System.Collections.Concurrent;
+using System.Globalization;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
@@ -27,6 +28,9 @@ public class ServerTaskExecutionService(
     ServerConnectionSettings serverConnectionSettings,
     ClientState clientState,
     WakeWordListener wakeWordListener,
+    SystemCommandHandler systemCommandHandler,
+    MusicCommandHandler musicCommandHandler,
+    TimerCommandHandler timerCommandHandler,
     IAudioPlayer audioPlayer,
     IAudioDeviceService audioDeviceService,
     IDataProtectionService dataProtectionService,
@@ -41,6 +45,9 @@ public class ServerTaskExecutionService(
     protected readonly ServerConnectionSettings ServerConnectionSettings = serverConnectionSettings;
     protected readonly ClientState ClientState = clientState;
     protected readonly WakeWordListener WakeWordListener = wakeWordListener;
+    protected readonly SystemCommandHandler SystemCommandHandler = systemCommandHandler;
+    protected readonly MusicCommandHandler MusicCommandHandler = musicCommandHandler;
+    protected readonly TimerCommandHandler TimerCommandHandler = timerCommandHandler;
     protected readonly IAudioPlayer AudioPlayer = audioPlayer;
     protected readonly IAudioDeviceService AudioDeviceService = audioDeviceService;
     protected readonly IDataProtectionService DataProtectionService = dataProtectionService;
@@ -80,6 +87,9 @@ public class ServerTaskExecutionService(
                 case TcpMessageType.AudioData:
                     await ProcessAudioDataMessageAsync(message);
                     break;
+                case TcpMessageType.StopSendingAudioData:
+                    await ProcessStopSendingAudioDataMessageAsync(message);
+                    break;
                 case TcpMessageType.Action:
                     await ProcessActionMessageAsync(message);
                     break;
@@ -114,8 +124,8 @@ public class ServerTaskExecutionService(
 
             await File.WriteAllTextAsync(filePath, jsonNode.ToJsonString(new JsonSerializerOptions { WriteIndented = true }));
             ServerConnectionSettings.SecureServerAccessToken = DataProtectionService.Protect(finalToken.ToInsecureString())?.ToSecureString();
-            
-            await ServerConnectionService.SendMessageToServerAsync(new TcpMessage(TcpMessageType.SetupClientWithServer, message.EventId, [(byte)ClientType.Computer+1]));
+
+            await ServerConnectionService.SendMessageToServerAsync(new TcpMessage(TcpMessageType.SetupClientWithServer, message.EventId, [(byte)ClientType.Computer + 1]));
 
             Settings.ClientIsInitialized = true;
             ServerConnectionService.ConnectionIsAuthenticated = true;
@@ -186,7 +196,12 @@ public class ServerTaskExecutionService(
         }
 
         await AudioPlayer.PlayAsync(message.Data);
+    }
+
+    protected Task ProcessStopSendingAudioDataMessageAsync(TcpMessage message)
+    {
         WakeWordListener.StopAudioStreamToServer();
+        return Task.CompletedTask;
     }
 
     protected async Task ProcessTransferAudioDevicesMessageAsync(TcpMessage message)
@@ -249,73 +264,45 @@ public class ServerTaskExecutionService(
 
     #region Process Action Types
 
-    protected Task ProcessActionMessageAsync(TcpMessage message)
+    protected async Task ProcessActionMessageAsync(TcpMessage message)
     {
         var jsonTcpMessageAction = JsonObject.Parse(message.Data)?.AsObject();
         ArgumentNullException.ThrowIfNull(jsonTcpMessageAction);
         jsonTcpMessageAction.TryGetPropertyValue("Type", out var jsonActionType);
+        jsonTcpMessageAction.TryGetPropertyValue("Language", out var jsonLanguage);
         ArgumentNullException.ThrowIfNull(jsonActionType);
+        ArgumentNullException.ThrowIfNull(jsonLanguage);
 
         var actionType = jsonActionType.Deserialize<TcpMessageActionType>();
+        var language = jsonLanguage.Deserialize<string>();
+        ArgumentNullException.ThrowIfNull(language);
 
-        return actionType switch
+        var currentUICulture = CultureInfo.CurrentUICulture;
+        try
         {
-            TcpMessageActionType.SystemAction =>
-                ProcessSystemActionAsync(DeserializeActionArgs<SystemActionArgs>(jsonTcpMessageAction)),
+            CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo(language);
+            var response = actionType switch
+            {
+                TcpMessageActionType.SystemAction =>
+                    await SystemCommandHandler.ProcessSystemActionAsync(DeserializeActionArgs<SystemActionArgs>(jsonTcpMessageAction)),
 
-            TcpMessageActionType.MusicAction =>
-                ProcessMusicActionAsync(DeserializeActionArgs<MusicActionArgs>(jsonTcpMessageAction)),
+                TcpMessageActionType.MusicAction =>
+                    await MusicCommandHandler.ProcessMusicActionAsync(DeserializeActionArgs<MusicActionArgs>(jsonTcpMessageAction)),
 
-            _ => throw new NotImplementedException(),
-        };
-    }
+                TcpMessageActionType.TimerAction =>
+                    await TimerCommandHandler.ProcessTimerActionAsync(DeserializeActionArgs<TimerActionArgs>(jsonTcpMessageAction)),
 
+                _ => throw new NotImplementedException(),
+            };
 
-    protected async Task ProcessSystemActionAsync(SystemActionArgs args)
-    {
-        if (!args.StopCurrentAction.GetValueOrDefault())
-            return;
-
-        bool resumeStream = false;
-        bool speechWasPlaying = false;
-        if (AudioPlayer.IsPlaying(AudioType.SoundEffect))
-        {
-            await AudioPlayer.StopAsync(AudioType.SoundEffect);
-            resumeStream = true;
+            var responseData = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(response, JsonSerializerOptions));
+            var tcpMessage = new TcpMessage(TcpMessageType.Action, message.EventId, responseData);
+            await ServerConnectionService.SendMessageToServerAsync(tcpMessage);
         }
-
-        if (AudioPlayer.IsPlaying(AudioType.Speech))
+        finally
         {
-            await AudioPlayer.StopAsync(AudioType.Speech);
-            resumeStream = true;
-            speechWasPlaying = true;
+            CultureInfo.CurrentUICulture = currentUICulture;
         }
-
-        if (resumeStream)
-        {
-            if (OperatingSystem.IsWindows())
-                AudioPlayer.SetVolume(AudioType.Stream, 1f);
-            else
-                await AudioPlayer.ResumeAsync(AudioType.Stream);
-        }
-
-        if (speechWasPlaying)
-            return;
-
-        if (AudioPlayer.IsPlaying(AudioType.Stream))
-        {
-            ClientState.StopLongRunningActionIfExists<MusicActionArgs>();
-            await AudioPlayer.StopAsync(AudioType.Stream);
-        }
-    }
-
-    protected Task ProcessMusicActionAsync(MusicActionArgs args)
-    {
-        if (String.IsNullOrEmpty(args.MusicStreamUrl))
-            return Task.CompletedTask;
-
-        ClientState.ReplaceLongRunningAction(args);
-        return AudioPlayer.PlayAsync(args.MusicStreamUrl);
     }
 
     #endregion

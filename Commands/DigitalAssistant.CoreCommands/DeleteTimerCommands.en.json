@@ -1,0 +1,8 @@
+{
+  "Name": "Delete Timer",
+  "Description": "Commands to delete timers",
+  "Templates": [
+    "[Delete|Remove] (the) timer ({Name:Text})"
+  ],
+  "Options": []
+}

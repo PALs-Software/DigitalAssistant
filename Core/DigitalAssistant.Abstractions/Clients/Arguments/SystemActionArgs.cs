@@ -11,4 +11,5 @@ public class SystemActionArgs : IClientActionArgs
     public bool? Previous { get; set; }
     public bool? IncreaseVolume { get; set; }
     public bool? DecreaseVolume { get; set; }
+    public float? SetVolume { get; set; }
 }

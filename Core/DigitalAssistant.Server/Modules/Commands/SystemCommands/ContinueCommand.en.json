@@ -1,0 +1,9 @@
+{
+  "Name": "Continue Command",
+  "Description": "Command to continue the last task that was executed",
+  "Templates": [
+    "Continue",
+    "Resume"
+  ],
+  "Options": []
+}

@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Reflection;
+using DigitalAssistant.Base.Audio;
 using DigitalAssistant.Base.ClientServerConnection;
 using DigitalAssistant.Client.Modules.Audio.Enums;
 using DigitalAssistant.Client.Modules.Audio.Interfaces;

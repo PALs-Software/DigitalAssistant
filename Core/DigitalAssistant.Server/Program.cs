@@ -15,13 +15,16 @@ using DigitalAssistant.Abstractions.Devices.Interfaces;
 using DigitalAssistant.Abstractions.Services;
 using DigitalAssistant.Base.Audio;
 using DigitalAssistant.Base.ClientServerConnection;
+using DigitalAssistant.Base.General;
 using DigitalAssistant.Server.Data;
 using DigitalAssistant.Server.Modules.Ai.Asr.Services;
 using DigitalAssistant.Server.Modules.Ai.TextToSpeech;
 using DigitalAssistant.Server.Modules.Ai.TextToSpeech.Enums;
-using DigitalAssistant.Server.Modules.AudioPlayer;
 using DigitalAssistant.Server.Modules.BackgroundJobs;
 using DigitalAssistant.Server.Modules.CacheModule;
+using DigitalAssistant.Server.Modules.Clients.BrowserClient.AudioPlayer;
+using DigitalAssistant.Server.Modules.Clients.BrowserClient.Commands;
+using DigitalAssistant.Server.Modules.Clients.BrowserClient.Services;
 using DigitalAssistant.Server.Modules.Clients.Components;
 using DigitalAssistant.Server.Modules.Clients.Services;
 using DigitalAssistant.Server.Modules.Commands.Services;
@@ -282,20 +285,26 @@ void ConfigureServices(WebApplicationBuilder builder)
         .AddSingleton<ClientConnectionHandler>()
         .AddSingleton<ConnectorService>()
         .AddSingleton<CommandHandler>()
+        .AddSingleton<TcpMessageHandler>()
+        .AddSingleton<CommandParameterParser>()
+        .AddSingleton<CommandProcessor>()
+        .AddSingleton<ClientCommandService>()
         .AddSingleton<IDeviceFactory, DeviceFactory>()
         .AddSingleton<IDeviceChangeArgsFactory, DeviceChangeArgsFactory>()
         .AddSingleton<IDataProtectionService, DataProtectionService>()
 
+
         .AddScoped<ScopedEventService>()
         .AddScoped<CircuitHandler, ExtendedCircuitHandlerService>()
         .AddScoped<WebAudioPlayer>()
-        .AddScoped<FileDownloadService>()
+        .AddScoped<FileDownloadService>()        
+        .AddScoped<ClientState>()
 
         .AddTransient(typeof(JsonStringLocalizer<>))
-        .AddTransient<TcpMessageHandler>()
-        .AddTransient<CommandParameterParser>()
-        .AddTransient<CommandProcessor>()
-        .AddTransient<ClientCommandService>()
+        .AddTransient<BrowserCommandHandler>()
+        .AddTransient<BrowserSystemCommandHandler>()
+        .AddTransient<BrowserMusicCommandHandler>()
+        .AddTransient<BrowserTimerCommandHandler>()
         .AddTransient<ClientStatusPopup>()
         ;
 
