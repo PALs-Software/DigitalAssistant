@@ -65,35 +65,35 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Azure.Identity" Version="1.11.4" />
+		<PackageReference Include="Azure.Identity" Version="1.12.0" />
 		<PackageReference Include="Blazorise" Version="0.9.3.6" />
 		<PackageReference Include="Blazorise.Bootstrap" Version="0.9.3.6" />
 		<PackageReference Include="Blazorise.Components" Version="0.9.3.6" />
 		<PackageReference Include="Blazorise.Icons.FontAwesome" Version="0.9.3.6" />
 		<PackageReference Include="Blazorise.Sidebar" Version="0.9.3.6" />
 		<PackageReference Include="Blazorise.Snackbar" Version="0.9.3.6" />
-		<PackageReference Include="Magick.NET-Q16-AnyCPU" Version="13.6.0" />
+		<PackageReference Include="Magick.NET-Q16-AnyCPU" Version="14.0.0" />
 		<PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="6.0.0" />
-		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.2" />
-		<PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="8.0.2" />
-		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.2" />
-		<PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.2" />
-		<PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.2" />
-		<PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.5" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.2" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="8.0.2" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.2" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.2" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.2">
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.8" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="8.0.8" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="8.0.8" />
+		<PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.8" />
+		<PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.8" />
+		<PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.2" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.8" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="8.0.8" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.8" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.8" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.8">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 		<PackageReference Include="Microsoft.Extensions.Logging.EventLog" Version="8.0.0" />
-		<PackageReference Include="Microsoft.Identity.Web" Version="2.17.0" />
-		<PackageReference Include="Microsoft.Identity.Web.UI" Version="2.17.0" />
+		<PackageReference Include="Microsoft.Identity.Web" Version="3.1.0" />
+		<PackageReference Include="Microsoft.Identity.Web.UI" Version="3.1.0" />
 		<PackageReference Include="Microsoft.ML.OnnxRuntime.Extensions" Version="0.12.0" />
-		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.20.1" />
-		<PackageReference Include="PDFSharp.NetStandard2" Version="1.51.5185.2" />
+		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0" />
+		<PackageReference Include="PDFSharp.NetStandard2" Version="1.51.5185.3" />
 		<PackageReference Include="System.Formats.Asn1" Version="8.0.1" />
 		<PackageReference Include="System.Security.Cryptography.ProtectedData" Version="8.0.0" />
 		<PackageReference Include="System.Text.Json" Version="8.0.4" />
