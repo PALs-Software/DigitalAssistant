@@ -1,0 +1,87 @@
+name: Build Windows
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+env:
+  BuildConfiguration: Release
+  BuildPlatform: x64
+  
+jobs:
+  build:
+
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        path: DigitalAssistant
+    - name: Clone BlazorBase
+      uses: actions/checkout@v4
+      with:
+        repository: PALs-Software/BlazorBase
+        ref: develop
+        path: BlazorBase
+      
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+    
+    - name: Setup msbuild
+      uses: microsoft/setup-msbuild@v2
+          
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Build PhonemizeESpeakWrapper
+      run: msbuild DigitalAssistant/Libs/PhonemizeESpeakWrapper/PhonemizeESpeakWrapper.vcxproj /p:configuration=$BuildConfiguration /p:platform=$BuildPlatform /p:OutDir=${{ github.workspace }}/ReleaseServer
+    
+    - name: Build Hue Connector
+      run: dotnet publish "./DigitalAssistant/Connectors/DigitalAssistant.HueConnector/DigitalAssistant.HueConnector.csproj" -c $BuildConfiguration -o ${{ github.workspace }}/ReleaseServer/Connectors/DigitalAssistant.HueConnector /p:UseAppHost=false
+
+    - name: Build Core Commands
+      run: dotnet publish "./DigitalAssistant.CoreCommands/DigitalAssistant.CoreCommands.csproj" -c $BuildConfiguration -o ${{ github.workspace }}/ReleaseServer/Commands/DigitalAssistant.CoreCommands /p:UseAppHost=false
+    - name: Build Device Commands
+      run: dotnet publish "./DigitalAssistant.DeviceCommands/DigitalAssistant.DeviceCommands.csproj" -c $BuildConfiguration -o ${{ github.workspace }}/ReleaseServer/Commands/DigitalAssistant.DeviceCommands /p:UseAppHost=false
+    - name: Build Music Commands
+      run: dotnet publish "./DigitalAssistant.MusicCommands/DigitalAssistant.MusicCommands.csproj" -c $BuildConfiguration -o ${{ github.workspace }}/ReleaseServer/Commands/DigitalAssistant.MusicCommands /p:UseAppHost=false
+    
+    - name: Build Server
+      run: dotnet publish "./DigitalAssistant/Core/DigitalAssistant.Server/DigitalAssistant.Server.csproj" -c $BuildConfiguration -o ${{ github.workspace }}/ReleaseServer /p:Platform=$BuildPlatform /p:UseAppHost=false
+
+    - name: Build Client
+      run: dotnet publish "./DigitalAssistant/Core/DigitalAssistant.Client/DigitalAssistant.Client.csproj" -c $BuildConfiguration -o ${{ github.workspace }}/ReleaseClient /p:UseAppHost=false
+
+    - name: Test
+      run: dotnet test "./DigitalAssistant/Tests/DigitalAssistant.Server.Tests/DigitalAssistant.Server.Tests.csproj" -c $BuildConfiguration /p:Platform=$BuildPlatform
+      
+    - name: Configure Release Settings
+      shell: pwsh
+      run: |
+        Write-Host "Remove no longer required configuration files"
+        
+        $basePathServer =  "${{ github.workspace }}/ReleaseServer"
+        $basePathClient =  "${{ github.workspace }}/ReleaseClient"
+                
+        Remove-Item -Path (Join-Path $basePathServer "appsettings.Development.json") -Force
+        Remove-Item -Path (Join-Path $basePathServer "appsettings.Linux.json") -Force
+
+        Remove-Item -Path (Join-Path $basePathClient "appsettings.Development.json") -Force
+
+    - name: Publish server application artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: ServerApplicationArtifact
+        path: ReleaseServer/
+
+    - name: Publish client application artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: ServerApplicationArtifact
+        path: ReleaseClient/
+        
+
