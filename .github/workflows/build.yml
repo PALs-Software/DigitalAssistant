@@ -69,11 +69,12 @@ jobs:
         $basePathServerAny =  "${{ github.workspace }}/ReleaseServerAny"
         $basePathClient =  "${{ github.workspace }}/ReleaseClient"
         $basePathMisc =  "${{ github.workspace }}/ReleaseMisc"
-        
+                
         $resultServerWindows64 =  "${{ github.workspace }}/ServerReleaseWindows64"
         $resultServerLinux64 =  "${{ github.workspace }}/ServerReleaseLinux64"
         $resultServerLinuxArm64 =  "${{ github.workspace }}/ServerReleaseLinuxArm64"
         $resultServerMac =  "${{ github.workspace }}/ServerReleaseMac"
+        mkdir -p "$resultServerMac/"
 
         Write-Host "Remove no longer required configuration files"
         Remove-Item -Path (Join-Path $basePathServer64 "appsettings.Development.json") -Force
