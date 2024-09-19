@@ -4,7 +4,8 @@
   "Templates": [
     "Uhrzeit",
     "Wie spät (ist es) (gerade)",
-    "Wie (viel) Uhr (ist es)"
+    "Wie (viel) Uhr (ist es)",
+    "Welche Uhrzeit (haben wir)"
   ],
   "Options": [],
   "Responses": [

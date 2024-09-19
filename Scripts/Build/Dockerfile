@@ -1,5 +1,5 @@
-# docker build -t digital-assistant-server -f ./DigitalAssistant/Scripts/Build/Dockerfile .
-# docker run --name digital-assistant-server -p 8079:8079 -p 8080:8080 -v DigitalAssistantServer_Data:/app/DigitalAssistantServer -v DigitalAssistantServer_Keys:/home/app/.aspnet/DataProtection-Keys -d digital-assistant-server
+# docker build -t palssoftware/digital-assistant-server -f ./DigitalAssistant/Scripts/Build/Dockerfile .
+# docker run --name digital-assistant-server -p 8079:8079 -p 8080:8080 -v DigitalAssistantServer_Data:/app/DigitalAssistantServer -v DigitalAssistantServer_Keys:/home/app/.aspnet/DataProtection-Keys -d palssoftware/digital-assistant-server
 
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 ENV ASPNETCORE_URLS=http://+:8079;https://+:8080
@@ -85,7 +85,8 @@ RUN tree /app/publish/Commands
 FROM build-server AS create-database
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src/DigitalAssistant/Core/DigitalAssistant.Server
-RUN dotnet tool restore
+ENV PATH="${PATH}:/root/.dotnet/tools"
+RUN dotnet tool install --global dotnet-ef --version 8.0.8
 RUN dotnet ef database update --context SQLiteDbContext --configuration $BUILD_CONFIGURATION --no-build --connection "Data Source=/app/publish/DigitalAssistantServer/Database/DigitalAssistantServer.db"
 RUN chown -R app:app /app/publish/DigitalAssistantServer/Database
 RUN ls -l /app/publish/DigitalAssistantServer/Database

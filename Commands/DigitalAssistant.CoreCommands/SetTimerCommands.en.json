@@ -2,7 +2,7 @@
   "Name": "Set Timer",
   "Description": "Commands to create a timer",
   "Templates": [
-    "([Set|Set up]) (a) timer ((named) {Name:Text}) [to|for|in] {Duration:Decimal} {DurationType:Option} (and {Duration2:Decimal} {DurationType2:Option})"
+    "([Create|Set|Set up]) (a) timer ((named) {Name:Text}) [to|for|in] {Duration:Decimal} {DurationType:Option} (and {Duration2:Decimal} {DurationType2:Option})"
   ],
   "Options": [
     {

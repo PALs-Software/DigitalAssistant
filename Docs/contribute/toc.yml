@@ -1,0 +1,10 @@
+- name: How to contribute
+  href: how-to-contribute.md
+- name: Setup development environment
+  href: setup-development-environment.md
+- name: Create new connector
+  href: create-new-connector.md
+- name: Create new command
+  href: create-new-command.md
+- name: Add new localizations
+  href: localization.md

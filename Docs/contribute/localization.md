@@ -1,0 +1,3 @@
+# Localization
+
+To do: Add documentation with weblate here...

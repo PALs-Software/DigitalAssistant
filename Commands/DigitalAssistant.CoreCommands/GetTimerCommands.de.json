@@ -3,6 +3,7 @@
   "Description": "Befehle zum abrufen von Timern",
   "Templates": [
     "Wie [lang|lange] noch",
+    "Wie viel Zeit ist noch übrig",
     "Wie [lang|lange] geht der Timer ({Name:Text}) (noch)"
   ],
   "Options": []

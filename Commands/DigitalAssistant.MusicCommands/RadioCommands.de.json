@@ -2,7 +2,7 @@
   "Name": "Musikradios verwalten",
   "Description": "Befehle zum abspielen von Internetradios",
   "Templates": [
-    "[Spiel|Spiele] den Radiosender {RadioStation:Text}"
+    "[Spiel|Spiele] [den|das] [Radiosender|Radio Sender|Internetradio|Radio] {RadioStation:Text}"
   ],
   "Options": [],
   "PlayRadioStationResponse": "Der Radiosender {0} wird abgespielt",

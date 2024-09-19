@@ -2,7 +2,7 @@
   "Name": "Manage Music Radios",
   "Description": "Commands for playing internet radios",
   "Templates": [
-    "Play the radio station {RadioStation:Text}"
+    "Play (the) (internet) radio (station) {RadioStation:Text}"
   ],
   "Options": [],
   "PlayRadioStationResponse": "The radio station {0} is now playing",

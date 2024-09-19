@@ -13,6 +13,11 @@ public class RadioCommands(IStringLocalizer localizer, IJsonStringLocalizer json
 {
     public override CommandType Type => CommandType.Direct;
 
+    #region Members
+    private bool ApplicationRunsInDockerContainer { get { return Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true"; } }
+    #endregion
+
+
     public override async Task<ICommandResponse> ExecuteAsync(ICommandParameters parameters)
     {
         SetUICulture(parameters.Language);
@@ -21,7 +26,7 @@ public class RadioCommands(IStringLocalizer localizer, IJsonStringLocalizer json
             return CreateResponse(success: false);
 
         radioStationName = radioStationName.TrimEnd('.').Trim('"');
-        var radioBrowser = new RadioBrowserClient();
+        var radioBrowser = new RadioBrowserClient(apiUrl: ApplicationRunsInDockerContainer ? "de1.api.radio-browser.info" : null);
         var radioStations = await radioBrowser.Search.AdvancedAsync(new AdvancedSearchOptions
         {
             Name = radioStationName,
