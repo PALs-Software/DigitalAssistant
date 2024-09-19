@@ -27,19 +27,19 @@ jobs:
       uses: dawidd6/action-download-artifact@v6
       with:
         workflow: build-wrapper-linux-arm64.yml
-        path: ServerReleaseLinuxArm64/
+        path: Wrapper_Linux_arm64/
 
     - name: Download linux x86/x64 wrapper artifact
       uses: dawidd6/action-download-artifact@v6
       with:
         workflow: build-wrapper-linux-x86_64.yml
-        path: ServerReleaseLinux64/
+        path: Wrapper_Linux_x64/
 
     - name: Download windows wrapper artifact
       uses: dawidd6/action-download-artifact@v6
       with:
         workflow: build-wrapper-windows-x64.yml
-        path: ServerReleaseWindows64/
+        path: Wrapper_Windows_x64/
 
     - name: Test
       run: dotnet test "./DigitalAssistant/Tests/DigitalAssistant.Server.Tests/DigitalAssistant.Server.Tests.csproj" -c Release
@@ -69,35 +69,47 @@ jobs:
         $basePathServerAny =  "${{ github.workspace }}/ReleaseServerAny"
         $basePathClient =  "${{ github.workspace }}/ReleaseClient"
         $basePathMisc =  "${{ github.workspace }}/ReleaseMisc"
-        
+                
         $resultServerWindows64 =  "${{ github.workspace }}/ServerReleaseWindows64"
         $resultServerLinux64 =  "${{ github.workspace }}/ServerReleaseLinux64"
         $resultServerLinuxArm64 =  "${{ github.workspace }}/ServerReleaseLinuxArm64"
         $resultServerMac =  "${{ github.workspace }}/ServerReleaseMac"
+
+        mkdir -p "$resultServerWindows64/"
+        mkdir -p "$resultServerLinux64/"
+        mkdir -p "$resultServerLinuxArm64/"
+        mkdir -p "$resultServerMac/"
 
         Write-Host "Remove no longer required configuration files"
         Remove-Item -Path (Join-Path $basePathServer64 "appsettings.Development.json") -Force
         Remove-Item -Path (Join-Path $basePathServerAny "appsettings.Development.json") -Force
         Remove-Item -Path (Join-Path $basePathClient "appsettings.Development.json") -Force
 
+        Write-Host "Copy wrapper"
+        Copy-Item -Path "${{ github.workspace }}/Wrapper_Windows_x64/artifact/*" -Destination $resultServerWindows64 -Recurse
+        Copy-Item -Path "${{ github.workspace }}/Wrapper_Linux_x64/artifact/*" -Destination $resultServerLinux64 -Recurse
+        Copy-Item -Path "${{ github.workspace }}/Wrapper_Linux_arm64/artifact/*" -Destination $resultServerLinuxArm64 -Recurse
+
+        Write-Host "Copy connectors and commands"
+        Copy-Item -Path "${{ github.workspace }}/DigitalAssistant/Core/DigitalAssistant.Server/bin/Release/net8.0/Connectors" -Destination $basePathServer64 -Recurse
+        Copy-Item -Path "${{ github.workspace }}/DigitalAssistant/Core/DigitalAssistant.Server/bin/Release/net8.0/Connectors" -Destination $basePathServerAny -Recurse
+        Copy-Item -Path "${{ github.workspace }}/DigitalAssistant/Core/DigitalAssistant.Server/bin/Release/net8.0/Commands" -Destination $basePathServer64 -Recurse
+        Copy-Item -Path "${{ github.workspace }}/DigitalAssistant/Core/DigitalAssistant.Server/bin/Release/net8.0/Commands" -Destination $basePathServerAny -Recurse
+        
         Write-Host "Copy server binary files for different plattforms"
         Copy-Item -Path "$basePathServer64/*" -Destination $resultServerWindows64 -Recurse
-        Copy-Item -Path "$basePathMisc/*" -Destination $resultServerWindows64 -Recurse
         Copy-Item -Path "$basePathServer64/*" -Destination $resultServerLinux64 -Recurse
-        Copy-Item -Path "$basePathMisc/*" -Destination $resultServerLinux64 -Recurse
         Copy-Item -Path "$basePathServerAny/*" -Destination $resultServerLinuxArm64 -Recurse
-        Copy-Item -Path "$basePathMisc/*" -Destination $resultServerLinuxArm64 -Recurse
         Copy-Item -Path "$basePathServerAny/*" -Destination $resultServerMac -Recurse
-        Copy-Item -Path "$basePathMisc/*" -Destination $resultServerMac -Recurse
 
         Write-Host "Prepare Configurations"
         Remove-Item -Path (Join-Path $resultServerWindows64 "appsettings.Linux.json") -Force
         Remove-Item -Path (Join-Path $resultServerLinux64 "appsettings.json") -Force
-        Rename-Item -Path -Path (Join-Path $resultServerLinux64 "appsettings.Linux.json") -NewName "appsettings.json"
+        Rename-Item -Path (Join-Path $resultServerLinux64 "appsettings.Linux.json") -NewName "appsettings.json"
         Remove-Item -Path (Join-Path $resultServerLinuxArm64 "appsettings.json") -Force
-        Rename-Item -Path -Path (Join-Path $resultServerLinuxArm64 "appsettings.Linux.json") -NewName "appsettings.json"
+        Rename-Item -Path (Join-Path $resultServerLinuxArm64 "appsettings.Linux.json") -NewName "appsettings.json"
         Remove-Item -Path (Join-Path $resultServerMac "appsettings.json") -Force
-        Rename-Item -Path -Path (Join-Path $resultServerMac "appsettings.Linux.json") -NewName "appsettings.json"
+        Rename-Item -Path (Join-Path $resultServerMac "appsettings.Linux.json") -NewName "appsettings.json"
         
     - name: Publish client application artifact
       uses: actions/upload-artifact@v4
