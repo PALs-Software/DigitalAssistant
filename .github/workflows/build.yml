@@ -94,11 +94,11 @@ jobs:
         Write-Host "Prepare Configurations"
         Remove-Item -Path (Join-Path $resultServerWindows64 "appsettings.Linux.json") -Force
         Remove-Item -Path (Join-Path $resultServerLinux64 "appsettings.json") -Force
-        Rename-Item -Path -Path (Join-Path $resultServerLinux64 "appsettings.Linux.json") -NewName "appsettings.json"
+        Rename-Item -Path (Join-Path $resultServerLinux64 "appsettings.Linux.json") -NewName "appsettings.json"
         Remove-Item -Path (Join-Path $resultServerLinuxArm64 "appsettings.json") -Force
-        Rename-Item -Path -Path (Join-Path $resultServerLinuxArm64 "appsettings.Linux.json") -NewName "appsettings.json"
+        Rename-Item -Path (Join-Path $resultServerLinuxArm64 "appsettings.Linux.json") -NewName "appsettings.json"
         Remove-Item -Path (Join-Path $resultServerMac "appsettings.json") -Force
-        Rename-Item -Path -Path (Join-Path $resultServerMac "appsettings.Linux.json") -NewName "appsettings.json"
+        Rename-Item -Path (Join-Path $resultServerMac "appsettings.Linux.json") -NewName "appsettings.json"
         
     - name: Publish client application artifact
       uses: actions/upload-artifact@v4
