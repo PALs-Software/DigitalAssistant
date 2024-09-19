@@ -4,20 +4,22 @@ on: workflow_dispatch
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
 
     steps:
     - uses: actions/checkout@v4
       with:
         path: DigitalAssistant
-    
-    - name: Setup build tools
+
+    - name: Setup xcode
+      uses: maxim-lobanov/setup-xcode@v1
+        
+    - name: Setup make
       run: |
-        sudo apt-get install -y make
-        sudo apt-get install -y build-essential        
+        brew install make
 
     - name: Build PhonemizeESpeakWrapper
-      run:  make export_x86_64 -C DigitalAssistant/Libs/PhonemizeESpeakWrapper
+      run:  make export_mac -C DigitalAssistant/Libs/PhonemizeESpeakWrapper
 
     - name: Publish artifact
       uses: actions/upload-artifact@v4
