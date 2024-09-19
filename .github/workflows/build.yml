@@ -36,26 +36,26 @@ jobs:
       uses: dawidd6/action-download-artifact@v6
       with:
         workflow: build-wrapper-linux-x86_64.yml
-        path: ServerReleaseLinux8664/
+        path: ServerReleaseLinux64/
 
     - name: Download windows wrapper artifact
       uses: dawidd6/action-download-artifact@v6
       with:
-        workflow: build-wrapper-windows-x86_64.yml
-        path: ServerReleaseWindows/
+        workflow: build-wrapper-windows-x64.yml
+        path: ServerReleaseWindows64/
 
     - name: Test
       run: dotnet test "./DigitalAssistant/Tests/DigitalAssistant.Server.Tests/DigitalAssistant.Server.Tests.csproj" -c Release
       
     - name: Build Hue Connector
-      run: dotnet publish "./DigitalAssistant/Connectors/DigitalAssistant.HueConnector/DigitalAssistant.HueConnector.csproj" -c Release -o ${{ github.workspace }}/ReleaseServer/Connectors/DigitalAssistant.HueConnector /p:UseAppHost=false
+      run: dotnet publish "./DigitalAssistant/Connectors/DigitalAssistant.HueConnector/DigitalAssistant.HueConnector.csproj" -c Release -o ${{ github.workspace }}/ReleaseMisc/Connectors/DigitalAssistant.HueConnector /p:UseAppHost=false
 
     - name: Build Core Commands
-      run: dotnet publish "./DigitalAssistant/Commands/DigitalAssistant.CoreCommands/DigitalAssistant.CoreCommands.csproj" -c Release -o ${{ github.workspace }}/ReleaseServer/Commands/DigitalAssistant.CoreCommands /p:UseAppHost=false
+      run: dotnet publish "./DigitalAssistant/Commands/DigitalAssistant.CoreCommands/DigitalAssistant.CoreCommands.csproj" -c Release -o ${{ github.workspace }}/ReleaseMisc/Commands/DigitalAssistant.CoreCommands /p:UseAppHost=false
     - name: Build Device Commands
-      run: dotnet publish "./DigitalAssistant/Commands/DigitalAssistant.DeviceCommands/DigitalAssistant.DeviceCommands.csproj" -c Release -o ${{ github.workspace }}/ReleaseServer/Commands/DigitalAssistant.DeviceCommands /p:UseAppHost=false
+      run: dotnet publish "./DigitalAssistant/Commands/DigitalAssistant.DeviceCommands/DigitalAssistant.DeviceCommands.csproj" -c Release -o ${{ github.workspace }}/ReleaseMisc/Commands/DigitalAssistant.DeviceCommands /p:UseAppHost=false
     - name: Build Music Commands
-      run: dotnet publish "./DigitalAssistant/Commands/DigitalAssistant.MusicCommands/DigitalAssistant.MusicCommands.csproj" -c Release -o ${{ github.workspace }}/ReleaseServer/Commands/DigitalAssistant.MusicCommands /p:UseAppHost=false
+      run: dotnet publish "./DigitalAssistant/Commands/DigitalAssistant.MusicCommands/DigitalAssistant.MusicCommands.csproj" -c Release -o ${{ github.workspace }}/ReleaseMisc/Commands/DigitalAssistant.MusicCommands /p:UseAppHost=false
     
     - name: Build x64 CPU Server
       run: dotnet publish "./DigitalAssistant/Core/DigitalAssistant.Server/DigitalAssistant.Server.csproj" -c Release -o ${{ github.workspace }}/ReleaseServer64 /p:Platform=x64 /p:UseAppHost=false
@@ -71,26 +71,64 @@ jobs:
         $basePathServer64 =  "${{ github.workspace }}/ReleaseServer64"
         $basePathServerAny =  "${{ github.workspace }}/ReleaseServerAny"
         $basePathClient =  "${{ github.workspace }}/ReleaseClient"
+        $basePathMisc =  "${{ github.workspace }}/ReleaseMisc"
+        
+        $resultServerWindows64 =  "${{ github.workspace }}/ServerReleaseWindows64"
+        $resultServerLinux64 =  "${{ github.workspace }}/ServerReleaseLinux64"
+        $resultServerLinuxArm64 =  "${{ github.workspace }}/ServerReleaseLinuxArm64"
+        $resultServerMac =  "${{ github.workspace }}/ServerReleaseMac"
 
         Write-Host "Remove no longer required configuration files"
-        Remove-Item -Path (Join-Path $basePathServer64 "appsettings.Development.json") -Force        
-        Remove-Item -Path (Join-Path $basePathServerAny "appsettings.Development.json") -Force        
+        Remove-Item -Path (Join-Path $basePathServer64 "appsettings.Development.json") -Force
+        Remove-Item -Path (Join-Path $basePathServerAny "appsettings.Development.json") -Force
         Remove-Item -Path (Join-Path $basePathClient "appsettings.Development.json") -Force
 
         Write-Host "Copy server binary files for different plattforms"
-        Copy-Item -Path "$basePathServer64/*" -Destination ServerReleaseWindows/ -Recurse
-        Copy-Item -Path "$basePathServer64/*" -Destination ServerReleaseLinux8664/ -Recurse
+        Copy-Item -Path "$basePathServer64/*" -Destination $resultServerWindows64 -Recurse
+        Copy-Item -Path "$basePathMisc/*" -Destination $resultServerWindows64 -Recurse
+        Copy-Item -Path "$basePathServer64/*" -Destination $resultServerLinux64 -Recurse
+        Copy-Item -Path "$basePathMisc/*" -Destination $resultServerLinux64 -Recurse
+        Copy-Item -Path "$basePathServerAny/*" -Destination $resultServerLinuxArm64 -Recurse
+        Copy-Item -Path "$basePathMisc/*" -Destination $resultServerLinuxArm64 -Recurse
+        Copy-Item -Path "$basePathServerAny/*" -Destination $resultServerMac -Recurse
+        Copy-Item -Path "$basePathMisc/*" -Destination $resultServerMac -Recurse
 
-    - name: Publish server application artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: ServerApplicationArtifact
-        path: ReleaseServer/
-
+        Write-Host "Prepare Configurations"
+        Remove-Item -Path (Join-Path $resultServerWindows64 "appsettings.Linux.json") -Force
+        Remove-Item -Path (Join-Path $resultServerLinux64 "appsettings.json") -Force
+        Rename-Item -Path -Path (Join-Path $resultServerLinux64 "appsettings.Linux.json") -NewName "appsettings.json"
+        Remove-Item -Path (Join-Path $resultServerLinuxArm64 "appsettings.json") -Force
+        Rename-Item -Path -Path (Join-Path $resultServerLinuxArm64 "appsettings.Linux.json") -NewName "appsettings.json"
+        Remove-Item -Path (Join-Path $resultServerMac "appsettings.json") -Force
+        Rename-Item -Path -Path (Join-Path $resultServerMac "appsettings.Linux.json") -NewName "appsettings.json"
+        
     - name: Publish client application artifact
       uses: actions/upload-artifact@v4
       with:
         name: ClientApplicationArtifact
         path: ReleaseClient/
-        
+
+    - name: Publish windows server application artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: ServerApplicationArtifact_Windows
+        path: ServerReleaseWindows64/
+
+    - name: Publish linux server x64 application artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: ServerApplicationArtifact_Linux_x64
+        path: ServerReleaseLinux64/
+
+    - name: Publish linux server arm64 application artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: ServerApplicationArtifact_Linux_arm64
+        path: ServerReleaseLinuxArm64/
+
+    - name: Publish mac server application artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: ServerApplicationArtifact_Mac
+        path: ServerReleaseMac/
 
