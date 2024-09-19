@@ -19,7 +19,7 @@ jobs:
         brew install make
 
     - name: Build PhonemizeESpeakWrapper
-      run:  make export_mac -C DigitalAssistant/Libs/PhonemizeESpeakWrapper
+      run:  gmake export_mac_x64 -C DigitalAssistant/Libs/PhonemizeESpeakWrapper
 
     - name: Publish artifact
       uses: actions/upload-artifact@v4
