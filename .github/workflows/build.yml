@@ -1,16 +1,11 @@
 name: Build Release
 
-on: 
-  workflow_dispatch:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+on: workflow_dispatch
   
 jobs:
   build:
 
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v4
@@ -30,10 +25,28 @@ jobs:
     
     - name: Setup msbuild
       uses: microsoft/setup-msbuild@v2
+  
+    - name: Download linux arm64 wrapper artifact
+      uses: dawidd6/action-download-artifact@v6
+      with:
+        workflow: build-wrapper-linux-arm64.yml
+        path: ServerReleaseLinuxArm64/
 
-    - name: Build PhonemizeESpeakWrapper
-      run: msbuild DigitalAssistant/Libs/PhonemizeESpeakWrapper/PhonemizeESpeakWrapper.vcxproj /p:configuration=Release /p:platform=x64 /p:OutDir=${{ github.workspace }}/ReleaseServer
-    
+    - name: Download linux x86/x64 wrapper artifact
+      uses: dawidd6/action-download-artifact@v6
+      with:
+        workflow: build-wrapper-linux-x86_64.yml
+        path: ServerReleaseLinux8664/
+
+    - name: Download windows wrapper artifact
+      uses: dawidd6/action-download-artifact@v6
+      with:
+        workflow: build-wrapper-windows-x86_64.yml
+        path: ServerReleaseWindows/
+
+    - name: Test
+      run: dotnet test "./DigitalAssistant/Tests/DigitalAssistant.Server.Tests/DigitalAssistant.Server.Tests.csproj" -c Release
+      
     - name: Build Hue Connector
       run: dotnet publish "./DigitalAssistant/Connectors/DigitalAssistant.HueConnector/DigitalAssistant.HueConnector.csproj" -c Release -o ${{ github.workspace }}/ReleaseServer/Connectors/DigitalAssistant.HueConnector /p:UseAppHost=false
 
@@ -44,27 +57,29 @@ jobs:
     - name: Build Music Commands
       run: dotnet publish "./DigitalAssistant/Commands/DigitalAssistant.MusicCommands/DigitalAssistant.MusicCommands.csproj" -c Release -o ${{ github.workspace }}/ReleaseServer/Commands/DigitalAssistant.MusicCommands /p:UseAppHost=false
     
-    - name: Build Server
-      run: dotnet publish "./DigitalAssistant/Core/DigitalAssistant.Server/DigitalAssistant.Server.csproj" -c Release -o ${{ github.workspace }}/ReleaseServer /p:Platform=x64 /p:UseAppHost=false
+    - name: Build x64 CPU Server
+      run: dotnet publish "./DigitalAssistant/Core/DigitalAssistant.Server/DigitalAssistant.Server.csproj" -c Release -o ${{ github.workspace }}/ReleaseServer64 /p:Platform=x64 /p:UseAppHost=false
+    - name: Build Any CPU Server
+      run: dotnet publish "./DigitalAssistant/Core/DigitalAssistant.Server/DigitalAssistant.Server.csproj" -c Release -o ${{ github.workspace }}/ReleaseServerAny /p:UseAppHost=false
 
     - name: Build Client
       run: dotnet publish "./DigitalAssistant/Core/DigitalAssistant.Client/DigitalAssistant.Client.csproj" -c Release -o ${{ github.workspace }}/ReleaseClient /p:UseAppHost=false
-
-    - name: Test
-      run: dotnet test "./DigitalAssistant/Tests/DigitalAssistant.Server.Tests/DigitalAssistant.Server.Tests.csproj" -c Release /p:Platform=x64
       
-    - name: Configure Release Settings
+    - name: Configure Release Packages
       shell: pwsh
       run: |
-        Write-Host "Remove no longer required configuration files"
-        
-        $basePathServer =  "${{ github.workspace }}/ReleaseServer"
+        $basePathServer64 =  "${{ github.workspace }}/ReleaseServer64"
+        $basePathServerAny =  "${{ github.workspace }}/ReleaseServerAny"
         $basePathClient =  "${{ github.workspace }}/ReleaseClient"
-                
-        Remove-Item -Path (Join-Path $basePathServer "appsettings.Development.json") -Force
-        Remove-Item -Path (Join-Path $basePathServer "appsettings.Linux.json") -Force
 
+        Write-Host "Remove no longer required configuration files"
+        Remove-Item -Path (Join-Path $basePathServer64 "appsettings.Development.json") -Force        
+        Remove-Item -Path (Join-Path $basePathServerAny "appsettings.Development.json") -Force        
         Remove-Item -Path (Join-Path $basePathClient "appsettings.Development.json") -Force
+
+        Write-Host "Copy server binary files for different plattforms"
+        Copy-Item -Path "$basePathServer64/*" -Destination ServerReleaseWindows/ -Recurse
+        Copy-Item -Path "$basePathServer64/*" -Destination ServerReleaseLinux8664/ -Recurse
 
     - name: Publish server application artifact
       uses: actions/upload-artifact@v4
