@@ -1,4 +1,4 @@
-name: Build Wrapper Windows x86/x64
+name: Build Wrapper Windows x64
 
 on: workflow_dispatch
 
