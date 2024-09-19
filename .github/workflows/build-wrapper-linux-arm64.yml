@@ -11,13 +11,6 @@ jobs:
       with:
         path: DigitalAssistant
         
-    - name: Test
-      shell: pwsh
-      run: |
-        $basePathServer =  "${{ github.workspace }}"
-        Write-Host $basePathServer
-        Write-Host "${PWD}"
-        
     - uses: uraimo/run-on-arch-action@v2
       name: Run commands
       id: runcmd
@@ -25,13 +18,11 @@ jobs:
         arch: aarch64
         distro: ubuntu_latest
         githubToken: ${{ github.token }}
-        run: |
-          echo "${PWD}"
-          apt-get install -y make
-          apt-get install -y build-essential
+        run: |          
+          apt-get update -q -y
+          apt-get install -q -y make
+          apt-get install -q -y build-essential
           make export_aarch64 -C DigitalAssistant/Libs/PhonemizeESpeakWrapper
-          
-
         
     - name: Publish artifact
       uses: actions/upload-artifact@v4
