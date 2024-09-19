@@ -30,3 +30,8 @@ export_x86_64:
 	mkdir -p ./Export
 	g++ -fpic -shared espeak_phonemize_wrapper.cpp -lespeak-ng -lpiper_phonemize -I./Libs/piper-phonemize/linux_x86_64/include -L./Libs/piper-phonemize/linux_x86_64/lib -o ./Export/PhonemizeESpeakWrapper.so -Wl,-rpath,'$$ORIGIN'
 	cp ./Libs/piper-phonemize/linux_x86_64/lib/* ./Export/
+
+export_mac_x64:
+	mkdir -p ./Export
+	g++ -fpic -shared espeak_phonemize_wrapper.cpp -lespeak-ng -lpiper_phonemize -I./Libs/piper-phonemize/mac_x64/include -L./Libs/piper-phonemize/mac_x64/lib -o ./Export/PhonemizeESpeakWrapper.so -Wl,-rpath,'$$ORIGIN'
+	cp ./Libs/piper-phonemize/mac_x64/lib/* ./Export/
