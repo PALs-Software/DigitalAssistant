@@ -82,10 +82,10 @@ jobs:
         Remove-Item -Path (Join-Path $basePathClient "appsettings.Development.json") -Force
 
         Write-Host "Copy connectors and commands"
-        Copy-Item -Path "${{ github.workspace }}/DigitalAssistant/Core/DigitalAssistant.Server/bin/Release/net8.0/Connectors $basePathServer64
-        Copy-Item -Path "${{ github.workspace }}/DigitalAssistant/Core/DigitalAssistant.Server/bin/Release/net8.0/Connectors $basePathServerAny
-        Copy-Item -Path "${{ github.workspace }}/DigitalAssistant/Core/DigitalAssistant.Server/bin/Release/net8.0/Commands $basePathServer64
-        Copy-Item -Path "${{ github.workspace }}/DigitalAssistant/Core/DigitalAssistant.Server/bin/Release/net8.0/Commands $basePathServerAny
+        Copy-Item -Path "${{ github.workspace }}/DigitalAssistant/Core/DigitalAssistant.Server/bin/Release/net8.0/Connectors" -Destination $basePathServer64
+        Copy-Item -Path "${{ github.workspace }}/DigitalAssistant/Core/DigitalAssistant.Server/bin/Release/net8.0/Connectors" -Destination $basePathServerAny
+        Copy-Item -Path "${{ github.workspace }}/DigitalAssistant/Core/DigitalAssistant.Server/bin/Release/net8.0/Commands" -Destination $basePathServer64
+        Copy-Item -Path "${{ github.workspace }}/DigitalAssistant/Core/DigitalAssistant.Server/bin/Release/net8.0/Commands" -Destination $basePathServerAny
         
         Write-Host "Copy server binary files for different plattforms"
         Copy-Item -Path "$basePathServer64/*" -Destination $resultServerWindows64 -Recurse
