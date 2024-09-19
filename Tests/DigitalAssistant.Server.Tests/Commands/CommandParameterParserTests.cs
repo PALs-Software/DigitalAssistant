@@ -217,14 +217,6 @@ public class CommandParameterParserTests : DigitalAssistantTestContext
 
     [TestMethod]
     [Timeout(10000)]
-    public async Task ParseAreaTypeAsync()
-    {
-        // Not yet implemented TODO
-        throw new NotImplementedException();
-    }
-
-    [TestMethod]
-    [Timeout(10000)]
     public async Task ParseDeviceTypeAsync()
     {
         // Arrange
