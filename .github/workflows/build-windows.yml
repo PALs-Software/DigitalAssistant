@@ -1,6 +1,11 @@
 name: Build Windows
 
-on: workflow_dispatch
+on: 
+  workflow_dispatch:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
 
 env:
   BuildConfiguration: Release
@@ -29,9 +34,6 @@ jobs:
     
     - name: Setup msbuild
       uses: microsoft/setup-msbuild@v2
-          
-    - name: Restore dependencies
-      run: dotnet restore
 
     - name: Build PhonemizeESpeakWrapper
       run: msbuild DigitalAssistant/Libs/PhonemizeESpeakWrapper/PhonemizeESpeakWrapper.vcxproj /p:configuration=$BuildConfiguration /p:platform=$BuildPlatform /p:OutDir=${{ github.workspace }}/ReleaseServer
