@@ -36,7 +36,7 @@ jobs:
       uses: microsoft/setup-msbuild@v2
 
     - name: Build PhonemizeESpeakWrapper
-      run: msbuild DigitalAssistant/Libs/PhonemizeESpeakWrapper/PhonemizeESpeakWrapper.vcxproj /p:configuration=$BuildConfiguration /p:platform=$BuildPlatform /p:OutDir=${{ github.workspace }}/ReleaseServer
+      run: msbuild DigitalAssistant/Libs/PhonemizeESpeakWrapper/PhonemizeESpeakWrapper.vcxproj /p:configuration=Release /p:platform=x64 /p:OutDir=${{ github.workspace }}/ReleaseServer
     
     - name: Build Hue Connector
       run: dotnet publish "./DigitalAssistant/Connectors/DigitalAssistant.HueConnector/DigitalAssistant.HueConnector.csproj" -c $BuildConfiguration -o ${{ github.workspace }}/ReleaseServer/Connectors/DigitalAssistant.HueConnector /p:UseAppHost=false
