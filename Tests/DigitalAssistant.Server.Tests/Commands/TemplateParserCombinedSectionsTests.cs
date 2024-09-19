@@ -99,7 +99,7 @@ public class TemplateParserCombinedSectionsTests : DigitalAssistantTestContext
         // Assert
         Assert.IsTrue(success);
         Assert.IsNotNull(parameters);
-        Assert.AreEqual("(?:Schalte|Setze|Wechsle|Ändere|Stelle)(?: (?:das|die))? (?'Light'Küchenlicht|light)(?: )?(?:Licht)?(?: auf)? (?'State'0|false|aus|runter|ausmachen|aus machen|einschalten|1|true|an|hoch|anmachen|an machen|ausschalten)", commandTemplate.Regex.ToString());
+        Assert.AreEqual("(?:Schalte|Setze|Wechsle|Ändere|Stelle)(?: (?:das|die))? (?'Light'Küchenlicht|light)(?: )?(?:Licht)?(?: auf)? (?'State'0|false|aus|runter|ausmachen|aus machen|ein|einschalten|1|true|an|hoch|anmachen|an machen|ausschalten)", commandTemplate.Regex.ToString());
         Assert.AreEqual(2, parameters.Parameters.Count);
         Assert.AreEqual(true, parameters.Parameters["State"].Value);
         Assert.AreEqual(lightDevice.Name, ((ILightDevice)parameters.Parameters["Light"].Value!).Name);
