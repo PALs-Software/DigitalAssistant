@@ -8,8 +8,9 @@ using BlazorBase.MessageHandling.Enum;
 using BlazorBase.MessageHandling.Interfaces;
 using DigitalAssistant.Server.Modules.Ai.Asr.Enums;
 using DigitalAssistant.Server.Modules.Ai.Asr.Services;
-using DigitalAssistant.Server.Modules.Ai.TextToSpeech;
 using DigitalAssistant.Server.Modules.Ai.TextToSpeech.Enums;
+using DigitalAssistant.Server.Modules.Ai.TextToSpeech.Models;
+using DigitalAssistant.Server.Modules.Ai.TextToSpeech.Services;
 using DigitalAssistant.Server.Modules.CacheModule;
 using DigitalAssistant.Server.Modules.Clients.Models;
 using DigitalAssistant.Server.Modules.MessageHandling.Components;
@@ -21,7 +22,6 @@ using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 using System.Text;
 using System.Text.Json;
-using TextToSpeech;
 
 namespace DigitalAssistant.Server.Modules.Setups.Models;
 
@@ -151,8 +151,8 @@ public partial class Setup : BaseModel
 
         if (TtsSettingsChanged)
         {
-            var ttsService = serviceProvider.GetRequiredService<TextToSpeechService>();
-            var ttsModelPath = ttsService.GetModelPath(GetCombinedTtsModelName());
+            var ttsService = serviceProvider.GetRequiredService<TtsService>();
+            var ttsModelPath = ttsService.GetModelPath(this);
             var jsonModelPath = ttsModelPath + ".json";
             if (ttsModelPath != null && !File.Exists(ttsModelPath))
             {
@@ -185,11 +185,11 @@ public partial class Setup : BaseModel
 
         if (TtsSettingsChanged)
         {
-            var ttsService = serviceProvider.GetRequiredService<TextToSpeechService>();
-            var ttsModelPath = ttsService.GetModelPath(GetCombinedTtsModelName());
+            var ttsService = serviceProvider.GetRequiredService<TtsService>();
+            var ttsModelPath = ttsService.GetModelPath(this);
             var jsonModelPath = ttsModelPath + ".json";
             var jsonText = File.ReadAllText(jsonModelPath, Encoding.UTF8);
-            var modelConfiguration = JsonSerializer.Deserialize<ModelConfiguration>(jsonText);
+            var modelConfiguration = JsonSerializer.Deserialize<TtsConfiguration>(jsonText);
             if (modelConfiguration == null || modelConfiguration.Audio.SampleRate == 0)
                 throw new CRUDException(localizer["SampleRateCanNotBeReadErr", jsonModelPath]);
 
@@ -225,11 +225,7 @@ public partial class Setup : BaseModel
 
         if (TtsSettingsChanged)
         {
-            var textToSpeechConfiguration = serviceProvider.GetRequiredService<TextToSpeechConfiguration>();
-            textToSpeechConfiguration.Model = GetCombinedTtsModelName();
-            textToSpeechConfiguration.UseGpu = TtsMode == TtsMode.Gpu;
-
-            var ttsService = args.EventServices.ServiceProvider.GetRequiredService<TextToSpeechService>();
+            var ttsService = serviceProvider.GetRequiredService<TtsService>();
             await ttsService.ReInitModelAsync();
             TtsSettingsChanged = false;
 
@@ -349,10 +345,4 @@ public partial class Setup : BaseModel
     }
     #endregion
 
-    #region MISC
-    public string GetCombinedTtsModelName()
-    {
-        return $"{TtsLanguage}-{TtsModel}-{TtsModelQuality}.onnx";
-    }
-    #endregion
 }

@@ -12,8 +12,7 @@ EXPOSE 8080
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS modules
 WORKDIR /src
 
-RUN apt update && apt install -y make
-RUN apt install -y build-essential
+RUN apt update
 RUN apt install -y openssl
 RUN apt install -y tree
 
@@ -22,19 +21,8 @@ FROM modules AS copy-files
 COPY ./DigitalAssistant/ ./DigitalAssistant
 COPY ./BlazorBase/ ./BlazorBase
 
-# Build wrapper and copy files
-FROM copy-files AS build-wrapper
-WORKDIR /src/DigitalAssistant/Libs/PhonemizeESpeakWrapper
-# check symlinks of library are ok under windows host -> if not check git config symlinks is enabled: git config core.symlinks true
-RUN ls -l ./Libs/piper-phonemize/linux_x86_64/lib
-RUN make export_x86_64
-RUN mkdir -p /app/publish/
-RUN mkdir -p /app/publish-connectors/
-RUN mkdir -p /app/publish-commands/
-RUN cp ./Export/* /app/publish/
-
 # Create ssl certificates
-FROM build-wrapper AS create-certificates
+FROM copy-files AS create-certificates
 WORKDIR /src/DigitalAssistant/Scripts/Build
 RUN /bin/bash -c 'source /src/DigitalAssistant/Scripts/Build/Assets/docker-create-certificates.sh'
 RUN mkdir -p /app/publish/DigitalAssistantServer/Certificates/
@@ -53,15 +41,15 @@ RUN ls -l /app/publish/DigitalAssistantServer/Certificates
 FROM create-certificates AS build-connectors
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src/DigitalAssistant/Connectors/DigitalAssistant.HueConnector
-RUN dotnet publish "./DigitalAssistant.HueConnector.csproj" -v normal -c $BUILD_CONFIGURATION -o /app/publish-connectors /p:UseAppHost=false
+RUN dotnet publish "./DigitalAssistant.HueConnector.csproj" -v normal -c $BUILD_CONFIGURATION -o /app/publish-misc /p:UseAppHost=false
 
 # Publish command projects
 FROM build-connectors AS build-commands
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src/DigitalAssistant/Commands
-RUN dotnet publish "./DigitalAssistant.CoreCommands/DigitalAssistant.CoreCommands.csproj" -v normal -c $BUILD_CONFIGURATION -o /app/publish-commands /p:UseAppHost=false
-RUN dotnet publish "./DigitalAssistant.DeviceCommands/DigitalAssistant.DeviceCommands.csproj" -v normal -c $BUILD_CONFIGURATION -o /app/publish-commands /p:UseAppHost=false
-RUN dotnet publish "./DigitalAssistant.MusicCommands/DigitalAssistant.MusicCommands.csproj" -v normal -c $BUILD_CONFIGURATION -o /app/publish-commands /p:UseAppHost=false
+RUN dotnet publish "./DigitalAssistant.CoreCommands/DigitalAssistant.CoreCommands.csproj" -v normal -c $BUILD_CONFIGURATION -o /app/publish-misc /p:UseAppHost=false
+RUN dotnet publish "./DigitalAssistant.DeviceCommands/DigitalAssistant.DeviceCommands.csproj" -v normal -c $BUILD_CONFIGURATION -o /app/publish-misc /p:UseAppHost=false
+RUN dotnet publish "./DigitalAssistant.MusicCommands/DigitalAssistant.MusicCommands.csproj" -v normal -c $BUILD_CONFIGURATION -o /app/publish-misc /p:UseAppHost=false
 
 # Publish digital assistant server project
 FROM build-commands AS build-server
@@ -69,12 +57,10 @@ ARG BUILD_CONFIGURATION=Release
 WORKDIR /src/DigitalAssistant/Core/DigitalAssistant.Server
 RUN dotnet publish "./DigitalAssistant.Server.csproj" -v normal -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
-RUN cp /src/DigitalAssistant/Scripts/Build/Assets/docker-server-appsettings.json /app/publish/appsettings.json
-RUN cp -r /src/DigitalAssistant/Core/DigitalAssistant.Server/bin/Release/net8.0/Connectors /app/publish
-RUN cp -r /src/DigitalAssistant/Core/DigitalAssistant.Server/bin/Release/net8.0/Commands /app/publish
+RUN cp /src/DigitalAssistant/Scripts/Build/Assets/docker-server-appsettings.json /app/publish/appsettings.Linux.json
+RUN cp -r /app/publish-misc/Publish/* /app/publish
 
 RUN rm /app/publish/appsettings.Development.json
-RUN rm /app/publish/appsettings.Linux.json
 RUN rm /app/publish/appsettings.User.json
 
 RUN ls /app/publish/

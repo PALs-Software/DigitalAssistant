@@ -18,8 +18,8 @@ using DigitalAssistant.Base.ClientServerConnection;
 using DigitalAssistant.Base.General;
 using DigitalAssistant.Server.Data;
 using DigitalAssistant.Server.Modules.Ai.Asr.Services;
-using DigitalAssistant.Server.Modules.Ai.TextToSpeech;
 using DigitalAssistant.Server.Modules.Ai.TextToSpeech.Enums;
+using DigitalAssistant.Server.Modules.Ai.TextToSpeech.Services;
 using DigitalAssistant.Server.Modules.BackgroundJobs;
 using DigitalAssistant.Server.Modules.CacheModule;
 using DigitalAssistant.Server.Modules.Clients.BrowserClient.AudioPlayer;
@@ -42,9 +42,15 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 using System.Text.Json.Serialization;
-using TextToSpeech;
 
 var webApplicationBuilder = WebApplication.CreateBuilder(args);
+
+if (OperatingSystem.IsWindows())
+    webApplicationBuilder.Configuration.AddJsonFile("appsettings.Windows.json");
+else if(OperatingSystem.IsLinux())
+    webApplicationBuilder.Configuration.AddJsonFile("appsettings.Linux.json");
+else if (OperatingSystem.IsMacOS())
+    webApplicationBuilder.Configuration.AddJsonFile("appsettings.Mac.json");
 
 #if DEBUG
 webApplicationBuilder.Configuration.AddJsonFile("appsettings.User.json");
@@ -260,14 +266,7 @@ void ConfigureServices(WebApplicationBuilder builder)
         {
             options.SuppressModelStateInvalidFilter = true; // will be handled by ApiResponseActionHandlingAttribute instead
         });
-
-    builder.Services.AddTextToSpeechService(
-        new TextToSpeechConfiguration()
-        {
-            ModelBaseDirectoryPath = Path.Join(builder.Configuration["ModelsDirectoryPath"], "TtsModels")
-        }
-    );
-
+    
     builder.Services
         .AddDataProtection()
         .SetDefaultKeyLifetime(TimeSpan.FromDays(365 * 100))
@@ -278,6 +277,7 @@ void ConfigureServices(WebApplicationBuilder builder)
         .AddSingleton<AudioService>()
         .AddSingleton<AsrService>()
         .AddSingleton<AsrModelSelectionService>()
+        .AddSingleton<TtsService>()
         .AddSingleton<TtsModelSelectionService>()
         .AddSingleton<CommandTemplateParser>()
         .AddSingleton<ClientInformationService>()
@@ -326,14 +326,6 @@ async Task OnStartupAsync<TDatabaseContext>(WebApplication app) where TDatabaseC
     await Cache.SetupCache.RefreshSetupCacheAsync(scope.ServiceProvider);
     await Cache.UserCache.InitUserCacheAsync(scope.ServiceProvider);
     await Cache.ClientCache.InitClientCacheAsync(scope.ServiceProvider);
-
-    var textToSpeechConfiguration = scope.ServiceProvider.GetRequiredService<TextToSpeechConfiguration>();
-    if (Cache.SetupCache.Setup != null)
-    {
-        textToSpeechConfiguration.Model = Cache.SetupCache.Setup.GetCombinedTtsModelName();
-        textToSpeechConfiguration.UseGpu = Cache.SetupCache.Setup.TtsMode == TtsMode.Gpu;
-        textToSpeechConfiguration.PreventLoadingAiModels = app.Configuration.GetValue<bool>("PreventLoadingAiModels");
-    }
 
     var connectorService = scope.ServiceProvider.GetRequiredService<ConnectorService>();
     await connectorService.LoadConnectorsAsync();

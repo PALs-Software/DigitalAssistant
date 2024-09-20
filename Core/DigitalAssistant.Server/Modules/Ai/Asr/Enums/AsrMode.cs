@@ -3,5 +3,7 @@
 public enum AsrMode
 {
     Cpu,
+#if GPUSUPPORTENABLED
     Gpu
+#endif
 }

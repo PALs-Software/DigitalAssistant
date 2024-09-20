@@ -4,6 +4,7 @@
 		<TargetFramework>net8.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
+		<Configurations>Debug;Release;Debug_WithGpuSupport;Release_WithGpuSupport</Configurations>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -49,11 +50,16 @@
 	</ItemGroup>
 
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
-		<Message Importance="High" Text="COPY HueConnector output to Server output" />
+		<Message Condition="'$(_IsPublishing)'==''" Importance="High" Text="COPY HueConnector output to Server output" />
+		<Message Condition="'$(_IsPublishing)'=='true'" Importance="High" Text="PUBLISH HueConnector output to $(PublishDir)\Publish" />
+		
 		<ItemGroup>
 			<MySourceFiles Include="$(OutDir)\DigitalAssistant.HueConnector.*" />
 		</ItemGroup>
-		<Copy SourceFiles="@(MySourceFiles)" DestinationFolder="$(ProjectDir)..\..\Core\DigitalAssistant.Server\bin\$(Configuration)\net8.0\Connectors\HueConnector" />
+		
+		<Copy SourceFiles="@(MySourceFiles)" DestinationFolder="$(ProjectDir)..\..\Core\DigitalAssistant.Server\bin\$(Configuration)\net8.0\Connectors\DigitalAssistant.HueConnector" />
+		
+		<Copy Condition="'$(_IsPublishing)'=='true'" SourceFiles="@(MySourceFiles)" DestinationFolder="$(PublishDir)\Publish\Connectors\DigitalAssistant.HueConnector" />
 	</Target>
 	
 </Project>

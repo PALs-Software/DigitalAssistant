@@ -1,5 +1,4 @@
 ﻿using BlazorBase.Services;
-using DigitalAssistant.Server.Modules.Ai.Asr.Enums;
 using DigitalAssistant.Server.Modules.CacheModule;
 using DigitalAssistant.Server.Modules.Setups.Models;
 using Microsoft.ML.OnnxRuntime;
@@ -10,7 +9,6 @@ namespace DigitalAssistant.Server.Modules.Ai.Asr.Services;
 public class AsrService : IDisposable
 {
     #region Injects
-    protected readonly IConfiguration Configuration;
     protected readonly ILogger<AsrService> Logger;
     protected readonly BaseErrorHandler ErrorHandler;
     #endregion
@@ -21,13 +19,18 @@ public class AsrService : IDisposable
     protected InferenceSession? Session;
     protected Microsoft.ML.OnnxRuntime.SessionOptions? SessionOptions;
     protected SemaphoreSlim Semaphore = new(1, 1);
+
+    protected bool PreventLoadingAiModels;
+    protected string ModelsDirectoryPath;
     #endregion
 
     public AsrService(IConfiguration configuration, ILogger<AsrService> logger, BaseErrorHandler errorHandler)
     {
-        Configuration = configuration;
         Logger = logger;
         ErrorHandler = errorHandler;
+
+        PreventLoadingAiModels = configuration.GetValue<bool>("PreventLoadingAiModels");
+        ModelsDirectoryPath = configuration["ModelsDirectoryPath"] ?? String.Empty;
 
         InitSession();
     }
@@ -47,7 +50,7 @@ public class AsrService : IDisposable
         if (setup == null)
             return;
 
-        if (Configuration.GetValue<bool>("PreventLoadingAiModels"))
+        if (PreventLoadingAiModels)
             return;
 
         Language = (int)setup.AsrLanguage;
@@ -60,7 +63,9 @@ public class AsrService : IDisposable
         {
             SessionOptions = setup.AsrMode switch
             {
-                AsrMode.Gpu => Microsoft.ML.OnnxRuntime.SessionOptions.MakeSessionOptionWithCudaProvider(),
+#if GPUSUPPORTENABLED
+                Enums.AsrMode.Gpu => Microsoft.ML.OnnxRuntime.SessionOptions.MakeSessionOptionWithCudaProvider(),
+#endif
                 _ => new Microsoft.ML.OnnxRuntime.SessionOptions(),
             };
             SessionOptions.RegisterOrtExtensions();
@@ -157,12 +162,21 @@ public class AsrService : IDisposable
     #region MISC
     public string GetModelPath(Setup setup)
     {
-        return Path.Join(Configuration["ModelsDirectoryPath"],
+        return Path.Join(ModelsDirectoryPath,
             "AsrModels",
             setup.AsrModel.ToString(),
-            setup.AsrMode.ToString(),
+            GetExecutionMode(setup),
             setup.AsrPrecision.ToString(),
-            $"whisper_{setup.AsrModel.ToString().ToLower()}_{setup.AsrMode.ToString().ToLower()}_{setup.AsrPrecision.ToString().ToLower()}.onnx");
+            $"whisper_{setup.AsrModel.ToString().ToLower()}_{GetExecutionMode(setup).ToLower()}_{setup.AsrPrecision.ToString().ToLower()}.onnx");
+    }
+
+    private string GetExecutionMode(Setup setup)
+    {
+#if GPUSUPPORTENABLED
+        return setup.AsrMode.ToString();
+#else
+        return "Cpu";
+#endif
     }
     #endregion
 }

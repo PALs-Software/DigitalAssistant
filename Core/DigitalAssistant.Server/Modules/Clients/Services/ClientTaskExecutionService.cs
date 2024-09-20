@@ -8,6 +8,7 @@ using DigitalAssistant.Base.ClientServerConnection;
 using DigitalAssistant.Base.ClientServerConnection.MessageTransferModels;
 using DigitalAssistant.Base.General;
 using DigitalAssistant.Server.Modules.Ai.Asr.Services;
+using DigitalAssistant.Server.Modules.Ai.TextToSpeech.Services;
 using DigitalAssistant.Server.Modules.CacheModule;
 using DigitalAssistant.Server.Modules.Clients.Enums;
 using DigitalAssistant.Server.Modules.Clients.Models;
@@ -18,7 +19,6 @@ using System.Globalization;
 using System.Net;
 using System.Text;
 using System.Text.Json;
-using TextToSpeech;
 
 namespace DigitalAssistant.Server.Modules.Clients.Services;
 
@@ -26,7 +26,7 @@ public class ClientTaskExecutionService(IServiceProvider serviceProvider,
                                         IBaseDbContext baseDbContext,
                                         CommandProcessor commandProcessor,
                                         AsrService asrService,
-                                        TextToSpeechService ttsService,
+                                        TtsService ttsService,
                                         ClientInformationService clientInformationService,
                                         AudioService audioService,
                                         ILogger<ClientTaskExecutionService> logger,
@@ -40,7 +40,7 @@ public class ClientTaskExecutionService(IServiceProvider serviceProvider,
     protected readonly IBaseDbContext DbContext = baseDbContext;
     protected readonly CommandProcessor CommandProcessor = commandProcessor;
     protected readonly AsrService AsrService = asrService;
-    protected readonly TextToSpeechService TextToSpeechService = ttsService;
+    protected readonly TtsService TextToSpeechService = ttsService;
     protected readonly ClientInformationService ClientInformationService = clientInformationService;
     protected readonly AudioService AudioService = audioService;
     #endregion

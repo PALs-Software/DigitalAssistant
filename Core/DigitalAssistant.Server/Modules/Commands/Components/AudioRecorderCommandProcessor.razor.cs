@@ -1,10 +1,10 @@
 ﻿using BlazorBase.AudioRecorder.Services;
+using DigitalAssistant.Server.Modules.Ai.TextToSpeech.Services;
 using DigitalAssistant.Server.Modules.Clients.BrowserClient.AudioPlayer;
 using DigitalAssistant.Server.Modules.Clients.Models;
 using DigitalAssistant.Server.Modules.Commands.Services;
 using Microsoft.AspNetCore.Components;
 using System.Globalization;
-using TextToSpeech;
 
 namespace DigitalAssistant.Server.Modules.Commands.Components;
 
@@ -13,7 +13,7 @@ public partial class AudioRecorderCommandProcessor
     #region Injects
     [Inject] protected CommandProcessor CommandProcessor { get; set; } = null!;
     [Inject] protected AudioConverter AudioConverter { get; set; } = null!;
-    [Inject] protected TextToSpeechService TextToSpeechService { get; set; } = null!;
+    [Inject] protected TtsService TextToSpeechService { get; set; } = null!;
     [Inject] protected WebAudioPlayer ClientAudioPlayer { get; set; } = null!;
     [Inject] protected IServiceProvider ServiceProvider { get; set; } = null!;
     #endregion

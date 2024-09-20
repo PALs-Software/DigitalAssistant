@@ -5,6 +5,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+		<Configurations>Debug;Release;Debug_WithGpuSupport;Release_WithGpuSupport</Configurations>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -34,15 +35,22 @@
 	</ItemGroup>
 
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
-		<Message Importance="High" Text="COPY MusicCommands output to Server output" />
+		<Message Condition="'$(_IsPublishing)'==''" Importance="High" Text="COPY MusicCommands output to Server output" />
+		<Message Condition="'$(_IsPublishing)'=='true'" Importance="High" Text="PUBLISH MusicCommands output to $(PublishDir)\Publish" />
+		
 		<ItemGroup>
 			<DllFiles Include="$(OutDir)\DigitalAssistant.MusicCommands.*" />
 			<RadioBrowserDllFiles Include="$(OutDir)\RadioBrowser.*" />
 			<TranslationFiles Include="$(OutDir)\**\*.json" />
 		</ItemGroup>
+		
 		<Copy SourceFiles="@(DllFiles)" DestinationFolder="$(ProjectDir)..\..\Core\DigitalAssistant.Server\bin\$(Configuration)\net8.0\Commands\DigitalAssistant.MusicCommands" />
 		<Copy SourceFiles="@(RadioBrowserDllFiles)" DestinationFolder="$(ProjectDir)..\..\Core\DigitalAssistant.Server\bin\$(Configuration)\net8.0\Commands\DigitalAssistant.MusicCommands" />
 		<Copy SourceFiles="@(TranslationFiles)" DestinationFolder="$(ProjectDir)..\..\Core\DigitalAssistant.Server\bin\$(Configuration)\net8.0\Commands\DigitalAssistant.MusicCommands\%(RecursiveDir)" />
+
+		<Copy Condition="'$(_IsPublishing)'=='true'" SourceFiles="@(DllFiles)" DestinationFolder="$(PublishDir)\Publish\Commands\DigitalAssistant.MusicCommands" />
+		<Copy Condition="'$(_IsPublishing)'=='true'" SourceFiles="@(RadioBrowserDllFiles)" DestinationFolder="$(PublishDir)\Publish\Commands\DigitalAssistant.MusicCommands\%(RecursiveDir)" />
+		<Copy Condition="'$(_IsPublishing)'=='true'" SourceFiles="@(TranslationFiles)" DestinationFolder="$(PublishDir)\Publish\Commands\DigitalAssistant.MusicCommands\%(RecursiveDir)" />
 	</Target>
 
 </Project>

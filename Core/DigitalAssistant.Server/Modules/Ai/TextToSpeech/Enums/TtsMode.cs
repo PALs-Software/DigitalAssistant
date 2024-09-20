@@ -3,5 +3,7 @@
 public enum TtsMode
 {
     Cpu,
+#if  GPUSUPPORTENABLED
     Gpu
+#endif
 }

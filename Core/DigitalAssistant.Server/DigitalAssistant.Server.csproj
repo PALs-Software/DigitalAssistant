@@ -7,15 +7,11 @@
 		<FileVersion>1.0.1.0</FileVersion>
 		<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
 		<UserSecretsId>f5ca69a5-ad0d-46cf-b721-c67a48689660</UserSecretsId>
-		<Configurations>Debug;Release;CreateMSSQLMigrations;CreateSQLiteMigrations</Configurations>
-		<Platforms>AnyCPU;x64</Platforms>
+		<Configurations>Debug;Release;CreateMSSQLMigrations;CreateSQLiteMigrations;Debug_WithGpuSupport;Release_WithGpuSupport</Configurations>
+		<Platforms>AnyCPU</Platforms>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='CreateMSSQLMigrations|AnyCPU'">
-		<DefineConstants>$(DefineConstants);DEBUG</DefineConstants>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='CreateMSSQLMigrations|x64'">
 		<DefineConstants>$(DefineConstants);DEBUG</DefineConstants>
 	</PropertyGroup>
 
@@ -23,9 +19,17 @@
 		<DefineConstants>$(DefineConstants);DEBUG</DefineConstants>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='CreateSQLiteMigrations|x64'">
-		<DefineConstants>$(DefineConstants);DEBUG</DefineConstants>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_WithGpuSupport|AnyCPU'">
+	  <DefineConstants>$(DefineConstants);GPUSUPPORTENABLED;DEBUG</DefineConstants>
 	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release_WithGpuSupport|AnyCPU'">
+	  <DefineConstants>$(DefineConstants);GPUSUPPORTENABLED;RELEASE</DefineConstants>
+	</PropertyGroup>
+
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<Message Importance="High" Text="Uses configuration '$(Configuration)' with platform '$(Platform)' for the build" />
+	</Target>
 
 	<ItemGroup>
 		<Content Remove="C:\Users\pal\.nuget\packages\blazorise\0.9.3.6\contentFiles\any\net5.0\Resources\Localization\Carousel\de.json" />
@@ -99,23 +103,13 @@
 		<PackageReference Include="System.Text.Json" Version="8.0.4" />
 	</ItemGroup>
 
-	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
-		<Message Importance="High" Text="Used Platform $(Platform) for the build" />
-	</Target>
-
-	<ItemGroup Condition="'$(Platform)'=='AnyCPU'">
+	<ItemGroup Condition="'$(Configuration)'!='Debug_WithGpuSupport' And '$(Configuration)'!='Release_WithGpuSupport'">
 		<PackageReference Include="Microsoft.ML.OnnxRuntime" Version="1.18.1" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(Platform)'=='x64'">
+	<ItemGroup Condition="'$(Configuration)'=='Debug_WithGpuSupport' Or '$(Configuration)'=='Release_WithGpuSupport'">
 		<PackageReference Include="Microsoft.ML.OnnxRuntime.Gpu" Version="1.18.1" />
 	</ItemGroup>
-
-	<PropertyGroup Condition="$(Platform)=='x64'">
-		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-		<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
-		<OutputPath>.\bin\Debug\net8.0</OutputPath>
-	</PropertyGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\..\BlazorBase\BlazorBase.AudioRecorder\BlazorBase.AudioRecorder.csproj" />
@@ -129,8 +123,7 @@
 		<ProjectReference Include="..\..\..\BlazorBase\BlazorBase.Themes\BlazorBase.Themes.csproj" />
 		<ProjectReference Include="..\..\..\BlazorBase\BlazorBase.User\BlazorBase.User.csproj" />
 		<ProjectReference Include="..\..\..\BlazorBase\BlazorBase\BlazorBase.csproj" />
-		<ProjectReference Include="..\..\Libs\Quickenshtein\Quickenshtein.csproj" />
-		<ProjectReference Include="..\..\Libs\TextToSpeech\TextToSpeech.csproj" />
+		<ProjectReference Include="..\..\Libs\ESpeakWrapper\ESpeakWrapper.csproj" />
 		<ProjectReference Include="..\DigitalAssistant.Abstractions\DigitalAssistant.Abstractions.csproj" />
 		<ProjectReference Include="..\DigitalAssistant.Base\DigitalAssistant.Base.csproj" />
 	</ItemGroup>
@@ -138,15 +131,6 @@
 	<ItemGroup>
 		<None Include="wwwroot\libs\bootstrap\css\bootstrap.min.css.map" />
 		<None Include="wwwroot\libs\bootstrap\js\bootstrap.min.js.map" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Content Update="wwwroot\audio\RequestSound.mp3">
-	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-	  </Content>
-	  <Content Update="wwwroot\audio\TimerRingtone.mp3">
-	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-	  </Content>
 	</ItemGroup>
 
 

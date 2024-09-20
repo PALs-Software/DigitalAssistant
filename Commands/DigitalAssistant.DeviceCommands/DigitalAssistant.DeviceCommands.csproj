@@ -4,6 +4,7 @@
 		<TargetFramework>net8.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
+		<Configurations>Debug;Release;Debug_WithGpuSupport;Release_WithGpuSupport</Configurations>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -29,12 +30,18 @@
 	</ItemGroup>
 	
 	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
-		<Message Importance="High" Text="COPY DeviceCommands output to Server output" />
+		<Message Condition="'$(_IsPublishing)'==''" Importance="High" Text="COPY DeviceCommands output to Server output" />
+		<Message Condition="'$(_IsPublishing)'=='true'" Importance="High" Text="PUBLISH DeviceCommands output to $(PublishDir)\Publish" />
+		
 		<ItemGroup>
 			<DllFiles Include="$(OutDir)\DigitalAssistant.DeviceCommands.*" />
 			<TranslationFiles Include="$(OutDir)\**\*.json" />
 		</ItemGroup>
+		
 		<Copy SourceFiles="@(DllFiles)" DestinationFolder="$(ProjectDir)..\..\Core\DigitalAssistant.Server\bin\$(Configuration)\net8.0\Commands\DigitalAssistant.DeviceCommands" />
 		<Copy SourceFiles="@(TranslationFiles)" DestinationFolder="$(ProjectDir)..\..\Core\DigitalAssistant.Server\bin\$(Configuration)\net8.0\Commands\DigitalAssistant.DeviceCommands\%(RecursiveDir)" />
+
+		<Copy Condition="'$(_IsPublishing)'=='true'" SourceFiles="@(DllFiles)" DestinationFolder="$(PublishDir)\Publish\Commands\DigitalAssistant.DeviceCommands" />
+		<Copy Condition="'$(_IsPublishing)'=='true'" SourceFiles="@(TranslationFiles)" DestinationFolder="$(PublishDir)\Publish\Commands\DigitalAssistant.DeviceCommands\%(RecursiveDir)" />
 	</Target>
 </Project>
