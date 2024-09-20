@@ -58,8 +58,8 @@ jobs:
         Remove-Item -Path (Join-Path $basePathServerWithGpuSupport "appsettings.Development.json") -Force
 
         Write-Host "Copy connectors and commands"
-        Copy-Item -Path  "$basePathMisc/*" -Destination $basePathServer -Recurse
-        Copy-Item -Path  "$basePathMisc/*" -Destination $basePathServerWithGpuSupport -Recurse        
+        Copy-Item -Path "$basePathMisc/Publish/*" -Destination $basePathServer -Recurse
+        Copy-Item -Path "$basePathMisc/Publish/*" -Destination $basePathServerWithGpuSupport -Recurse        
     
         Write-Host "Zip packages"
         Compress-Archive -Path "$basePathClient/*" -DestinationPath "${{ github.workspace }}/Client.zip"
