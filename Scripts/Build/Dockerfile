@@ -61,7 +61,7 @@ RUN cp /src/DigitalAssistant/Scripts/Build/Assets/docker-server-appsettings.json
 RUN cp -r /app/publish-misc/Publish/* /app/publish
 
 RUN rm /app/publish/appsettings.Development.json
-RUN rm /app/publish/appsettings.User.json
+RUN rm /app/publish/appsettings.User.json || true
 
 RUN ls /app/publish/
 RUN tree /app/publish/Connectors
