@@ -4,3 +4,5 @@
   href: host-server.md
 - name: Host Client
   href: host-client.md
+- name: Compatibility
+  href: compatibility.md
