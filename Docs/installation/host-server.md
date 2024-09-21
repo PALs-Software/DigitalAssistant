@@ -22,7 +22,7 @@ docker run --name digital-assistant-server -p 8079:8079 -p 8080:8080 -v DigitalA
 1. Download and install the [**ASP.NET Core Runtime 8.\***](https://dotnet.microsoft.com/en-us/download/dotnet/8.0) for your platform type.
 2. Download the binaries of your platform from the [release page of the github repository](https://github.com/PALs-Software/DigitalAssistant).
 3. Extract the compressed files.
-4. **Optional**: Change the default configuration of the server by adjusting the `appsettings.json` file like it is explained in the chapter "[Change default configuration](#change-default-configuration)".
+4. **Optional**: Change the default configuration of the server by adjusting the `appsettings.{YourPlattform}.json` file like it is explained in the chapter "[Change default configuration](#change-default-configuration)".
 5. Create a self signed certificate for the server like described in [this chapter](#create-self-signed-certificate-for-the-server).
 6. Open a terminal of your choice.
 7. Navigate to the extracted binary files.
@@ -40,14 +40,14 @@ Under Windows, the server application can also be executed with another web serv
 3. Create a new website over the wizard of the IIS manager.
 4. Download the binaries of your platform from the [release page of the github repository](https://github.com/PALs-Software/DigitalAssistant)
 5. Extract the compressed files to the newly created website folder.
-6. **Optional**: Change the default configuration of the server by adjusting the `appsettings.json` file like it is explained in the chapter "[Change default configuration](#change-default-configuration)".
+6. **Optional**: Change the default configuration of the server by adjusting the `appsettings.{YourPlattform}.json` file like it is explained in the chapter "[Change default configuration](#change-default-configuration)".
 7. Create a self signed certificate in the IIS manager for the new website.
 8. Make sure the option "Load User Profile" is enabled in the advanced settings of the application pool used for the website.
 9.  Open configured address of the website in a browser and enjoy the digital assistant. Further information's how to configure and use the digital assistant can be found in the [setup](../setup/setup.md) chapter of this documentation.
 
 ## Create self signed certificate for the server
 
-The following scripts will create a self signed certificate for the server, so it can be accessed under the secure https protocol. If you modify the script, note that maybe the certificate paths in the `appsettings.json` of the server must be changed too.
+The following scripts will create a self signed certificate for the server, so it can be accessed under the secure https protocol. If you modify the script, note that maybe the certificate paths in the `appsettings.{YourPlattform}.json` of the server must be changed too.
 
 > [!NOTE]
 > Note that depending on your browser self signed certificates are marked in your browser as not trustworthy. Either mark the certificate as trustworthy in your operating system or ignore the warning when you initially open the website.
@@ -66,11 +66,11 @@ Create a self signed certificate as described in this [tutorial](https://support
 
 ## Change default configuration
 
-The default configuration of the server application can be changed in the `appsettings.json` file.
+The default configuration of the server application can be changed in the `appsettings.{YourPlattform}.json` file.
 
 ### Database
 
-By default a SQLite Database will be used in the server application. The sql provider can be changed by adjusting the `DatabaseProvider` property in the `appsettings.json` file. Currently possible provider values are:
+By default a SQLite Database will be used in the server application. The sql provider can be changed by adjusting the `DatabaseProvider` property in the `appsettings.{YourPlattform}.json` file. Currently possible provider values are:
 
 - 'SQLite' to use a SQLite Database
 - 'MSSQL' to use a Microsoft SQL Server

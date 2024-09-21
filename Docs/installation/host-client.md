@@ -12,7 +12,7 @@ A Digital Assistant Client can be installed on any device, your desktop PC, a se
 4. **Optional**: Change the default configuration of the client by adjusting the `appsettings.json` file like it is explained in the chapter "[Change default configuration](#change-default-configuration)".
 5. Add the server certificate as trusted in the operating system.
 6. Open a terminal of your choice.
-7. Install mpg123, it's used to play the internet radio streams
+7. [**Only on Linux**]: Install mpg123, it's used to play the internet radio streams
 ``` shell
 sudo apt-get install mpg123
 ```
