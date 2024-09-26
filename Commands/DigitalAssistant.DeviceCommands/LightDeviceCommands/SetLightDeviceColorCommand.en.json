@@ -1,0 +1,11 @@
+{
+  "Name": "Set light devices color",
+  "Description": "Sets the color of the specified light",
+  "Templates": [
+    "[Turn|Set|Switch|Change|Adjust] (the) (color) (from) (the) {Name:LightDevice} (light) (to) {Color:Color}"
+  ],
+  "Options": [],
+  "Responses": [
+    "The color of {0} has been set to {1}"
+  ]
+}

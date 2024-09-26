@@ -4,6 +4,7 @@ using DigitalAssistant.Base.ClientServerConnection;
 using DigitalAssistant.Base.General;
 using DigitalAssistant.Client.Modules.Audio.Interfaces;
 using DigitalAssistant.Client.Modules.Audio.Linux;
+using DigitalAssistant.Client.Modules.Audio.Mac;
 using DigitalAssistant.Client.Modules.Audio.Windows;
 using DigitalAssistant.Client.Modules.Commands;
 using DigitalAssistant.Client.Modules.ServerConnection.Models;
@@ -75,6 +76,14 @@ else if (OperatingSystem.IsLinux())
         .AddSingleton<IAudioPlayer, LinuxAudioPlayer>()
         .AddSingleton<IAudioRecorder, LinuxAudioRecorder>()
         .AddSingleton<IAudioDeviceService, LinuxAudioDeviceService>()
+        ;
+}
+else if (OperatingSystem.IsMacOS())
+{
+    builder.Services
+        .AddSingleton<IAudioPlayer, MacAudioPlayer>()
+        .AddSingleton<IAudioRecorder, MacAudioRecorder>()
+        .AddSingleton<IAudioDeviceService, MacAudioDeviceService>()
         ;
 }
 

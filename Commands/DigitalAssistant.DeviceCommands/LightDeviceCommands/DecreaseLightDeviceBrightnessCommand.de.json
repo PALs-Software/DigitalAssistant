@@ -1,0 +1,13 @@
+{
+  "Name": "Verringere die Helligkeit von Lichtgeräten",
+  "Description": "Verringert die Helligkeit des angegebenen Lichts",
+  "Templates": [
+    "[Reduziere|Verringere|Senke] (die) Helligkeit ([von|des]) {Name:LightDevice}( )(Lichts) um {Brightness:Integer}( )([Prozent|%])",
+    "[Reduziere|Verringere|Senke] (die) Helligkeit ([von|des]) {Name:LightDevice}( )(Lichts)",
+    "Mache (das) {Name:LightDevice} (Licht) ({Brightness:Integer}( )([Prozent|%])) dunkler"
+  ],
+  "Options": [],
+  "Responses": [
+    "Die Helligkeit von {0} wurde um {1} verringert"
+  ]
+}

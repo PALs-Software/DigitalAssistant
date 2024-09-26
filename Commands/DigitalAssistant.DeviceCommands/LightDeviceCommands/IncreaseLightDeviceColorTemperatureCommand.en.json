@@ -1,0 +1,11 @@
+{
+  "Name": "Increases light devices color temperature",
+  "Description": "Increases the color temperature of the specified light",
+  "Templates": [
+    "[Increase|Higher|Raise|Boost] (the) color temperature ([from|of]) {Name:LightDevice} (light) (by {ColorTemperature:Integer})"
+  ],
+  "Options": [],
+  "Responses": [
+    "The color temperature of {0} has been increased by {1}"
+  ]
+}

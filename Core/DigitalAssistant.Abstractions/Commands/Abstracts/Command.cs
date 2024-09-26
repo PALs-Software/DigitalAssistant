@@ -24,6 +24,8 @@ public abstract class Command : ICommand
 
     public abstract CommandType Type { get; }
     public virtual int Priority { get; } = 0;
+    public abstract string LlmFunctionTemplate { get; }
+    public abstract string LlmFunctionDescription { get; }
 
     public abstract Task<ICommandResponse> ExecuteAsync(ICommandParameters parameters);
 
@@ -56,6 +58,23 @@ public abstract class Command : ICommand
     {
         return JsonLocalizer.GetTranslationList(name);
     }
+
+    #region Llm
+    public string? GetLlmFunctionName()
+    {
+        return ICommand.GetLlmFunctionName(LlmFunctionTemplate);
+    }
+
+    public Dictionary<string, string> GetLlmParameters()
+    {
+        var parameters = ICommand.GetLlmParameters(LlmFunctionTemplate);
+        foreach (var parameter in parameters)
+            if (parameter.Value.EndsWith("?"))
+                parameters[parameter.Key] = parameter.Value.Remove(parameter.Value.Length - 1);
+
+        return parameters;
+    }
+    #endregion
 
     public string GetRandomResponses(string name = "Responses", params object?[] args)
     {

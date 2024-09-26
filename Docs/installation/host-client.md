@@ -16,6 +16,11 @@ A Digital Assistant Client can be installed on any device, your desktop PC, a se
 ``` shell
 sudo apt-get install mpg123
 ```
+7. [**Only on Mac**]: Install mpg123 and ffmpeg, it's used to play the internet radio streams and to record your voice commands
+``` shell
+brew install mpg123
+brew install ffmpeg
+```
 9. Navigate to the extracted binary files.
 10. Run the following command to start the client application: `dotnet DigitalAssistant.Client.dll`
 

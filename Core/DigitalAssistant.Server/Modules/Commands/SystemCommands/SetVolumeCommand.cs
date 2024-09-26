@@ -10,7 +10,10 @@ namespace DigitalAssistant.Server.Modules.Commands.SystemCommands;
 public class SetVolumeCommand(IStringLocalizer localizer, IJsonStringLocalizer jsonLocalizer) : Command(localizer, jsonLocalizer)
 {
     public override CommandType Type => CommandType.Direct;
-    public override int Priority => -1;
+    public override int Priority => 2000000000;
+
+    public override string LlmFunctionTemplate => "SetVolume(Volume: Integer))";
+    public override string LlmFunctionDescription => "Set Volume to a specifc sound level.";
 
     public override Task<ICommandResponse> ExecuteAsync(ICommandParameters parameters)
     {

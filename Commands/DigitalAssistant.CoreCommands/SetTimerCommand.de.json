@@ -45,6 +45,8 @@
   "Hours": "Stunden",
   "SingleResponse": "Es wurde ein Timer auf {0} gestellt.",
   "DoubleResponse": "Es wurde ein Timer auf {0} und {1} gestellt.",
+  "TripleResponse": "Es wurde ein Timer auf {0}, {1} und {2} gestellt.",
   "NamedSingleResponse": "Es wurde ein Timer {0} auf {1} gestellt.",
-  "NamedDoubleResponse": "Es wurde ein Timer {0} auf {1} und {2} gestellt."
+  "NamedDoubleResponse": "Es wurde ein Timer {0} auf {1} und {2} gestellt.",
+  "NamedTripleResponse": "Es wurde ein Timer {0] auf {1}, {2} und {3} gestellt."
 }

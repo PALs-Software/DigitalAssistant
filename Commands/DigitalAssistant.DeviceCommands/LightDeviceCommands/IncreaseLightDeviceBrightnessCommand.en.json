@@ -1,0 +1,13 @@
+{
+  "Name": "Increases light devices brightness",
+  "Description": "Increases the brightness of the specified light.",
+  "Templates": [
+    "[Increase|Higher|Raise|Boost] (the) brightness ([from|of]) {Name:LightDevice} (light) by {Brightness:Integer}( )([percent|%])",
+    "[Increase|Higher|Raise|Boost] (the) brightness ([from|of]) {Name:LightDevice} (light)",
+    "Make (the) {Name:LightDevice} (light) ({Brightness:Integer}( )([percent|%])) [higher|brighter]"
+  ],
+  "Options": [],
+  "Responses": [
+    "The brightness of {0} has been increased by {1}"
+  ]
+}

@@ -1,10 +1,11 @@
 ﻿using BlazorBase.Abstractions.CRUD.Interfaces;
+using DigitalAssistant.Abstractions.Commands.Enums;
 using DigitalAssistant.Abstractions.Commands.Interfaces;
 using DigitalAssistant.Abstractions.Devices.Enums;
 using DigitalAssistant.Abstractions.Devices.Interfaces;
 using DigitalAssistant.Abstractions.Localization;
 using DigitalAssistant.Server.Modules.Clients.Models;
-using DigitalAssistant.Server.Modules.Commands.Services;
+using DigitalAssistant.Server.Modules.Commands.Parser;
 using DigitalAssistant.Server.Modules.Devices.Models;
 using DigitalAssistant.Server.Modules.Localization;
 using Microsoft.Extensions.Localization;
@@ -94,7 +95,7 @@ public class TemplateParserCombinedSectionsTests : DigitalAssistantTestContext
         await DbContext.SaveChangesAsync();
 
         // Act
-        (bool success, ICommandParameters? parameters) = await ParameterParser.ParseParametersFromMatchAsync(commandTemplate, match, language, ClientBase.Browser);
+        (bool success, ICommandParameters? parameters) = await ParameterParser.ParseParametersFromMatchAsync(commandTemplate, match, language, ClientBase.Browser, InterpreterMode.RegularExpression);
 
         // Assert
         Assert.IsTrue(success);

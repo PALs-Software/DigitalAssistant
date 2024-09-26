@@ -4,13 +4,12 @@ using DigitalAssistant.Abstractions.Devices.Enums;
 using DigitalAssistant.Base.General;
 using DigitalAssistant.Server.Modules.Commands.Exceptions;
 using DigitalAssistant.Server.Modules.Commands.Models;
-using DigitalAssistant.Server.Modules.Localization;
 using Microsoft.Extensions.Localization;
 using System.Globalization;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 
-namespace DigitalAssistant.Server.Modules.Commands.Services;
+namespace DigitalAssistant.Server.Modules.Commands.Parser;
 
 public class CommandTemplateParser
 {
@@ -21,11 +20,11 @@ public class CommandTemplateParser
 
     #region Member
     protected Dictionary<char, char> SectionBrackets = new() { { '(', ')' }, { '[', ']' }, { '{', '}' } };
-    protected string AreaNames = String.Empty;
-    protected string ClientNames = String.Empty;
-    protected string DeviceNames = String.Empty;
-    protected string LightDeviceNames = String.Empty;
-    protected string SwitchDeviceNames = String.Empty;
+    protected string AreaNames = string.Empty;
+    protected string ClientNames = string.Empty;
+    protected string DeviceNames = string.Empty;
+    protected string LightDeviceNames = string.Empty;
+    protected string SwitchDeviceNames = string.Empty;
     protected JsonSerializerOptions JsonSerializerOptions = new();
     #endregion
 
@@ -43,14 +42,14 @@ public class CommandTemplateParser
         List<(string CombinedNames, DeviceType Type)> names = [];
         foreach (var device in devices)
         {
-            var combinedName = String.Join('|', new List<string>() { device.Name }.Concat(device.AlternativeNames));
+            var combinedName = string.Join('|', new List<string>() { device.Name }.Concat(device.AlternativeNames));
             names.Add((combinedName, device.Type));
         }
 
-        ClientNames = String.Join('|', clients);
-        DeviceNames = String.Join('|', names.Select(entry => entry.CombinedNames));
-        LightDeviceNames = String.Join('|', names.Where(entry => entry.Type == DeviceType.Light).Select(entry => entry.CombinedNames));
-        SwitchDeviceNames = String.Join('|', names.Where(entry => entry.Type == DeviceType.Switch).Select(entry => entry.CombinedNames));
+        ClientNames = string.Join('|', clients);
+        DeviceNames = string.Join('|', names.Select(entry => entry.CombinedNames));
+        LightDeviceNames = string.Join('|', names.Where(entry => entry.Type == DeviceType.Light).Select(entry => entry.CombinedNames));
+        SwitchDeviceNames = string.Join('|', names.Where(entry => entry.Type == DeviceType.Switch).Select(entry => entry.CombinedNames));
     }
 
     public ICommandTemplate ParseTemplate(ICommand command, string template, string language)
@@ -61,7 +60,7 @@ public class CommandTemplateParser
         var parameters = new Dictionary<string, ICommandParameter>();
         List<ICommandOption> commandOptions = [];
         var jsonOptions = command.GetOptionsJson();
-        if (!String.IsNullOrEmpty(jsonOptions) && jsonOptions != "Options")
+        if (!string.IsNullOrEmpty(jsonOptions) && jsonOptions != "Options")
             commandOptions = JsonSerializer.Deserialize<List<ICommandOption>>(jsonOptions, JsonSerializerOptions) ?? [];
 
         var regexTemplate = ParseTemplatePart(template, ref index, ref parameters, commandOptions, isInOptionalSection: false);
@@ -72,7 +71,7 @@ public class CommandTemplateParser
 
     protected string ParseTemplatePart(string template, ref int index, ref Dictionary<string, ICommandParameter> parameters, List<ICommandOption> commandOptions, bool isInOptionalSection, char? parentSectionClosingCharacter = null)
     {
-        string regexTemplate = String.Empty;
+        string regexTemplate = string.Empty;
         int lastIndex = 0;
         do
         {
@@ -143,7 +142,7 @@ public class CommandTemplateParser
         if (closingIndex == -1)
             throw new TemplateNotValidException($"Template is not valid, one sub section started with a '{sectionCharacter}' has no closing character '{sectionClosingCharacter}'");
 
-        if (checkForEmptySection && (startIndex + 1) == closingIndex)
+        if (checkForEmptySection && startIndex + 1 == closingIndex)
             throw new TemplateNotValidException($"Template is not valid, empty sections are not allowed");
 
         return closingIndex;
@@ -247,7 +246,7 @@ public class CommandTemplateParser
                     throw new TemplateNotValidException($"Template is not valid, the defined option parameter name '{parameterName}' can not be found in the option definition or has no values. Invalid Parameter = '{parameterText}'");
 
                 var options = commandOption.Values.SelectMany(value => value.LocalizedValues);
-                regexTemplate += $"(?'{parameterName}'{String.Join('|', options)})";
+                regexTemplate += $"(?'{parameterName}'{string.Join('|', options)})";
                 parameters.Add(parameterName, new CommandOptionParameter(parameterName, parameterType, isInOptionalSection, commandOption));
                 break;
             case CommandParameterType.Area:

@@ -10,7 +10,10 @@ namespace DigitalAssistant.Server.Modules.Commands.SystemCommands;
 public class ContinueCommand(IStringLocalizer localizer, IJsonStringLocalizer jsonLocalizer) : Command(localizer, jsonLocalizer)
 {
     public override CommandType Type => CommandType.Direct;
-    public override int Priority => -1;
+    public override int Priority => int.MaxValue;
+
+    public override string LlmFunctionTemplate => "Continue()";
+    public override string LlmFunctionDescription => "Continues a paused action.";
 
     public override Task<ICommandResponse> ExecuteAsync(ICommandParameters parameters)
     {

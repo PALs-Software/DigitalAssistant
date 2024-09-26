@@ -14,7 +14,7 @@ using System.Drawing;
 using System.Globalization;
 using System.Text.RegularExpressions;
 
-namespace DigitalAssistant.Server.Modules.Commands.Services;
+namespace DigitalAssistant.Server.Modules.Commands.Parser;
 
 public class CommandParameterParser
 {
@@ -46,16 +46,16 @@ public class CommandParameterParser
         CultureInfo.CurrentUICulture = CultureInfo.InvariantCulture;
         ColorNames = TemplateParserLocalizer["ColorRegexTemplate"].ToString().Split("|").ToList();
         for (int i = 0; i < ColorNames.Count; i++)
-            ColorNames[i] = ColorNames[i].Replace(" ", String.Empty).Trim();
+            ColorNames[i] = ColorNames[i].Replace(" ", string.Empty).Trim();
 
         ColorTemperatureNames = TemplateParserLocalizer["ColorTemperatureRegexTemplate"].ToString().Split("|").ToList();
         for (int i = 0; i < ColorTemperatureNames.Count; i++)
-            ColorTemperatureNames[i] = ColorTemperatureNames[i].Replace(" ", String.Empty).Trim();
+            ColorTemperatureNames[i] = ColorTemperatureNames[i].Replace(" ", string.Empty).Trim();
 
         CultureInfo.CurrentUICulture = currentUICulture;
     }
 
-    public async Task<(bool Success, ICommandParameters? CommandParameters)> ParseParametersFromMatchAsync(ICommandTemplate template, Match match, string language, IClient client)
+    public async Task<(bool Success, ICommandParameters? CommandParameters)> ParseParametersFromMatchAsync(ICommandTemplate template, Match match, string language, IClient client, InterpreterMode interpreterMode)
     {
         var currentUICulture = CultureInfo.CurrentUICulture;
         try
@@ -103,7 +103,29 @@ public class CommandParameterParser
                     return (false, null);
             }
 
-            return (true, new CommandParameters(client, language, parameterDictionary.AsReadOnly()));
+            return (true, new CommandParameters(client, language, interpreterMode, parameterDictionary.AsReadOnly()));
+        }
+        finally
+        {
+            CultureInfo.CurrentUICulture = currentUICulture;
+        }
+    }
+
+    public async Task<(bool Success, ICommandParameters? CommandParameters)> ParseParametersAsync(Dictionary<ICommandParameter, string> parameters, string language, IClient client, InterpreterMode interpreterMode)
+    {
+        var currentUICulture = CultureInfo.CurrentUICulture;
+        try
+        {
+            CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo(language);
+            var parameterDictionary = new Dictionary<string, (ICommandParameter Parameter, object? Value)>();
+            foreach (var parameter in parameters)
+            {
+                (bool success, object? convertedValue) = await ConvertParameterValueAsync(parameter.Value, parameter.Key);
+                if (success)
+                    parameterDictionary.Add(parameter.Key.Name, (parameter.Key, convertedValue));
+            }
+
+            return (true, new CommandParameters(client, language, interpreterMode, parameterDictionary.AsReadOnly()));
         }
         finally
         {
@@ -205,7 +227,7 @@ public class CommandParameterParser
                     convertedValue = new ClientBase(client);
                 }
                 break;
-            case CommandParameterType.Device:                
+            case CommandParameterType.Device:
                 var device = await DbContext.FirstOrDefaultAsync<Device>(entry => entry.Name.ToLower() == value.ToLower() ||
                                                                          entry.AlternativeNames.Any(alternativeName => alternativeName.ToLower() == value.ToLower()),
                                                                          asNoTracking: true);

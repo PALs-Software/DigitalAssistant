@@ -10,7 +10,11 @@ namespace DigitalAssistant.Server.Modules.Commands.SystemCommands;
 public class IncreaseVolumeCommand(IStringLocalizer localizer, IJsonStringLocalizer jsonLocalizer) : Command(localizer, jsonLocalizer)
 {
     public override CommandType Type => CommandType.Direct;
-    public override int Priority => -1;
+    public override int Priority => 2000000001;
+
+    public override string LlmFunctionTemplate => "IncreaseVolume()";
+    public override string LlmFunctionDescription => "Increases the volume of the device to make it louder.";
+
 
     public override Task<ICommandResponse> ExecuteAsync(ICommandParameters parameters)
     {

@@ -1,10 +1,11 @@
 ﻿using BlazorBase.Abstractions.CRUD.Interfaces;
+using DigitalAssistant.Abstractions.Commands.Enums;
 using DigitalAssistant.Abstractions.Commands.Interfaces;
 using DigitalAssistant.Abstractions.Devices.Enums;
 using DigitalAssistant.Abstractions.Devices.Interfaces;
 using DigitalAssistant.Abstractions.Localization;
 using DigitalAssistant.Server.Modules.Clients.Models;
-using DigitalAssistant.Server.Modules.Commands.Services;
+using DigitalAssistant.Server.Modules.Commands.Parser;
 using DigitalAssistant.Server.Modules.Devices.Models;
 using DigitalAssistant.Server.Modules.Localization;
 using Microsoft.Extensions.Localization;
@@ -52,7 +53,7 @@ public class CommandParameterParserTests : DigitalAssistantTestContext
         var match = commandTemplate.Regex.Match("Turn the Light on");
 
         // Act
-        (bool success, ICommandParameters? parameters) = await ParameterParser.ParseParametersFromMatchAsync(commandTemplate, match, Language, ClientBase.Browser);
+        (bool success, ICommandParameters? parameters) = await ParameterParser.ParseParametersFromMatchAsync(commandTemplate, match, Language, ClientBase.Browser, InterpreterMode.RegularExpression);
 
         // Assert
         Assert.IsTrue(success);
@@ -73,7 +74,7 @@ public class CommandParameterParserTests : DigitalAssistantTestContext
         var match = commandTemplate.Regex.Match("Schalte das Licht an");
 
         // Act
-        (bool success, ICommandParameters? parameters) = await ParameterParser.ParseParametersFromMatchAsync(commandTemplate, match, language, ClientBase.Browser);
+        (bool success, ICommandParameters? parameters) = await ParameterParser.ParseParametersFromMatchAsync(commandTemplate, match, language, ClientBase.Browser, InterpreterMode.RegularExpression);
 
         // Assert
         Assert.IsTrue(success);
@@ -92,7 +93,7 @@ public class CommandParameterParserTests : DigitalAssistantTestContext
         var match = commandTemplate.Regex.Match("Turn the kitchen light on");
 
         // Act
-        (bool success, ICommandParameters? parameters) = await ParameterParser.ParseParametersFromMatchAsync(commandTemplate, match, Language, ClientBase.Browser);
+        (bool success, ICommandParameters? parameters) = await ParameterParser.ParseParametersFromMatchAsync(commandTemplate, match, Language, ClientBase.Browser, InterpreterMode.RegularExpression);
 
         // Assert
         Assert.IsTrue(success);
@@ -111,7 +112,7 @@ public class CommandParameterParserTests : DigitalAssistantTestContext
         var match = commandTemplate.Regex.Match("Turn the light to 50 percent");
 
         // Act
-        (bool success, ICommandParameters? parameters) = await ParameterParser.ParseParametersFromMatchAsync(commandTemplate, match, Language, ClientBase.Browser);
+        (bool success, ICommandParameters? parameters) = await ParameterParser.ParseParametersFromMatchAsync(commandTemplate, match, Language, ClientBase.Browser, InterpreterMode.RegularExpression);
 
         // Assert
         Assert.IsTrue(success);
@@ -130,7 +131,7 @@ public class CommandParameterParserTests : DigitalAssistantTestContext
         var match = commandTemplate.Regex.Match("Turn the light to 50.5 percent");
 
         // Act
-        (bool success, ICommandParameters? parameters) = await ParameterParser.ParseParametersFromMatchAsync(commandTemplate, match, Language, ClientBase.Browser);
+        (bool success, ICommandParameters? parameters) = await ParameterParser.ParseParametersFromMatchAsync(commandTemplate, match, Language, ClientBase.Browser, InterpreterMode.RegularExpression);
 
         // Assert
         Assert.IsTrue(success);
@@ -149,7 +150,7 @@ public class CommandParameterParserTests : DigitalAssistantTestContext
         var match = commandTemplate.Regex.Match("Remind me to set a timer on 7/24");
 
         // Act
-        (bool success, ICommandParameters? parameters) = await ParameterParser.ParseParametersFromMatchAsync(commandTemplate, match, Language, ClientBase.Browser);
+        (bool success, ICommandParameters? parameters) = await ParameterParser.ParseParametersFromMatchAsync(commandTemplate, match, Language, ClientBase.Browser, InterpreterMode.RegularExpression);
 
         // Assert
         Assert.IsTrue(success);
@@ -168,7 +169,7 @@ public class CommandParameterParserTests : DigitalAssistantTestContext
         var match = commandTemplate.Regex.Match("Set a timer for 3:30 pm");
 
         // Act
-        (bool success, ICommandParameters? parameters) = await ParameterParser.ParseParametersFromMatchAsync(commandTemplate, match, Language, ClientBase.Browser);
+        (bool success, ICommandParameters? parameters) = await ParameterParser.ParseParametersFromMatchAsync(commandTemplate, match, Language, ClientBase.Browser, InterpreterMode.RegularExpression);
 
         // Assert
         Assert.IsTrue(success);
@@ -187,7 +188,7 @@ public class CommandParameterParserTests : DigitalAssistantTestContext
         var match = commandTemplate.Regex.Match("Set the light to blue");
 
         // Act
-        (bool success, ICommandParameters? parameters) = await ParameterParser.ParseParametersFromMatchAsync(commandTemplate, match, Language, ClientBase.Browser);
+        (bool success, ICommandParameters? parameters) = await ParameterParser.ParseParametersFromMatchAsync(commandTemplate, match, Language, ClientBase.Browser, InterpreterMode.RegularExpression);
 
         // Assert
         Assert.IsTrue(success);
@@ -206,7 +207,7 @@ public class CommandParameterParserTests : DigitalAssistantTestContext
         var match = commandTemplate.Regex.Match("Set the light to yellow");
 
         // Act
-        (bool success, ICommandParameters? parameters) = await ParameterParser.ParseParametersFromMatchAsync(commandTemplate, match, Language, ClientBase.Browser);
+        (bool success, ICommandParameters? parameters) = await ParameterParser.ParseParametersFromMatchAsync(commandTemplate, match, Language, ClientBase.Browser, InterpreterMode.RegularExpression);
 
         // Assert
         Assert.IsTrue(success);
@@ -230,7 +231,7 @@ public class CommandParameterParserTests : DigitalAssistantTestContext
         await DbContext.SaveChangesAsync();
 
         // Act
-        (bool success, ICommandParameters? parameters) = await ParameterParser.ParseParametersFromMatchAsync(commandTemplate, match, Language, ClientBase.Browser);
+        (bool success, ICommandParameters? parameters) = await ParameterParser.ParseParametersFromMatchAsync(commandTemplate, match, Language, ClientBase.Browser, InterpreterMode.RegularExpression);
 
         // Assert
         Assert.IsTrue(success);
@@ -254,7 +255,7 @@ public class CommandParameterParserTests : DigitalAssistantTestContext
         await DbContext.SaveChangesAsync();
 
         // Act
-        (bool success, ICommandParameters? parameters) = await ParameterParser.ParseParametersFromMatchAsync(commandTemplate, match, Language, ClientBase.Browser);
+        (bool success, ICommandParameters? parameters) = await ParameterParser.ParseParametersFromMatchAsync(commandTemplate, match, Language, ClientBase.Browser, InterpreterMode.RegularExpression);
 
         // Assert
         Assert.IsTrue(success);
@@ -278,7 +279,7 @@ public class CommandParameterParserTests : DigitalAssistantTestContext
         await DbContext.SaveChangesAsync();
 
         // Act
-        (bool success, ICommandParameters? parameters) = await ParameterParser.ParseParametersFromMatchAsync(commandTemplate, match, Language, ClientBase.Browser);
+        (bool success, ICommandParameters? parameters) = await ParameterParser.ParseParametersFromMatchAsync(commandTemplate, match, Language, ClientBase.Browser, InterpreterMode.RegularExpression);
 
         // Assert
         Assert.IsTrue(success);
@@ -304,7 +305,7 @@ public class CommandParameterParserTests : DigitalAssistantTestContext
         await DbContext.SaveChangesAsync();
 
         // Act
-        (bool success, ICommandParameters? parameters) = await ParameterParser.ParseParametersFromMatchAsync(commandTemplate, match, Language, ClientBase.Browser);
+        (bool success, ICommandParameters? parameters) = await ParameterParser.ParseParametersFromMatchAsync(commandTemplate, match, Language, ClientBase.Browser, InterpreterMode.RegularExpression);
 
         // Assert
         Assert.IsTrue(success);

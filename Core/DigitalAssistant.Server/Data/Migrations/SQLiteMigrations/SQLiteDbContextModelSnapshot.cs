@@ -17,7 +17,7 @@ namespace DigitalAssistant.Server.Data.Migrations.SQLiteMigrations
 #pragma warning disable 612, 618
             modelBuilder
                 .UseCollation("Latin1_General_CS_AS")
-                .HasAnnotation("ProductVersion", "8.0.2")
+                .HasAnnotation("ProductVersion", "8.0.8")
                 .HasAnnotation("Proxies:ChangeTracking", false)
                 .HasAnnotation("Proxies:CheckEquality", false)
                 .HasAnnotation("Proxies:LazyLoading", true);
@@ -230,6 +230,9 @@ namespace DigitalAssistant.Server.Data.Migrations.SQLiteMigrations
                     b.Property<int>("AsrPrecision")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("AsrProvider")
+                        .HasColumnType("INTEGER");
+
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("TEXT");
 
@@ -237,6 +240,21 @@ namespace DigitalAssistant.Server.Data.Migrations.SQLiteMigrations
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("InterpreterLanguage")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("InterpreterMode")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("LlmContextSize")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("LlmMode")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("LlmModel")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("LlmPrecision")
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("ModifiedOn")

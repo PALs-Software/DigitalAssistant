@@ -1,0 +1,12 @@
+{
+  "Name": "Set light devices brightness level",
+  "Description": "Sets the brightness level of the specified light",
+  "Templates": [
+    "[Turn|Set|Switch|Change|Adjust|Dim] (the) {Name:LightDevice} (light) (to) {Brightness:Integer}( )([percent|%])",
+    "{Name:LightDevice} (to) {Brightness:Integer}( )([percent|%])"
+  ],
+  "Options": [],
+  "Responses": [
+    "The brightness of {0} has been set to {1}"
+  ]
+}

@@ -4,6 +4,8 @@ using DigitalAssistant.Abstractions.Devices.Enums;
 using DigitalAssistant.Abstractions.Localization;
 using DigitalAssistant.Server.Modules.CacheModule;
 using DigitalAssistant.Server.Modules.Clients.Models;
+using DigitalAssistant.Server.Modules.Commands.Interpreter;
+using DigitalAssistant.Server.Modules.Commands.Parser;
 using DigitalAssistant.Server.Modules.Commands.SystemCommands;
 using DigitalAssistant.Server.Modules.Connectors.Services;
 using DigitalAssistant.Server.Modules.Devices.Models;
@@ -12,6 +14,7 @@ using DigitalAssistant.Server.Modules.Plugins;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using System.Collections.Concurrent;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Reflection;
 
@@ -25,7 +28,7 @@ public class CommandHandler(IServiceProvider serviceProvider,
     #region Injects
     protected readonly IServiceProvider ServiceProvider = serviceProvider;
     protected readonly ConnectorService ConnectorService = connectorService;
-    protected readonly CommandTemplateParser CommandTemplateParser = commandTemplateParser;
+    protected readonly CommandTemplateParser CommandTemplateParser = commandTemplateParser;  
     protected readonly ILogger<CommandHandler> Logger = logger;
     #endregion
 
@@ -34,6 +37,11 @@ public class CommandHandler(IServiceProvider serviceProvider,
     protected ConcurrentDictionary<string, List<List<ICommandTemplate>>> LocalizedCommandTemplates = [];
     protected ReaderWriterLockSlim CommandCacheLock = new();
     #endregion
+
+    public ReadOnlyCollection<ICommand> GetCommands()
+    {
+        return Commands.AsReadOnly();
+    }
 
     public async Task<List<List<ICommandTemplate>>> GetLocalizedCommandTemplatesAsync(string language)
     {
@@ -127,6 +135,7 @@ public class CommandHandler(IServiceProvider serviceProvider,
                         .ToList();
         });
         CommandTemplateParser.SetTemplateNames(clients, devices);
+        ServiceProvider.GetRequiredService<CommandLlmInterpreter>().SetTemplateNames(clients, devices);
 
         try
         {

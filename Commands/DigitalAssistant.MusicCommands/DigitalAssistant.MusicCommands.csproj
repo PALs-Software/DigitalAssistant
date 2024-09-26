@@ -14,12 +14,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Content Include="RadioCommands.de.json">
+		<Content Include="RadioCommand.de.json">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
 			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
 		</Content>
-		<Content Include="RadioCommands.en.json">
+		<Content Include="RadioCommand.en.json">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
 			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>

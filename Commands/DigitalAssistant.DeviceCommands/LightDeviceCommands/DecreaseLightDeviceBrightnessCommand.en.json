@@ -1,0 +1,13 @@
+{
+  "Name": "Decreases light devices brightness",
+  "Description": "Decreases the brightness of the specified light.",
+  "Templates": [
+    "[Decrease|Lower|Reduce|Darker] (the) brightness ([from|of]) {Name:LightDevice} (light) by {Brightness:Integer}( )([percent|%])",
+    "[Decrease|Lower|Reduce|Darker] (the) brightness ([from|of]) {Name:LightDevice} (light)",
+    "Make (the) {Name:LightDevice} (light) ({Brightness:Integer}( )([percent|%])) [lower|darker]"
+  ],
+  "Options": [],
+  "Responses": [
+    "The brightness of {0} has been decreased by {1}"
+  ]
+}

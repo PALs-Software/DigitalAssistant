@@ -9,20 +9,23 @@ using RadioBrowser.Models;
 
 namespace DigitalAssistant.MusicCommands;
 
-public class RadioCommands(IStringLocalizer localizer, IJsonStringLocalizer jsonLocalizer) : Command(localizer, jsonLocalizer)
+public class RadioCommand(IStringLocalizer localizer, IJsonStringLocalizer jsonLocalizer) : Command(localizer, jsonLocalizer)
 {
     public override CommandType Type => CommandType.Direct;
+    public override int Priority => 70000;
+
+    public override string LlmFunctionTemplate => "PlayRadio(Name: Text)";
+    public override string LlmFunctionDescription => "Play Radio.";
 
     #region Members
     private bool ApplicationRunsInDockerContainer { get { return Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true"; } }
     #endregion
 
-
     public override async Task<ICommandResponse> ExecuteAsync(ICommandParameters parameters)
     {
         SetUICulture(parameters.Language);
 
-        if (!parameters.TryGetValue<string>("RadioStation", out var radioStationName))
+        if (!parameters.TryGetValue<string>("Name", out var radioStationName))
             return CreateResponse(success: false);
 
         radioStationName = radioStationName.TrimEnd('.').Trim('"');

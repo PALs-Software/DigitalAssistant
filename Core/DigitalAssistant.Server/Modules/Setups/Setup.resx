@@ -144,4 +144,19 @@
   <data name="SampleRateCanNotBeReadErr" xml:space="preserve">
     <value>The sample rate of the configuration file {0} can not be read properly. Make sure that the model is valid or try another one.</value>
   </data>
+  <data name="LlmModelNotExistErr" xml:space="preserve">
+    <value>The current selected large language model does not exist in the huggingface repository https://huggingface.co/microsoft. Please select another model configuration and try again.</value>
+  </data>
+  <data name="LlmCpuPrecisionNotSupportedErr" xml:space="preserve">
+    <value>The precision fp16 is only available for gpu execution</value>
+  </data>
+  <data name="LlmGpuPrecisionNotSupportedErr" xml:space="preserve">
+    <value>The precision int4 accelerated is only available for cpu execution</value>
+  </data>
+  <data name="LlmMediumPrecisionNotSupportedErr" xml:space="preserve">
+    <value>Only int4 accelerated precision is available for cpu execution for the model medium</value>
+  </data>
+  <data name="InterpreterModeWrongErr" xml:space="preserve">
+    <value>The interpreter mode can not be any type with llm, when llm model is disabled</value>
+  </data>
 </root>

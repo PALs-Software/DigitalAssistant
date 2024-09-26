@@ -10,7 +10,11 @@ namespace DigitalAssistant.Server.Modules.Commands.SystemCommands;
 public class StopCommand(IStringLocalizer localizer, IJsonStringLocalizer jsonLocalizer) : Command(localizer, jsonLocalizer)
 {
     public override CommandType Type => CommandType.Direct;
-    public override int Priority => -1;
+    public override int Priority => int.MaxValue;
+
+    public override string LlmFunctionTemplate => "Stop()";
+    public override string LlmFunctionDescription => "Stops the current action.";
+
 
     public override Task<ICommandResponse> ExecuteAsync(ICommandParameters parameters)
     {

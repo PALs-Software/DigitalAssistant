@@ -1,0 +1,12 @@
+{
+  "Name": "Set light devices color temperature",
+  "Description": "Sets the color temperature of the specified light",
+  "Templates": [
+    "([Turn|Set|Switch|Change|Adjust|Dim]) (the) color temperature ([from|of]) {Name:LightDevice} (light) to {ColorTemperature:Integer}",
+    "([Turn|Set|Switch|Change|Adjust|Dim]) (the) (color temperature) (color) ([from|of]) {Name:LightDevice} (light) to {ColorTemperatureColor:ColorTemperatureColor}"
+  ],
+  "Options": [],
+  "Responses": [
+    "The color temperature of {0} has been set to {1}"
+  ]
+}

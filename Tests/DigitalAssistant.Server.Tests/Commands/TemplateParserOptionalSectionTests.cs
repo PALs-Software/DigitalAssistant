@@ -1,7 +1,7 @@
 ﻿using DigitalAssistant.Abstractions.Commands.Interfaces;
 using DigitalAssistant.Abstractions.Localization;
 using DigitalAssistant.Server.Modules.Commands.Exceptions;
-using DigitalAssistant.Server.Modules.Commands.Services;
+using DigitalAssistant.Server.Modules.Commands.Parser;
 using DigitalAssistant.Server.Modules.Localization;
 using Microsoft.Extensions.Localization;
 

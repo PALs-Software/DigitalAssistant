@@ -19,10 +19,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Content Include="DeleteTimerCommands.de.json">
+	  <Content Include="DeleteTimerCommand.de.json">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </Content>
-	  <Content Include="DeleteTimerCommands.en.json">
+	  <Content Include="DeleteTimerCommand.en.json">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </Content>
 	  <Content Include="GetCurrentTimeCommand.de.json">
@@ -31,16 +31,16 @@
 	  <Content Include="GetCurrentTimeCommand.en.json">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </Content>
-	  <Content Include="GetTimerCommands.de.json">
+	  <Content Include="GetTimerCommand.de.json">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </Content>
-	  <Content Include="GetTimerCommands.en.json">
+	  <Content Include="GetTimerCommand.en.json">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </Content>
-	  <Content Include="SetTimerCommands.de.json">
+	  <Content Include="SetTimerCommand.de.json">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </Content>
-	  <Content Include="SetTimerCommands.en.json">
+	  <Content Include="SetTimerCommand.en.json">
 	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 	  </Content>
 	</ItemGroup>

@@ -1,0 +1,11 @@
+{
+  "Name": "Farbtemperatur der Lichtgeräte verringern",
+  "Description": "Verringert die Farbtemperatur des angegebenen Lichts",
+  "Templates": [
+    "[Reduziere|Verringere|Senke] (die) [Farbtemperatur|Farb Temperatur] ([von|des]) {Name:LightDevice}( )(Lichts) (um {ColorTemperature:Integer})"
+  ],
+  "Options": [],
+  "Responses": [
+    "Die Farbtemperatur von {0} wurde um {1} verringert"
+  ]
+}

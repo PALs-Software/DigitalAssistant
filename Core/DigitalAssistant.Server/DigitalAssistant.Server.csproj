@@ -104,11 +104,13 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(Configuration)'!='Debug_WithGpuSupport' And '$(Configuration)'!='Release_WithGpuSupport'">
-		<PackageReference Include="Microsoft.ML.OnnxRuntime" Version="1.18.1" />
+		<PackageReference Include="Microsoft.ML.OnnxRuntime" Version="1.19.2" />
+		<PackageReference Include="Microsoft.ML.OnnxRuntimeGenAI" Version="0.4.0" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(Configuration)'=='Debug_WithGpuSupport' Or '$(Configuration)'=='Release_WithGpuSupport'">
-		<PackageReference Include="Microsoft.ML.OnnxRuntime.Gpu" Version="1.18.1" />
+		<PackageReference Include="Microsoft.ML.OnnxRuntime.Gpu" Version="1.19.2" />
+		<PackageReference Include="Microsoft.ML.OnnxRuntimeGenAI.Cuda" Version="0.4.0" />
 	</ItemGroup>
 
 	<ItemGroup>

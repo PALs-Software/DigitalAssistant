@@ -1,0 +1,11 @@
+{
+  "Name": "Decreases light devices color temperature",
+  "Description": "Decreases the color temperature of the specified light",
+  "Templates": [
+    "[Decrease|Lower|Reduce|Darker] (the) color temperature ([from|of]) {Name:LightDevice} (light) (by {ColorTemperature:Integer})"
+  ],
+  "Options": [],
+  "Responses": [
+    "The color temperature of {0} has been decreased by {1}"
+  ]
+}

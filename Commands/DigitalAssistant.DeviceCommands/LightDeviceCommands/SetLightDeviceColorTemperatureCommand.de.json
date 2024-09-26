@@ -1,0 +1,12 @@
+{
+  "Name": "Farbtemperatur der Lichtgeräte einstellen",
+  "Description": "Legt die Farbtemperatur des angegebenen Lichts fest",
+  "Templates": [
+    "([Verringere|Erhöhe|Stelle|Stell]) (die) [Farbtemperatur|Farb Temperatur] von {Name:LightDevice}( )(Licht) auf {ColorTemperature:Integer}",
+    "[Schalte|Setze|Wechsle|Ändere|Passe an|Stelle|Stell] ([das|die]) ( [Farbtemperatur|Farb Temperatur]) (Farbe) (von) {Name:LightDevice}( )(Licht) (auf) {ColorTemperatureColor:ColorTemperatureColor}"
+  ],
+  "Options": [],
+  "Responses": [
+    "Die Farbtemperatur von {0} wurde auf {1} gestellt"
+  ]
+}

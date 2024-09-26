@@ -18,7 +18,7 @@ namespace DigitalAssistant.Server.Data.Migrations.MSSQLMigrations
 #pragma warning disable 612, 618
             modelBuilder
                 .UseCollation("Latin1_General_CS_AS")
-                .HasAnnotation("ProductVersion", "8.0.2")
+                .HasAnnotation("ProductVersion", "8.0.8")
                 .HasAnnotation("Proxies:ChangeTracking", false)
                 .HasAnnotation("Proxies:CheckEquality", false)
                 .HasAnnotation("Proxies:LazyLoading", true)
@@ -234,6 +234,9 @@ namespace DigitalAssistant.Server.Data.Migrations.MSSQLMigrations
                     b.Property<int>("AsrPrecision")
                         .HasColumnType("int");
 
+                    b.Property<int>("AsrProvider")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
 
@@ -241,6 +244,21 @@ namespace DigitalAssistant.Server.Data.Migrations.MSSQLMigrations
                         .HasColumnType("bit");
 
                     b.Property<int>("InterpreterLanguage")
+                        .HasColumnType("int");
+
+                    b.Property<int>("InterpreterMode")
+                        .HasColumnType("int");
+
+                    b.Property<int>("LlmContextSize")
+                        .HasColumnType("int");
+
+                    b.Property<int>("LlmMode")
+                        .HasColumnType("int");
+
+                    b.Property<int>("LlmModel")
+                        .HasColumnType("int");
+
+                    b.Property<int>("LlmPrecision")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("ModifiedOn")

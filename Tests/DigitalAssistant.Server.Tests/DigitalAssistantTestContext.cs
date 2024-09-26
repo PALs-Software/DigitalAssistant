@@ -1,6 +1,6 @@
 using BlazorBase.CRUD;
 using DigitalAssistant.Server.Data;
-using DigitalAssistant.Server.Modules.Commands.Services;
+using DigitalAssistant.Server.Modules.Commands.Parser;
 using DigitalAssistant.Server.Modules.Localization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -39,8 +39,8 @@ public abstract class DigitalAssistantTestContext : TestContextWrapper
         TestContext.Services
             .AddLocalization()
             .AddSingleton<CommandTemplateParser>()
+            .AddSingleton<CommandParameterParser>()
 
-            .AddTransient<CommandParameterParser>()
             .AddTransient(typeof(JsonStringLocalizer<>))
         ;
 

@@ -9,6 +9,10 @@ namespace DigitalAssistant.CoreCommands;
 public class GetCurrentTimeCommand(IStringLocalizer localizer, IJsonStringLocalizer jsonLocalizer) : Command(localizer, jsonLocalizer)
 {
     public override CommandType Type => CommandType.Direct;
+    public override int Priority => 1000;
+
+    public override string LlmFunctionTemplate => "GetCurrentTime()";
+    public override string LlmFunctionDescription => "Get current time.";
 
     public override Task<ICommandResponse> ExecuteAsync(ICommandParameters parameters)
     {

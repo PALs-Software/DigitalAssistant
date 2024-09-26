@@ -10,7 +10,10 @@ namespace DigitalAssistant.Server.Modules.Commands.SystemCommands;
 public class DecreaseVolumeCommand(IStringLocalizer localizer, IJsonStringLocalizer jsonLocalizer) : Command(localizer, jsonLocalizer)
 {
     public override CommandType Type => CommandType.Direct;
-    public override int Priority => -1;
+    public override int Priority => 2000000002;
+
+    public override string LlmFunctionTemplate => "DecreaseVolume()";
+    public override string LlmFunctionDescription => "Decreases the volume of the device to make it quieter.";
 
     public override Task<ICommandResponse> ExecuteAsync(ICommandParameters parameters)
     {

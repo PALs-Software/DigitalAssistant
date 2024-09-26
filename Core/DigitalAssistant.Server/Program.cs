@@ -18,7 +18,7 @@ using DigitalAssistant.Base.ClientServerConnection;
 using DigitalAssistant.Base.General;
 using DigitalAssistant.Server.Data;
 using DigitalAssistant.Server.Modules.Ai.Asr.Services;
-using DigitalAssistant.Server.Modules.Ai.TextToSpeech.Enums;
+using DigitalAssistant.Server.Modules.Ai.Llm.Services;
 using DigitalAssistant.Server.Modules.Ai.TextToSpeech.Services;
 using DigitalAssistant.Server.Modules.BackgroundJobs;
 using DigitalAssistant.Server.Modules.CacheModule;
@@ -27,6 +27,8 @@ using DigitalAssistant.Server.Modules.Clients.BrowserClient.Commands;
 using DigitalAssistant.Server.Modules.Clients.BrowserClient.Services;
 using DigitalAssistant.Server.Modules.Clients.Components;
 using DigitalAssistant.Server.Modules.Clients.Services;
+using DigitalAssistant.Server.Modules.Commands.Interpreter;
+using DigitalAssistant.Server.Modules.Commands.Parser;
 using DigitalAssistant.Server.Modules.Commands.Services;
 using DigitalAssistant.Server.Modules.Connectors.Services;
 using DigitalAssistant.Server.Modules.Devices.Services;
@@ -273,21 +275,25 @@ void ConfigureServices(WebApplicationBuilder builder)
         .SetApplicationName("DigitalAssistant.Server");
 
     builder.Services
-        .AddSingleton<DigitalAssistant.Base.General.BaseErrorService>()
+        .AddSingleton<BaseErrorService>()
         .AddSingleton<AudioService>()
         .AddSingleton<AsrService>()
         .AddSingleton<AsrModelSelectionService>()
         .AddSingleton<TtsService>()
         .AddSingleton<TtsModelSelectionService>()
-        .AddSingleton<CommandTemplateParser>()
+        .AddSingleton<LlmService>()
+        .AddSingleton<LlmModelSelectionService>()        
         .AddSingleton<ClientInformationService>()
         .AddSingleton<ClientTaskExecutionService>()
         .AddSingleton<ClientConnectionHandler>()
         .AddSingleton<ConnectorService>()
-        .AddSingleton<CommandHandler>()
         .AddSingleton<TcpMessageHandler>()
+        .AddSingleton<CommandHandler>()
         .AddSingleton<CommandParameterParser>()
+        .AddSingleton<CommandTemplateParser>()
         .AddSingleton<CommandProcessor>()
+        .AddSingleton<CommandRegularExpressionInterpreter>()
+        .AddSingleton<CommandLlmInterpreter>()        
         .AddSingleton<ClientCommandService>()
         .AddSingleton<IDeviceFactory, DeviceFactory>()
         .AddSingleton<IDeviceChangeArgsFactory, DeviceChangeArgsFactory>()

@@ -11,6 +11,9 @@ public class DummyCommand(IStringLocalizer localizer,  IJsonStringLocalizer json
 {
     public override CommandType Type => CommandType.Direct;
 
+    public override string LlmFunctionTemplate => "DummyCommand()";
+    public override string LlmFunctionDescription => "Dummy Command";
+
     public override Task<ICommandResponse> ExecuteAsync(ICommandParameters parameters)
     {
         return Task.FromResult((ICommandResponse)new CommandResponse(success: true, "Dummy Command Result"));

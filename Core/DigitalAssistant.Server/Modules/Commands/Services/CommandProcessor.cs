@@ -1,12 +1,16 @@
 ﻿using DigitalAssistant.Abstractions.Clients.Interfaces;
-using DigitalAssistant.Abstractions.Commands.Interfaces;
-using DigitalAssistant.Server.Modules.Connectors.Services;
-using Microsoft.Extensions.Localization;
-using System.Collections.Concurrent;
-using System.Diagnostics;
-using System.Text.Json;
-using System.Globalization;
 using DigitalAssistant.Abstractions.Commands.Abstracts;
+using DigitalAssistant.Abstractions.Commands.Enums;
+using DigitalAssistant.Abstractions.Commands.Interfaces;
+using DigitalAssistant.Server.Modules.CacheModule;
+using DigitalAssistant.Server.Modules.Commands.Interpreter;
+using DigitalAssistant.Server.Modules.Commands.Parser;
+using DigitalAssistant.Server.Modules.Connectors.Services;
+using DigitalAssistant.Server.Modules.Setups.Enums;
+using Microsoft.Extensions.Localization;
+using System.Diagnostics;
+using System.Globalization;
+using System.Text.Json;
 
 namespace DigitalAssistant.Server.Modules.Commands.Services;
 
@@ -15,6 +19,8 @@ public class CommandProcessor(IServiceProvider serviceProvider,
     CommandParameterParser commandParameterParser,
     ConnectorService connectorService,
     ClientCommandService clientCommandService,
+    CommandRegularExpressionInterpreter commandRegularExpressionInterpreter,
+    CommandLlmInterpreter commandLlmInterpreter,
     IStringLocalizer<CommandProcessor> localizer,
     ILogger<CommandProcessor> logger)
 {
@@ -24,6 +30,8 @@ public class CommandProcessor(IServiceProvider serviceProvider,
     protected readonly CommandParameterParser CommandParameterParser = commandParameterParser;
     protected readonly ConnectorService ConnectorService = connectorService;
     protected readonly ClientCommandService ClientCommandService = clientCommandService;
+    protected readonly CommandLlmInterpreter CommandLlmInterpreter = commandLlmInterpreter;
+    protected readonly CommandRegularExpressionInterpreter CommandRegularExpressionInterpreter = commandRegularExpressionInterpreter;
     protected readonly IStringLocalizer<CommandProcessor> Localizer = localizer;
     protected readonly ILogger<CommandProcessor> Logger = logger;
     #endregion
@@ -34,40 +42,34 @@ public class CommandProcessor(IServiceProvider serviceProvider,
         try
         {
             CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo(language);
-            var templates = await CommandHandler.GetLocalizedCommandTemplatesAsync(language);
 #if DEBUG
             var stopwatch = new Stopwatch();
             stopwatch.Start();
 #endif
-
-            ConcurrentBag<(ICommand Command, ICommandParameters? Parameters)> matchedTemplates = [];
-            Parallel.ForEach(templates, async (templatesFromCommand, parallelLoopState) =>
+            (ICommand Command, ICommandTemplate? Template, ICommandParameters? Parameters) matchedCommand = default;
+            switch (Cache.SetupCache.Setup?.InterpreterMode)
             {
-                foreach (var commandTemplate in templatesFromCommand)
-                {
-                    var match = commandTemplate.Regex.Match(userCommand);
-                    if (!match.Success)
-                        continue;
-
-                    (bool success, ICommandParameters? parsedCommandParameters) = await CommandParameterParser.ParseParametersFromMatchAsync(commandTemplate, match, language, client);
-                    if (!success)
-                        continue;
-
-                    matchedTemplates.Add((commandTemplate.Command, parsedCommandParameters));
+                case InterpreterMode.RegularExpression:
+                    matchedCommand = await CommandRegularExpressionInterpreter.InterpretUserCommandAsync(userCommand, language, client);
                     break;
-                }
-            });
-
+                case InterpreterMode.LLM:
+                    matchedCommand = await CommandLlmInterpreter.InterpretUserCommandAsync(userCommand, language, client);
+                    break;
+                case InterpreterMode.Mixed:
+                    matchedCommand = await CommandRegularExpressionInterpreter.InterpretUserCommandAsync(userCommand, language, client);
+                    if (matchedCommand == default || matchedCommand.Command == null || matchedCommand.Parameters == null)
+                        matchedCommand = await CommandLlmInterpreter.InterpretUserCommandAsync(userCommand, language, client);
+                    break;
+            }
 #if DEBUG
             stopwatch.Stop();
-            Logger.LogInformation("Parsing and matching command '{UserCommand}' took {ElapsedMilliseconds}ms", userCommand, stopwatch.ElapsedMilliseconds);
+            Logger.LogInformation("Interpreting '{UserCommand}' took {ElapsedMilliseconds}ms", userCommand, stopwatch.ElapsedMilliseconds);
 #endif
 
-            var matchedTemplate = matchedTemplates.OrderBy(entry => entry.Command.Priority).LastOrDefault();
-            if (matchedTemplate == default || matchedTemplate.Command == null || matchedTemplate.Parameters == null)
+            if (matchedCommand == default || matchedCommand.Command == null || matchedCommand.Parameters == null)
                 return Localizer["No Command found for \"{0}\"", userCommand];
 
-            var response = await matchedTemplate.Command.ExecuteAsync(matchedTemplate.Parameters);
+            var response = await matchedCommand.Command.ExecuteAsync(matchedCommand.Parameters);
 
             if (!response.Success)
                 return Localizer["No Command found for \"{0}\"", userCommand];
@@ -112,24 +114,21 @@ public class CommandProcessor(IServiceProvider serviceProvider,
             var stopwatch = new Stopwatch();
             stopwatch.Start();
 
-            ConcurrentBag<(ICommandTemplate Template, ICommand Command, ICommandParameters? Parameters)> matchedTemplates = [];
-
-            Parallel.ForEach(templates, async (templatesFromCommand, parallelLoopState) =>
-                {
-                    foreach (var commandTemplate in templatesFromCommand)
-                    {
-                        var match = commandTemplate.Regex.Match(userCommand);
-                        if (!match.Success)
-                            continue;
-
-                        (bool success, ICommandParameters? parsedCommandParameters) = await CommandParameterParser.ParseParametersFromMatchAsync(commandTemplate, match, language, client);
-                        if (!success)
-                            continue;
-
-                        matchedTemplates.Add((commandTemplate, commandTemplate.Command, parsedCommandParameters));
-                        break;
-                    }
-                });
+            (ICommand Command, ICommandTemplate? Template, ICommandParameters? Parameters) matchedCommand = default;
+            switch (Cache.SetupCache.Setup?.InterpreterMode)
+            {
+                case InterpreterMode.RegularExpression:
+                    matchedCommand = await CommandRegularExpressionInterpreter.InterpretUserCommandAsync(userCommand, language, client);
+                    break;
+                case InterpreterMode.LLM:
+                    matchedCommand = await CommandLlmInterpreter.InterpretUserCommandAsync(userCommand, language, client);
+                    break;
+                case InterpreterMode.Mixed:
+                    matchedCommand = await CommandRegularExpressionInterpreter.InterpretUserCommandAsync(userCommand, language, client);
+                    if (matchedCommand == default || matchedCommand.Command == null || matchedCommand.Parameters == null)
+                        matchedCommand = await CommandLlmInterpreter.InterpretUserCommandAsync(userCommand, language, client);
+                    break;
+            }
 
             stopwatch.Stop();
             Logger.LogInformation("Parsing and matching command '{UserCommand}' took {ElapsedMilliseconds}ms", userCommand, stopwatch.ElapsedMilliseconds);
@@ -138,13 +137,12 @@ public class CommandProcessor(IServiceProvider serviceProvider,
             response += $" - Language: {language}" + Environment.NewLine;
             response += Environment.NewLine;
 
-            var matchedTemplate = matchedTemplates.OrderBy(entry => entry.Command.Priority).LastOrDefault();
-            if (matchedTemplate == default || matchedTemplate.Command == null || matchedTemplate.Parameters == null)
+            if (matchedCommand == default || matchedCommand.Command == null || matchedCommand.Parameters == null)
                 return response + "No Command found";
 
-            var commandToExecute = matchedTemplate.Command;
-            var commandParameters = matchedTemplate.Parameters;
-            var matchedCommandTemplate = matchedTemplate.Template;
+            var commandToExecute = matchedCommand.Command;
+            var commandParameters = matchedCommand.Parameters;
+            var matchedCommandTemplate = matchedCommand.Template;
 
             response += $"Command found: {commandToExecute.GetName()}" + Environment.NewLine;
             response += $" - Template: {matchedCommandTemplate?.Template}" + Environment.NewLine;

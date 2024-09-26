@@ -5,8 +5,10 @@ using BlazorBase.CRUD.Attributes;
 using BlazorBase.CRUD.Models;
 using DigitalAssistant.Abstractions.Devices.Enums;
 using DigitalAssistant.Abstractions.Devices.Interfaces;
+using DigitalAssistant.Server.Modules.Commands.Services;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DigitalAssistant.Server.Modules.Devices.Models;
 
@@ -71,6 +73,10 @@ public partial class Device : BaseModel, IDevice
     [Visible(DisplayGroup = "Information", DisplayOrder = 200, HideInGUITypes = [GUIType.List])]
     public override DateTime ModifiedOn { get => base.ModifiedOn; set => base.ModifiedOn = value; }
 
+    #region Not Mapped
+    [NotMapped] private bool NameChanged = false;
+    #endregion
+
     #endregion
 
     #region CRUD
@@ -80,10 +86,41 @@ public partial class Device : BaseModel, IDevice
         {
             case nameof(Name):
                 CustomName = true;
+                NameChanged = true;
                 break;
         }
 
         return base.OnAfterPropertyChanged(args);
+    }
+
+    public override Task OnAfterListPropertyChanged(OnAfterListPropertyChangedArgs args)
+    {
+        switch (args.PropertyName)
+        {
+            case nameof(AlternativeNames):
+                NameChanged = true;
+                break;
+        }
+
+        return base.OnAfterListPropertyChanged(args);
+    }
+
+    public override Task OnAfterRemoveListEntry(OnAfterRemoveListEntryArgs args)
+    {
+        NameChanged = true;
+        return base.OnAfterRemoveListEntry(args);
+    }
+
+    public override async Task OnAfterCardSaveChanges(OnAfterCardSaveChangesArgs args)
+    {
+        await base.OnAfterCardSaveChanges(args);
+
+        if (NameChanged)
+        {
+            var commandHandler = args.EventServices.ServiceProvider.GetRequiredService<CommandHandler>();
+            await commandHandler.RefreshLocalizedCommandTemplatesCacheAsync(clearAllLanguages: true).ConfigureAwait(false);
+            NameChanged = false;
+        }
     }
     #endregion
 }

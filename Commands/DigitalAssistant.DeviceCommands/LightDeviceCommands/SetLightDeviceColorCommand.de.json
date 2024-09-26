@@ -1,0 +1,11 @@
+{
+  "Name": "Farbe der Lichtgeräte einstellen",
+  "Description": "Legt die Farbe des angegebenen Lichts fest",
+  "Templates": [
+    "[Schalte|Setze|Wechsle|Ändere|Passe an|Stelle|Stell] (das|die) (Farbe) (von) {Name:LightDevice}( )(Licht) (auf) {Color:Color}"
+  ],
+  "Options": [],
+  "Responses": [
+    "Die Farbe von {0} wurde auf {1} gestellt"
+  ]
+}

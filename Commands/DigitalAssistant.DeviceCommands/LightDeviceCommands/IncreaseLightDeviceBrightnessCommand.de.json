@@ -1,0 +1,13 @@
+{
+  "Name": "Erhöht die Helligkeit von Lichtgeräten",
+  "Description": "Erhöht die Helligkeit des angegebenen Lichts",
+  "Templates": [
+    "[Erhöhe|Steigere|Hebe] (die) Helligkeit ([von|des]) {Name:LightDevice}( )(Lichts) um {Brightness:Integer}( )([Prozent|%])",
+    "[Erhöhe|Steigere|Hebe] (die) Helligkeit ([von|des]) {Name:LightDevice}( )(Lichts)",
+    "Mache (das) {Name:LightDevice} (Licht) ({Brightness:Integer}( )([Prozent|%])) heller"
+  ],
+  "Options": [],
+  "Responses": [
+    "Die Helligkeit von {0} wurde um {1} erhöht"
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "Name": "Lichtgeräte an oder ausschalten",
+  "Description": "Befehle zum ein- oder ausschalten von Lichtgeräten",
+  "Templates": [
+    "[Schalte|Setze|Wechsle|Ändere|Stelle|Stell] ([das|die]) {Name:LightDevice}( )(Licht) (auf) {State:Boolean}",
+    "{Name:LightDevice} {State:Boolean}"
+  ],
+  "Options": [],
+  "On": "an",
+  "Off": "aus",
+  "Responses": [
+    "Das {0} wurde {1}geschaltet"
+  ]
+}
