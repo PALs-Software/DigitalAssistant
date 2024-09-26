@@ -20,14 +20,21 @@ docker run --name digital-assistant-server -p 8079:8079 -p 8080:8080 -v DigitalA
 ### Manually
 
 1. Download and install the [**ASP.NET Core Runtime 8.\***](https://dotnet.microsoft.com/en-us/download/dotnet/8.0) for your platform type.
+``` shell
+# For Linux run:
+sudo apt-get update && sudo apt-get install -y aspnetcore-runtime-8.0
+```
 2. Download the binaries of your platform from the [release page of the github repository](https://github.com/PALs-Software/DigitalAssistant).
 3. Extract the compressed files.
 4. **Optional**: Change the default configuration of the server by adjusting the `appsettings.{YourPlattform}.json` file like it is explained in the chapter "[Change default configuration](#change-default-configuration)".
 5. Create a self signed certificate for the server like described in [this chapter](#create-self-signed-certificate-for-the-server).
 6. Open a terminal of your choice.
 7. Navigate to the extracted binary files.
-8. Run the following command to start the server application: `dotnet DigitalAssistant.Server.dll --urls=http://localhost:8079/;https://localhost:8080/`
-9. Open `https://localhost:8080/` in a browser and enjoy the digital assistant. Further information's how to configure and use the digital assistant can be found in the [setup](../setup/setup.md) chapter of this documentation.
+8. Run the following command to start the server application: 
+``` shell
+dotnet DigitalAssistant.Server.dll --urls="http://localhost:8079/;https://localhost:8080/"
+```
+9. Open [https://localhost:8080/](https://localhost:8080/) in a browser and enjoy the digital assistant. Further information's how to configure and use the digital assistant can be found in the [setup](../setup/setup.md) chapter of this documentation.
 
 ### Raspberry Pi Image
 Currently not possible, but it is planned to provide a Raspberry Pi image for the server application.
@@ -55,6 +62,16 @@ The following scripts will create a self signed certificate for the server, so i
 ### Linux
 
 Download and execute the shell script [CreateSelfSignedCertificate.sh](https://github.com/PALs-Software/DigitalAssistant/blob/main/Scripts/Certificate/Linux/CreateSelfSignedCertificate.sh).
+
+#### Parameter
+ - User Name: The user which should run the application later. In the most cases simple your username.
+ - Website Address: The address for which the certificate should be created. For the beginning localhost or the computer name are just fine.
+ 
+``` shell
+wget https://github.com/PALs-Software/DigitalAssistant/raw/main/Scripts/Certificate/Linux/CreateSelfSignedCertificate.sh
+chmod +x CreateSelfSignedCertificate.sh
+sudo ./CreateSelfSignedCertificate.sh
+```
 
 ### Windows
 

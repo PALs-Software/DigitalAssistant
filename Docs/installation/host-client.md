@@ -7,6 +7,10 @@ A Digital Assistant Client can be installed on any device, your desktop PC, a se
 ### Manually
 
 1. Download and install the [**.NET Runtime 8.\***](https://dotnet.microsoft.com/en-us/download/dotnet/8.0) for your platform type.
+``` shell
+# For Linux run:
+sudo apt-get update && sudo apt-get install -y aspnetcore-runtime-8.0
+```
 2. Download the binaries of your platform from the [release page of the github repository](https://github.com/PALs-Software/DigitalAssistant).
 3. Extract the compressed files.
 4. **Optional**: Change the default configuration of the client by adjusting the `appsettings.json` file like it is explained in the chapter "[Change default configuration](#change-default-configuration)".
@@ -22,7 +26,10 @@ brew install mpg123
 brew install ffmpeg
 ```
 9. Navigate to the extracted binary files.
-10. Run the following command to start the client application: `dotnet DigitalAssistant.Client.dll`
+10. Run the following command to start the client application:
+``` shell
+ dotnet DigitalAssistant.Client.dll
+```
 
 Further information's how to connect the client with the server can be found in the [setup client](../setup/clients.md) chapter of this documentation.
 
