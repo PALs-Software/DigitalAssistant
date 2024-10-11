@@ -123,6 +123,12 @@
   <data name="ClientNotRespondError" xml:space="preserve">
     <value>Der Client antwortet nicht</value>
   </data>
+  <data name="LlmDisabledError" xml:space="preserve">
+    <value>Large Language Modellaktion kann nicht ausgeführt werden, da LLM in der Einrichtung nicht aktiviert ist</value>
+  </data>
+  <data name="NoLlmPromptError" xml:space="preserve">
+    <value>Large Language Modellaktion kann nicht ausgeführt werden, da keine System- oder Benutzerprompt angegeben wurde</value>
+  </data>
   <data name="NoMusicStreamUrlError" xml:space="preserve">
     <value>Es wurde keine Musik-Stream-Url angegeben</value>
   </data>

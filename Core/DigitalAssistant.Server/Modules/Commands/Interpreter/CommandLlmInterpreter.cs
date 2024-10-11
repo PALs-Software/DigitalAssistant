@@ -43,8 +43,7 @@ All required parameters must be provided.
 Only one function call should be returned per user request.
 Include all parameter names in the response.
 Return the function call as a single line.
-If the user's input doesn't match any function, return None().
-";
+If the user's input doesn't match any function, return None().";
     #endregion
 
     public CommandLlmInterpreter(CommandHandler commandHandler, LlmService llmService, CommandParameterParser commandParameterParser, CommandTemplateParser commandTemplateParser)

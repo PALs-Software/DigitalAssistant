@@ -85,6 +85,7 @@ public partial class ChatModal
         AddMessage(message, true);
         CommandIsExecuting = true;
         await InvokeAsync(StateHasChanged);
+        await Task.Delay(100);
 
         string? response;
         if (DebugModusEnabled)

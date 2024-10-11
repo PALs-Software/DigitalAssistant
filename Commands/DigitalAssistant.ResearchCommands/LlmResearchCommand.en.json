@@ -1,0 +1,8 @@
+{
+  "Name": "Research Informations",
+  "Description": "Commands to request information on a specific topic from an LLM.",
+  "Templates": [
+    "Ask (your) library (for) {Question:Text}"
+  ],
+  "Options": []
+}

@@ -51,7 +51,7 @@ public class LlmService : IDisposable
         if (setup == null)
             return;
 
-        if (PreventLoadingAiModels)
+        if (PreventLoadingAiModels || setup.LlmModel == LlmModels.Disabled)
             return;
 
         ModelPath = GetModelDirectoryPath(setup);

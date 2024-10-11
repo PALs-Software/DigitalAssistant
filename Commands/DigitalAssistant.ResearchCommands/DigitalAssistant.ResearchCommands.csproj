@@ -7,4 +7,37 @@
     <Configurations>Debug;Release;Debug_WithGpuSupport;Release_WithGpuSupport</Configurations>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Content Include="LlmResearchCommand.de.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="LlmResearchCommand.en.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\DigitalAssistant.Abstractions\DigitalAssistant.Abstractions.csproj" />
+  </ItemGroup>
+
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<Message Condition="'$(_IsPublishing)'==''" Importance="High" Text="COPY ResearchCommands output to Server output" />
+		<Message Condition="'$(_IsPublishing)'=='true'" Importance="High" Text="PUBLISH ResearchCommands output to $(PublishDir)\Publish" />
+
+		<ItemGroup>
+			<DllFiles Include="$(OutDir)\DigitalAssistant.ResearchCommands.*" />
+			<TranslationFiles Include="$(OutDir)\**\*.json" />
+		</ItemGroup>
+
+		<Copy SourceFiles="@(DllFiles)" DestinationFolder="$(ProjectDir)..\..\Core\DigitalAssistant.Server\bin\$(Configuration)\net8.0\Commands\DigitalAssistant.ResearchCommands" />
+		<Copy SourceFiles="@(TranslationFiles)" DestinationFolder="$(ProjectDir)..\..\Core\DigitalAssistant.Server\bin\$(Configuration)\net8.0\Commands\DigitalAssistant.ResearchCommands\%(RecursiveDir)" />
+
+		<Copy Condition="'$(_IsPublishing)'=='true'" SourceFiles="@(DllFiles)" DestinationFolder="$(PublishDir)\Publish\Commands\DigitalAssistant.ResearchCommands" />
+		<Copy Condition="'$(_IsPublishing)'=='true'" SourceFiles="@(TranslationFiles)" DestinationFolder="$(PublishDir)\Publish\Commands\DigitalAssistant.ResearchCommands\%(RecursiveDir)" />
+	</Target>
+
 </Project>

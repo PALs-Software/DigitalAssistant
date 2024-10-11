@@ -123,6 +123,12 @@
   <data name="ClientNotRespondError" xml:space="preserve">
     <value>Client does not respond</value>
   </data>
+  <data name="LlmDisabledError" xml:space="preserve">
+    <value>Large Language Model action cannot be executed because LLM is not activated in the setup</value>
+  </data>
+  <data name="NoLlmPromptError" xml:space="preserve">
+    <value>Large language model action cannot be executed because no system or user prompt was specified</value>
+  </data>
   <data name="NoMusicStreamUrlError" xml:space="preserve">
     <value>No music stream url was provided</value>
   </data>

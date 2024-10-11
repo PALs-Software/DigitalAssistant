@@ -1,0 +1,8 @@
+{
+  "Name": "Informationen anfragen",
+  "Description": "Befehle um Informationen zu einem bestimmten Thema von einem LLM anzufordern.",
+  "Templates": [
+    "Frag(e) (deine) Bibliothek (nach) {Question:Text}"
+  ],
+  "Options": []
+}

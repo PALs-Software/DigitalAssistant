@@ -9,11 +9,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<None Remove="LightDeviceCommands.de.json" />
-		<None Remove="LightDeviceCommands.en.json" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<Content Include="RadioCommand.de.json">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 			<ExcludeFromSingleFile>true</ExcludeFromSingleFile>

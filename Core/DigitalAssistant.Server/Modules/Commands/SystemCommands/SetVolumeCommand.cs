@@ -13,7 +13,7 @@ public class SetVolumeCommand(IStringLocalizer localizer, IJsonStringLocalizer j
     public override int Priority => 2000000000;
 
     public override string LlmFunctionTemplate => "SetVolume(Volume: Integer))";
-    public override string LlmFunctionDescription => "Set Volume to a specifc sound level.";
+    public override string LlmFunctionDescription => "Set Volume to a specific sound level.";
 
     public override Task<ICommandResponse> ExecuteAsync(ICommandParameters parameters)
     {
