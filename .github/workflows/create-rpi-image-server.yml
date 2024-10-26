@@ -2,12 +2,25 @@ name: Create RPI Image (Server)
 
 on: workflow_dispatch
 
+permissions:
+  actions: read
+  
 jobs:
   modify-rpi-image:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Download artifact
+        id: download-artifact
+        uses: dawidd6/action-download-artifact@v6
+        with:
+          github_token: ${{ github.token }}
+          workflow: build-digital-assistant.yml
+          workflow_conclusion: success
+          branch: main
+          path: extract_here
         
       - name: Add digital assistant to Raspberry Pi OS Bookworm
         uses: dtcooper/rpi-image-modifier@v1
@@ -18,7 +31,6 @@ jobs:
           compress-with-xz: true
           cache: true
           mount-repository: true
-          env-vars: TEST
           run: |
             
             touch /home/pi/test.txt
@@ -35,7 +47,7 @@ jobs:
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
-          name: built-image
+          name: raspios-with-digital-assistant-server
           path: ${{ steps.create-image.outputs.image-path }}
           if-no-files-found: error
           retention-days: 2
