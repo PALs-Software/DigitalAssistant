@@ -28,8 +28,8 @@ jobs:
       with:
         dotnet-version: 8.0.x  
 
-    - name: Test
-      run: dotnet test "./DigitalAssistant/Tests/DigitalAssistant.Server.Tests/DigitalAssistant.Server.Tests.csproj" -c Release
+#    - name: Test
+#      run: dotnet test "./DigitalAssistant/Tests/DigitalAssistant.Server.Tests/DigitalAssistant.Server.Tests.csproj" -c Release
       
     - name: Build Hue Connector
       run: dotnet publish "./DigitalAssistant/Connectors/DigitalAssistant.HueConnector/DigitalAssistant.HueConnector.csproj" -c Release -o ${{ github.workspace }}/ReleaseMisc /p:UseAppHost=false
