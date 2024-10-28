@@ -20,7 +20,7 @@ jobs:
           workflow: build-digital-assistant.yml
           workflow_conclusion: success
           branch: main
-          path: ${{ github.workspace }}/DigitalAssistant/Artifacts/
+          path: ${{ github.workspace }}/Artifacts/
         
       - name: Add digital assistant to Raspberry Pi OS Bookworm
         uses: dtcooper/rpi-image-modifier@v1
