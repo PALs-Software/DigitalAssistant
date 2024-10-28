@@ -44,29 +44,26 @@ jobs:
           cache: true
           mount-repository: true
           run: |
-          
-            
             echo "Install modules..."
             apt-get update
             apt-get install -y openssl
             apt-get install -y tree
-
-            tree /mounted-github-repo
-            tree /mounted-github-repo/Artifacts
+            apt-get install unzip
             
             wget https://dot.net/v1/dotnet-install.sh -O dotnet-install.sh
             chmod +x ./dotnet-install.sh
             ./dotnet-install.sh --channel 8.0 --runtime aspnetcore
   
-            echo "Copy and prepare server application"
+            echo "Prepare server application"
             mkdir -p /home/pi/DigitalAssistantServer/bin/
             mkdir -p /home/pi/DigitalAssistantServer/Database/
             mkdir -p /home/pi/DigitalAssistantServer/Certificates/
             mkdir -p /home/pi/DigitalAssistantServer/Models/
             mkdir -p /home/pi/DigitalAssistantServer/DigitalAssistant.Server_FileStore/
             chown -R pi:pi /home/pi/DigitalAssistantServer
-            
-            cp -r /mounted-github-repo/Artifacts/ServerArtifact/Server/* /home/pi/DigitalAssistantServer/bin/*
+
+            echo "Unzip binaries and copy configuration"
+            unzip /mounted-github-repo/Artifacts/Server.zip -d /home/pi/DigitalAssistantServer/bin
             cp /mounted-github-repo/Scripts/Build/Assets/rpi-server-appsettings.json /home/pi/DigitalAssistantServer/bin/appsettings.Linux.json
             
             echo "Create certificate"
