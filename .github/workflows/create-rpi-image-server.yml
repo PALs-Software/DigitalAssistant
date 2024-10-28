@@ -59,7 +59,7 @@ jobs:
             chmod +x ./dotnet-install.sh
             ./dotnet-install.sh --channel 8.0 --runtime aspnetcore
 
-            if [ $image_type="server-and-client ] || [ $image_type="server" ]; then
+            if [ $image_type="server-and-client" ] || [ $image_type="server" ]; then
          
                 echo "Prepare server application"
                 mkdir -p /home/pi/DigitalAssistantServer/bin/
