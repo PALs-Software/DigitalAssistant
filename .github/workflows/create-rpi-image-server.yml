@@ -12,14 +12,26 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Download artifact
-        id: download-artifact
+      - name: Download client artifact
+        id: download-client-artifact
         uses: dawidd6/action-download-artifact@v6
         with:
           github_token: ${{ github.token }}
           workflow: build-digital-assistant.yml
           workflow_conclusion: success
           branch: main
+          name: ClientArtifact
+          path: ${{ github.workspace }}/Artifacts/
+
+      - name: Download server artifact
+        id: download-server-artifact
+        uses: dawidd6/action-download-artifact@v6
+        with:
+          github_token: ${{ github.token }}
+          workflow: build-digital-assistant.yml
+          workflow_conclusion: success
+          branch: main
+          name: ServerArtifact
           path: ${{ github.workspace }}/Artifacts/
         
       - name: Add digital assistant to Raspberry Pi OS Bookworm
@@ -32,6 +44,9 @@ jobs:
           cache: true
           mount-repository: true
           run: |
+            tree /mounted-github-repo
+            tree /mounted-github-repo/Artifacts
+            
             echo "Install modules..."
             apt-get update
             apt-get install -y openssl
