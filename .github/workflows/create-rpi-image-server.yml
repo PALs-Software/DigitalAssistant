@@ -44,13 +44,16 @@ jobs:
           cache: true
           mount-repository: true
           run: |
-            tree /mounted-github-repo
-            tree /mounted-github-repo/Artifacts
+          
             
             echo "Install modules..."
             apt-get update
             apt-get install -y openssl
             apt-get install -y tree
+
+            tree /mounted-github-repo
+            tree /mounted-github-repo/Artifacts
+            
             wget https://dot.net/v1/dotnet-install.sh -O dotnet-install.sh
             chmod +x ./dotnet-install.sh
             ./dotnet-install.sh --channel 8.0 --runtime aspnetcore
