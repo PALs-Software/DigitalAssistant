@@ -1,4 +1,4 @@
-name: Create RPI Image (Server)
+name: Create RPI Images
 
 on: workflow_dispatch
 
@@ -6,8 +6,11 @@ permissions:
   actions: read
   
 jobs:
-  modify-rpi-image:
+  modify-rpi-images:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        image-type: ['server-and-client', 'server', 'client']
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -37,45 +40,65 @@ jobs:
       - name: Add digital assistant to Raspberry Pi OS Bookworm
         uses: dtcooper/rpi-image-modifier@v1
         id: create-image
+        env:
+          image_type: ${{ matrix.image-type }}
         with:
           base-image-url: https://downloads.raspberrypi.com/raspios_lite_arm64/images/raspios_lite_arm64-2024-07-04/2024-07-04-raspios-bookworm-arm64-lite.img.xz
-          image-path: 2024-07-04-raspios-bookworm-arm64-lite-modified-with-digital-assistant-server.img
+          image-path: 2024-07-04-raspios-bookworm-arm64-lite-modified-with-digital-assistant-${{ matrix.image-type }}.img
           compress-with-xz: true
           cache: true
           mount-repository: true
+          env-vars: image_type
           run: |
             echo "Install modules..."
-            apt-get update
-            apt-get install -y openssl
+            apt-get update           
             apt-get install -y tree
             apt-get install unzip
             
             wget https://dot.net/v1/dotnet-install.sh -O dotnet-install.sh
             chmod +x ./dotnet-install.sh
             ./dotnet-install.sh --channel 8.0 --runtime aspnetcore
-  
-            echo "Prepare server application"
-            mkdir -p /home/pi/DigitalAssistantServer/bin/
-            mkdir -p /home/pi/DigitalAssistantServer/Database/
-            mkdir -p /home/pi/DigitalAssistantServer/Certificates/
-            mkdir -p /home/pi/DigitalAssistantServer/Models/
-            mkdir -p /home/pi/DigitalAssistantServer/DigitalAssistant.Server_FileStore/
-            chown -R pi:pi /home/pi/DigitalAssistantServer
 
-            echo "Unzip binaries and copy configuration"
-            unzip /mounted-github-repo/Artifacts/Server.zip -d /home/pi/DigitalAssistantServer/bin
-            cp /mounted-github-repo/Scripts/Build/Assets/rpi-server-appsettings.json /home/pi/DigitalAssistantServer/bin/appsettings.Linux.json
-            
-            echo "Create certificate"
-            chmod +x /mounted-github-repo/Scripts/Build/Assets/rpi-create-certificates.sh
-            /mounted-github-repo/Scripts/Build/Assets/rpi-create-certificates.sh
+            if [ $image_type -eq 'server-and-client' ] || [ $image_type -eq 'server' ]; then
+         
+                echo "Prepare server application"
+                mkdir -p /home/pi/DigitalAssistantServer/bin/
+                mkdir -p /home/pi/DigitalAssistantServer/Database/
+                mkdir -p /home/pi/DigitalAssistantServer/Certificates/
+                mkdir -p /home/pi/DigitalAssistantServer/Models/
+                mkdir -p /home/pi/DigitalAssistantServer/DigitalAssistant.Server_FileStore/
+                chown -R pi:pi /home/pi/DigitalAssistantServer
 
-            echo "Configure auto start"
-            cp /mounted-github-repo/Scripts/Build/Assets/rpi-digital-assistant-server.service /etc/systemd/system/
-            systemctl enable rpi-digital-assistant-server.service
+                apt-get install -y openssl
             
-            echo "Show file structure"
-            tree /home/pi/DigitalAssistantServer/
+                echo "Unzip binaries and copy configuration"
+                unzip -q /mounted-github-repo/Artifacts/Server.zip -d /home/pi/DigitalAssistantServer/bin
+                cp /mounted-github-repo/Scripts/Build/Assets/rpi-server-appsettings.json /home/pi/DigitalAssistantServer/bin/appsettings.Linux.json
+                
+                echo "Create certificate"
+                chmod +x /mounted-github-repo/Scripts/Build/Assets/rpi-create-certificates.sh
+                /mounted-github-repo/Scripts/Build/Assets/rpi-create-certificates.sh
+    
+                echo "Configure auto start"
+                cp /mounted-github-repo/Scripts/Build/Assets/rpi-digital-assistant-server.service /etc/systemd/system/
+                systemctl enable rpi-digital-assistant-server.service
+            fi
+            
+            if [ $image_type -eq 'server-and-client' ] || [ $image_type -eq 'client' ]; then
+                
+                echo "Prepare client application"
+                mkdir -p /home/pi/DigitalAssistantClient/bin/
+                chown -R pi:pi /home/pi/DigitalAssistantClient
+
+                apt-get install -y mpg123
+                 
+                echo "Unzip binaries"
+                unzip -q /mounted-github-repo/Artifacts/Client.zip -d /home/pi/DigitalAssistantClient/bin
+    
+                echo "Configure auto start"
+                cp /mounted-github-repo/Scripts/Build/Assets/rpi-digital-assistant-client.service /etc/systemd/system/
+                systemctl enable rpi-digital-assistant-client.service
+            fi
             
             echo "Modifications finished..."
             
@@ -89,7 +112,7 @@ jobs:
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
-          name: raspios-with-digital-assistant-server
+          name: raspios-with-digital-assistant-${{ matrix.image-type }}
           path: ${{ steps.create-image.outputs.image-path }}
           if-no-files-found: error
           retention-days: 2
