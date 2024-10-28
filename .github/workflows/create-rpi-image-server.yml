@@ -36,10 +36,9 @@ jobs:
             apt-get update
             apt-get install -y openssl
             apt-get install -y tree
-            wget https://packages.microsoft.com/config/debian/12/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
-            dpkg -i packages-microsoft-prod.deb
-            rm packages-microsoft-prod.deb
-            apt-get install -y aspnetcore-runtime-8.0
+            wget https://dot.net/v1/dotnet-install.sh -O dotnet-install.sh
+            chmod +x ./dotnet-install.sh
+            ./dotnet-install.sh --channel 8.0 --runtime aspnetcore
   
             echo "Copy and prepare server application"
             mkdir -p /home/pi/DigitalAssistantServer/bin/
