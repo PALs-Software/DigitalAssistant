@@ -1,0 +1,10 @@
+[Unit]
+Description=Digital Assistant Client
+
+[Service]
+ExecStart=dotnet /home/pi/DigitalAssistantClient/bin/DigitalAssistant.Client.dll
+WorkingDirectory=/home/pi/DigitalAssistantClient/bin/
+User=pi
+
+[Install]
+WantedBy=multi-user.target
