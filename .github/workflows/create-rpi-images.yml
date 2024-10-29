@@ -57,8 +57,11 @@ jobs:
             
             wget https://dot.net/v1/dotnet-install.sh -O dotnet-install.sh
             chmod +x ./dotnet-install.sh
-            ./dotnet-install.sh --channel 8.0 --runtime aspnetcore
-
+            /bin/su -s /bin/bash -c '/dotnet-install.sh --channel 8.0 --runtime aspnetcore' - pi            
+            echo 'export DOTNET_ROOT=$HOME/.dotnet' >> /home/pi/.bashrc
+            echo 'export PATH=$PATH:$HOME/.dotnet' >> /home/pi/.bashrc
+            source ~/.bashrc
+            
             if [ $image_type = server-and-client ] || [ $image_type = server ]; then
          
                 echo "Prepare server application"
@@ -70,7 +73,8 @@ jobs:
                 chown -R pi:pi /home/pi/DigitalAssistantServer
 
                 apt-get install -y openssl
-            
+                setcap CAP_NET_BIND_SERVICE=+eip /home/pi/.dotnet/dotnet # Allow pi user to bind to port 80 and 443
+                
                 echo "Unzip binaries and copy configuration"
                 unzip -q /mounted-github-repo/Artifacts/Server.zip -d /home/pi/DigitalAssistantServer/bin
                 cp /mounted-github-repo/Scripts/Build/Assets/rpi-server-appsettings.json /home/pi/DigitalAssistantServer/bin/appsettings.Linux.json
@@ -78,9 +82,11 @@ jobs:
                 echo "Create certificate"
                 chmod +x /mounted-github-repo/Scripts/Build/Assets/rpi-create-certificates.sh
                 /mounted-github-repo/Scripts/Build/Assets/rpi-create-certificates.sh
-    
+                chown -R pi:pi /home/pi/DigitalAssistantServer/Certificates
+                
                 echo "Configure auto start"
                 cp /mounted-github-repo/Scripts/Build/Assets/rpi-digital-assistant-server.service /etc/systemd/system/
+                chmod +rwx /etc/systemd/system/rpi-digital-assistant-server.service
                 systemctl enable rpi-digital-assistant-server.service
             fi
             
@@ -97,6 +103,7 @@ jobs:
     
                 echo "Configure auto start"
                 cp /mounted-github-repo/Scripts/Build/Assets/rpi-digital-assistant-client.service /etc/systemd/system/
+                chmod +rwx /etc/systemd/system/rpi-digital-assistant-client.service
                 systemctl enable rpi-digital-assistant-client.service
             fi
             
