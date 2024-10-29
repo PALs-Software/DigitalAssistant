@@ -2,7 +2,7 @@
 Description=Digital Assistant Client
 
 [Service]
-ExecStart=dotnet /home/pi/DigitalAssistantClient/bin/DigitalAssistant.Client.dll
+ExecStart=/home/pi/.dotnet/dotnet /home/pi/DigitalAssistantClient/bin/DigitalAssistant.Client.dll
 WorkingDirectory=/home/pi/DigitalAssistantClient/bin/
 User=pi
 
