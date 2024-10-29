@@ -1,0 +1,31 @@
+{
+  "DatabaseProvider": "SQLite",
+  "ConnectionStrings": {
+    "DefaultConnection": "Data Source=/home/pi/DigitalAssistantServer/Database/DigitalAssistantServer.db"
+  },
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+  "AllowedHosts": "*",
+  "Kestrel": {
+    "Certificates": {
+      "Default": {
+        "Path": "/home/pi/DigitalAssistantServer/Certificates/digitalassistant-ssl.crt",
+        "KeyPath": "/home/pi/DigitalAssistantServer/Certificates/digitalassistant-ssl.key"
+      }
+    }
+  },
+  "ClientConnection": {
+    "Port": 59142,
+    "Certificate": {
+       "Path": "/home/pi/DigitalAssistantServer/Certificates/digitalassistant-ssl.crt",
+        "KeyPath": "/home/pi/DigitalAssistantServer/Certificates/digitalassistant-ssl.key"
+    }
+  },
+  "FileStorePath": "/home/pi/DigitalAssistantServer/DigitalAssistant.Server_FileStore/",
+  "TempFileStorePath": "/home/pi/DigitalAssistantServer/DigitalAssistant.Server_FileStore/Temp/",
+  "ModelsDirectoryPath": "/home/pi/DigitalAssistantServer/Models/"
+}
