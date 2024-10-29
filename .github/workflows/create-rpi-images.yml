@@ -69,8 +69,7 @@ jobs:
                 mkdir -p /home/pi/DigitalAssistantServer/Database/
                 mkdir -p /home/pi/DigitalAssistantServer/Certificates/
                 mkdir -p /home/pi/DigitalAssistantServer/Models/
-                mkdir -p /home/pi/DigitalAssistantServer/DigitalAssistant.Server_FileStore/
-                chown -R pi:pi /home/pi/DigitalAssistantServer
+                mkdir -p /home/pi/DigitalAssistantServer/DigitalAssistant.Server_FileStore/                
 
                 apt-get install -y openssl
                 setcap CAP_NET_BIND_SERVICE=+eip /home/pi/.dotnet/dotnet # Allow pi user to bind to port 80 and 443
@@ -82,20 +81,20 @@ jobs:
                 echo "Create certificate"
                 chmod +x /mounted-github-repo/Scripts/Build/Assets/rpi-create-certificates.sh
                 /mounted-github-repo/Scripts/Build/Assets/rpi-create-certificates.sh
-                chown -R pi:pi /home/pi/DigitalAssistantServer/Certificates
-                
+                                
                 echo "Configure auto start"
                 cp /mounted-github-repo/Scripts/Build/Assets/rpi-digital-assistant-server.service /etc/systemd/system/
                 chmod +rwx /etc/systemd/system/rpi-digital-assistant-server.service
                 systemctl enable rpi-digital-assistant-server.service
+
+                chown -R pi:pi /home/pi/DigitalAssistantServer
             fi
             
             if [ $image_type = server-and-client ] || [ $image_type = client ]; then
                 
                 echo "Prepare client application"
                 mkdir -p /home/pi/DigitalAssistantClient/bin/
-                chown -R pi:pi /home/pi/DigitalAssistantClient
-
+                
                 apt-get install -y mpg123
                  
                 echo "Unzip binaries"
@@ -105,6 +104,8 @@ jobs:
                 cp /mounted-github-repo/Scripts/Build/Assets/rpi-digital-assistant-client.service /etc/systemd/system/
                 chmod +rwx /etc/systemd/system/rpi-digital-assistant-client.service
                 systemctl enable rpi-digital-assistant-client.service
+
+                chown -R pi:pi /home/pi/DigitalAssistantClient
             fi
             
             echo "Modifications finished..."
