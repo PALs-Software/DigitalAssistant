@@ -1,12 +1,11 @@
 # Compatibility
 
-### Currently tested on
-
 #### OS
 
 - Windows x64
 - Linux x64
-- Linux aarch64 (Raspberry Pi 5)
+- Linux aarch64 (Raspberry Pi 3-5 / Raspberry Pi Zero 2 W)
+- macOs
 
 #### Browser
 - Edge

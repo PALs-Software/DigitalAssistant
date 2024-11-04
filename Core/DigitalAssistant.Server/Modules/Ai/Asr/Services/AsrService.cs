@@ -134,7 +134,7 @@ public class AsrService : IDisposable
                         50258,      // start token id
                         Language,   // language id
                         50359,      // task transcribe (for task translate it would be 50358)
-                        50363       // no timestamps (remove if model support timestamps)
+                        50363       // no timestamps
                     }, [1, 4])),
                 };
 

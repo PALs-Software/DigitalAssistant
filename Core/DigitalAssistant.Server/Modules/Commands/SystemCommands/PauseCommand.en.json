@@ -1,6 +1,6 @@
 {
-  "Name": "Pause Command",
-  "Description": "Command to pause the currently running task",
+  "Name": "Pause",
+  "Description": "Command to pause the currently running task.",
   "Templates": [
     "Pause"
   ],

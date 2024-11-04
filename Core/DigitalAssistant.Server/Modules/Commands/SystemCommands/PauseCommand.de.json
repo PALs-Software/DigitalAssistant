@@ -1,6 +1,6 @@
 {
-  "Name": "Pausen Befehl",
-  "Description": "Befehl zum pausieren der aktuell ausgeführten Aufgabe",
+  "Name": "Pause",
+  "Description": "Befehl zum pausieren der aktuell ausgeführten Aufgabe.",
   "Templates": [
     "Pause"
   ],

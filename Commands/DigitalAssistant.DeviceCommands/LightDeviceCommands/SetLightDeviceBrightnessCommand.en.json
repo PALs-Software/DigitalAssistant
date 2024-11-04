@@ -1,9 +1,9 @@
 {
-  "Name": "Set light devices brightness level",
-  "Description": "Sets the brightness level of the specified light",
+  "Name": "Light device set brightness level",
+  "Description": "Sets the brightness level of the specified light.",
   "Templates": [
-    "[Turn|Set|Switch|Change|Adjust|Dim] (the) {Name:LightDevice} (light) (to) {Brightness:Integer}( )([percent|%])",
-    "{Name:LightDevice} (to) {Brightness:Integer}( )([percent|%])"
+    "[Turn|Set|Switch|Change|Adjust|Dim] (the) [{Name:LightDevice}|{GroupName:Group}] (light) (to) {Brightness:Integer}( )([percent|%])",
+    "[{Name:LightDevice}|{GroupName:Group}] (to) {Brightness:Integer}( )([percent|%])"
   ],
   "Options": [],
   "Responses": [

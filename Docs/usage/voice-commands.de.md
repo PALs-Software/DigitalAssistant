@@ -11,72 +11,78 @@ Die Sprachbefehle können derzeit in den folgenden Sprachen verwendet werden:
 
 Befehle zur Steuerung der Lautstärke des Clients.
 
-- Quinn, lauter.
-- Quinn, erhöhe die Lautstärke.
-- Quinn, leiser.
-- Quinn, verringere die Lautstärke.
-- Quinn, stelle die Lautstärke auf 50 Prozent.
+- Hey Quinn, lauter.
+- Hey Quinn, erhöhe die Lautstärke.
+- Hey Quinn, leiser.
+- Hey Quinn, verringere die Lautstärke.
+- Hey Quinn, stelle die Lautstärke auf 50 Prozent.
 
 ### Stop
 
 Befehle, um die aktuelle Aktion des Clients zu stoppen.
 
-- Quinn, stopp.
-- Quinn, beenden.
-- Quinn, hör auf.
+- Hey Quinn, stopp.
+- Hey Quinn, beenden.
+- Hey Quinn, hör auf.
 
 ### Pause
 
 Befehle, um die aktuelle Aktion des Clients zu pausieren, z. B. Musikwiedergabe.
 
-- Quinn, Pause.
+- Hey Quinn, Pause.
 
 ### Fortsetzen
 
 Befehle, um die letzte länger laufende Aktion des Clients fortzusetzen, z. B. Musikwiedergabe.
 
-- Quinn, fortsetzen.
-- Quinn, fortfahren.
+- Hey Quinn, fortsetzen.
+- Hey Quinn, fortfahren.
 
 ## Zeit
 
 Befehle, um die aktuelle Uhrzeit abzufragen.
 
-- Quinn, wie spät ist es?
-- Quinn, welche Uhrzeit haben wir?
-- Quinn, Uhrzeit.
+- Hey Quinn, wie spät ist es?
+- Hey Quinn, welche Uhrzeit haben wir?
+- Hey Quinn, Uhrzeit.
 
-## Timer
+## Wecker
 
-Befehle, um einen Timer einzustellen und zu steuern.
+Befehle, um einen Wecker einzustellen und zu steuern.
 
-- Quinn, stelle einen Timer auf 5 Minuten.
-- Quinn, erstelle einen Timer für 5 Minuten und 30 Sekunden.
-- Quinn, setze einen Timer "Eiertimer" in 5 Minuten und 30 Sekunden ein.
+- Hey Quinn, stelle einen Wecker auf 5 Minuten.
+- Hey Quinn, erstelle einen Wecker für 5 Minuten und 30 Sekunden.
+- Hey Quinn, setze einen Wecker "Eier fertig" in 5 Minuten und 30 Sekunden ein.
 
-- Quinn, wie viel Zeit ist noch übrig?
-- Quinn, wie lange geht der Timer "Eiertimer" noch?
+- Hey Quinn, wie viel Zeit ist noch übrig?
+- Hey Quinn, wie lange geht der Wecker "Eier fertig" noch?
 
-- Quinn, lösche den Timer.
-- Quinn, lösche den Timer "Eiertimer".
+- Hey Quinn, lösche den Wecker.
+- Hey Quinn, lösche den Wecker "Eier fertig".
 
-## Smarthome-Geräte steuern
+## Smart-Home-Geräte steuern
 
-Befehle zur Verwaltung von Smarthome-Geräten.
+Befehle zur Verwaltung von Smart-Home-Geräten.
 
-- Quinn, schalte das Küchenlicht ein.
-- Quinn, Küchenlicht aus.
+- Hey Quinn, schalte das Küchenlicht ein.
+- Hey Quinn, Küchenlicht aus.
 
-- Quinn, stelle das Badezimmerlicht auf 50 Prozent.
-- Quinn, erhöhe die Helligkeit von Küchenlicht.
-- Quinn, verringere die Helligkeit von Badezimmerlicht um 10 Prozent.
+- Hey Quinn, stelle das Badezimmerlicht auf 50 Prozent.
+- Hey Quinn, erhöhe die Helligkeit von Küchenlicht.
+- Hey Quinn, verringere die Helligkeit von Badezimmerlicht um 10 Prozent.
 
-- Quinn, stelle die Farbtemperatur von Wohnzimmerlicht auf warmweiß.
-- Quinn, ändere die Farbe von Küchenlicht auf Gelb.
+- Hey Quinn, stelle die Farbtemperatur von Wohnzimmerlicht auf warmweiß.
+- Hey Quinn, ändere die Farbe von Küchenlicht auf Gelb.
 
 ## Internetradio abspielen
 
 Befehle, um Internetradiosender abzuspielen.
 
-- Quinn, spiele den Radiosender "1Live".
-- Quinn, spiele das Internetradio "Radio K.W.".
+- Hey Quinn, spiele den Radiosender "1Live".
+- Hey Quinn, spiele das Internetradio "Radio K.W.".
+
+## Informationen über LLM erfragen
+
+Befehle, um Informationen von einem Large Language Model zu erfragen.
+
+- Hey Quinn, frage deine Bibliothek danach, warum der Himmel blau ist.

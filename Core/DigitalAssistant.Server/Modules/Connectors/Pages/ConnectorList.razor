@@ -13,7 +13,7 @@
         <Collapse Visible="AccordionCollapseState[0]">
             <CollapseHeader @onclick="() => AccordionCollapseState[0] = !AccordionCollapseState[0]" Class="text-center">
                 <h5 class="mb-0">
-                    @Localizer["Enabled Connectors"]
+                    @Localizer["EnabledConnectors"]
                 </h5>
             </CollapseHeader>
             <CollapseBody Class="accordion-body p-2">
@@ -31,7 +31,7 @@
         <Collapse Visible="AccordionCollapseState[1]">
             <CollapseHeader @onclick="() => AccordionCollapseState[1] = !AccordionCollapseState[1]" Class="text-center">
                 <h5 class="mb-0">
-                    @Localizer["Disabled Connectors"]
+                    @Localizer["DisabledConnectors"]
                 </h5>
             </CollapseHeader>
             <CollapseBody Class="accordion-body p-2">
@@ -49,8 +49,6 @@
 
     @if (ShowEnableConnectorModal)
     {
-        <EnableConnectorModal Connector="ConnectorToEnable" Closed="EnableConnectorModalClosed">
-
-        </EnableConnectorModal>
+        <EnableConnectorModal Connector="ConnectorToEnable" Closed="EnableConnectorModalClosed" />
     }
 </div>

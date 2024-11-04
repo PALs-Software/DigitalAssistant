@@ -6,7 +6,7 @@ public interface ICommand
 {
     CommandType Type { get; }
     int Priority { get; }
-    string LlmFunctionTemplate { get; }
+    string[] LlmFunctionTemplates { get; }
     string LlmFunctionDescription { get; }
 
     Task<ICommandResponse> ExecuteAsync(ICommandParameters parameters);
@@ -15,11 +15,6 @@ public interface ICommand
     string GetDescription();
     List<string> GetTemplates();
     string GetOptionsJson();
-
-    #region Llm
-    string? GetLlmFunctionName();
-    Dictionary<string, string> GetLlmParameters();
-    #endregion
 
     public static string? GetLlmFunctionName(string template)
     {
@@ -32,7 +27,7 @@ public interface ICommand
         return template.Split('(')[0].Trim();
     }
 
-    public static Dictionary<string, string> GetLlmParameters(string parametersText)
+    public static Dictionary<string, string> GetLlmParameters(string parametersText, bool trimOptionalCharacter = false)
     {
         if (String.IsNullOrEmpty(parametersText))
             return [];
@@ -48,6 +43,11 @@ public interface ICommand
             if (splittedParameter.Length == 2)
                 parameterDictionary.Add(splittedParameter[0].Trim(), splittedParameter[1].Trim());
         }
+
+        if (trimOptionalCharacter)
+            foreach (var parameter in parameterDictionary)
+                if (parameter.Value.EndsWith("?"))
+                    parameterDictionary[parameter.Key] = parameter.Value.Remove(parameter.Value.Length - 1);
 
         return parameterDictionary;
     }

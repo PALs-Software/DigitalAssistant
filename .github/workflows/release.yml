@@ -36,7 +36,9 @@ jobs:
       run: dotnet publish "./DigitalAssistant/Commands/DigitalAssistant.DeviceCommands/DigitalAssistant.DeviceCommands.csproj" -c Release -o ${{ github.workspace }}/ReleaseMisc /p:UseAppHost=false
     - name: Build Music Commands
       run: dotnet publish "./DigitalAssistant/Commands/DigitalAssistant.MusicCommands/DigitalAssistant.MusicCommands.csproj" -c Release -o ${{ github.workspace }}/ReleaseMisc /p:UseAppHost=false
-    
+    - name: Build Research Commands
+      run: dotnet publish "./DigitalAssistant/Commands/DigitalAssistant.ResearchCommands/DigitalAssistant.ResearchCommands.csproj" -c Release -o ${{ github.workspace }}/ReleaseMisc /p:UseAppHost=false
+
     - name: Build Server
       run: dotnet publish "./DigitalAssistant/Core/DigitalAssistant.Server/DigitalAssistant.Server.csproj" -c Release -o ${{ github.workspace }}/ReleaseServer /p:UseAppHost=false
     - name: Build Server with GPU Support

@@ -1,8 +1,8 @@
 {
-  "Name": "Decreases light devices color temperature",
-  "Description": "Decreases the color temperature of the specified light",
+  "Name": "Light device decrease color temperature",
+  "Description": "Decreases the color temperature of the specified light.",
   "Templates": [
-    "[Decrease|Lower|Reduce|Darker] (the) color temperature ([from|of]) {Name:LightDevice} (light) (by {ColorTemperature:Integer})"
+    "[Decrease|Lower|Reduce|Darker] (the) color temperature ([from|of]) [{Name:LightDevice}|{GroupName:Group}] (light) (by {ColorTemperature:Integer})"
   ],
   "Options": [],
   "Responses": [

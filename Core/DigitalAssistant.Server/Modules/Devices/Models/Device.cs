@@ -3,9 +3,11 @@ using BlazorBase.Abstractions.CRUD.Attributes;
 using BlazorBase.Abstractions.CRUD.Enums;
 using BlazorBase.CRUD.Attributes;
 using BlazorBase.CRUD.Models;
+using DigitalAssistant.Abstractions.Dashboards.Interfaces;
 using DigitalAssistant.Abstractions.Devices.Enums;
 using DigitalAssistant.Abstractions.Devices.Interfaces;
 using DigitalAssistant.Server.Modules.Commands.Services;
+using DigitalAssistant.Server.Modules.Groups.Models;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -13,7 +15,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace DigitalAssistant.Server.Modules.Devices.Models;
 
 [Index(nameof(Type))]
-public partial class Device : BaseModel, IDevice
+public partial class Device : BaseModel, IDevice, IDashboardEntry
 {
     #region Properties
 
@@ -46,19 +48,30 @@ public partial class Device : BaseModel, IDevice
     [Visible(DisplayOrder = 400)]
     public DeviceStatus Status { get; set; }
 
+    [Visible(DisplayOrder = 500, HideInGUITypes = [GUIType.ListPart])]
+    [ForeignKey(nameof(Group))]
+    public virtual Guid? GroupId { get; set; } = null;
+    public virtual Group? Group { get; set; } = null;
+
+    [Visible(DisplayOrder = 600)]
+    public bool ShowInDashboard { get; set; } = true;
+
+    [Visible(DisplayOrder = 700)]
+    public int DashboardOrder { get; set; }
+
     [Required]
     [Editable(false)]
-    [Visible(DisplayOrder = 500)]
+    [Visible(DisplayOrder = 800)]
     public string Connector { get; set; } = null!;
 
     [Required]
     [Editable(false)]
-    [Visible(DisplayOrder = 600)]
+    [Visible(DisplayOrder = 900)]
     public string Manufacturer { get; set; } = null!;
 
     [Required]
     [Editable(false)]
-    [Visible(DisplayOrder = 700)]
+    [Visible(DisplayOrder = 1000)]
     public string ProductName { get; set; } = null!;
 
     public string? AdditionalJsonData { get; set; }

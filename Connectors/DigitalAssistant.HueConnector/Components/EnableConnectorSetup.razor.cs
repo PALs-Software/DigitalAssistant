@@ -77,7 +77,7 @@ public partial class EnableConnectorSetup
         if (e.InnerException == null)
             return e.Message;
 
-        return e.Message + Environment.NewLine + Environment.NewLine + Localizer["Inner Exception:"] + PrepareExceptionErrorMessage(e.InnerException);
+        return e.Message + Environment.NewLine + Environment.NewLine + Localizer["InnerException"] + PrepareExceptionErrorMessage(e.InnerException);
     }
     #endregion
 }

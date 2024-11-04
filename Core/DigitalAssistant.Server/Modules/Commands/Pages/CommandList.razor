@@ -4,6 +4,40 @@
 @using Blazorise.Icons.FontAwesome;
 @using DigitalAssistant.Server.Modules.Commands.Models;
 
-<BaseMemoryList TModel="CommandDisplayEntry"
-                Models="CommandEntries"
-                UserCanDeleteEntries="false" />
+<div class="command-list">
+
+    <h3 class="mt-2">
+        @Localizer["CommandListTitle"]
+    </h3>
+
+    <div class="mb-2">
+        <p>
+            @Localizer["Description1"]
+        </p>
+        <p>
+            @Localizer["Description2"]
+        </p>
+        <p>
+            @Localizer["Description3"]
+        </p>
+    </div>
+
+    @foreach (var group in CommandGroups)
+    {
+        <h4>
+            @group.Name
+        </h4>
+        <p>
+            @group.Description
+        </p>
+
+        <ul>
+            @foreach (var command in group.Entries)
+            {
+                <li>
+                    @command.Template
+                </li>
+            }
+        </ul>
+    }
+</div>

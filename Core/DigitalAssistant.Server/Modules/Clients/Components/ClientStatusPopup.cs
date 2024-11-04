@@ -23,11 +23,11 @@ public class ClientStatusPopup
 
     private void OnClientConnected(object? sender, string clientName)
     {
-        MessageHandler.ShowSnackbar(Localizer["Client \"{0}\" connected", clientName], messageType: MessageType.Information, millisecondsBeforeClose: 3000);
+        MessageHandler.ShowSnackbar(Localizer["ClientConnectedMessage", clientName], messageType: MessageType.Information, millisecondsBeforeClose: 3000);
     }
 
     private void OnClientDisconnected(object? sender, string clientName)
     {
-        MessageHandler.ShowSnackbar(Localizer["Client \"{0}\" disconnected", clientName], messageType: MessageType.Warning, millisecondsBeforeClose: 3000);
+        MessageHandler.ShowSnackbar(Localizer["ClientDisconnectedMessage", clientName], messageType: MessageType.Warning, millisecondsBeforeClose: 3000);
     }
 }

@@ -4,7 +4,7 @@
     {
         <div class="modal-body">
             <p>
-                @Localizer["Checking the availability of the Phillips Hue Connector..."]
+                @Localizer["CheckConnectorAvailability"]
             </p>
 
             <div class="text-center">
@@ -18,18 +18,18 @@
             <p>
                 @if (ConnectorIsAvailable)
                 {
-                    @Localizer["To connect the Phillips Hue to the Digital Assistant Server, press the button on the Phillips Hue Bridge and then click the \"Continue\" button in this setup."]
+                    @Localizer["ConnectorAvailableMessage"]
                 }
                 else
                 {
-                    @Localizer["The Phillips Hue Connector is not available. Make sure that the Hue Bridge is on and in the same network as the Digital Assistant Server."]
+                    @Localizer["ConnectorNotAvailableMessage"]
                 }
             </p>
 
             @if (!String.IsNullOrEmpty(ErrorMessage))
             {
                 <p class="text-danger">
-                    @Localizer["An error occurred while connecting to the philips hue bridge:"]
+                    @Localizer["BridgeConnectingError"]
                     @ErrorMessage
                 </p>
             }

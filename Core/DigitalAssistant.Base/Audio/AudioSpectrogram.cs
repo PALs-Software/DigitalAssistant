@@ -35,7 +35,7 @@ public class AudioSpectrogram
         HannWindow = CreateHannPeriodicWindow(WindowSize);
     }
 
-    public float[][] GetSpectrogram(float[] audioSamples)
+    public float[][] GetSpectrogram(float[] audioSamples, bool useHannWindow)
     {
         var fftsToProcess = (int)((audioSamples.Length - WindowSize) / (float)StepSize + 1);
         if (fftsToProcess < 1)
@@ -45,27 +45,30 @@ public class AudioSpectrogram
         Parallel.For(0, fftsToProcess, currentFftWindowIndex =>
         {
             int startIndex = currentFftWindowIndex * StepSize;
-            var fft = CalculateFftWindow(audioSamples, startIndex);
+            var fft = CalculateFftWindow(audioSamples, startIndex, useHannWindow);
             ffts[currentFftWindowIndex] = fft;
         });
 
         return ffts;
     }
 
-    protected float[] CalculateFftWindow(float[] audioData, int fromIndex)
+    protected float[] CalculateFftWindow(float[] audioData, int fromIndex, bool useHannWindow)
     {
         var fftBuffer = new Complex[FftSize];
         var newFft = new float[FftHeight];
         var pooledFft = new float[PooledFftHeight];
 
         // fill buffer with audio data
-        for (int i = 0; i < WindowSize; i++)
-            fftBuffer[i] = new Complex(audioData[i + fromIndex] * HannWindow[i], 0);
-
-        // Not needed because complex array is initialized with 0,0
-        // Zero the rest in the buffer of this fft window because fft size is bigger than window size
-        //for (int i = WindowSize; i < FftSize; i++)
-        //    fftBuffer[i] = new Complex(0, 0);
+        if (useHannWindow)
+        {
+            for (int i = 0; i < WindowSize; i++)
+                fftBuffer[i] = new Complex(audioData[i + fromIndex] * HannWindow[i], 0);
+        }
+        else
+        {
+            for (int i = 0; i < WindowSize; i++)
+                fftBuffer[i] = new Complex(audioData[i + fromIndex], 0);
+        }
 
         CalculateFft(fftBuffer.AsSpan());
 
@@ -156,9 +159,7 @@ public class AudioSpectrogram
         double num = Math.PI * 2.0 / width;
         double[] array = new double[width];
         for (int i = 0; i < array.Length; i++)
-        {
             array[i] = 0.5 - 0.5 * Math.Cos(i * num);
-        }
 
         return array;
     }

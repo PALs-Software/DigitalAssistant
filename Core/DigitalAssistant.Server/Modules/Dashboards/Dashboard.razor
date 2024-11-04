@@ -1,8 +1,46 @@
 ﻿@page "/Dashboard"
+@using DigitalAssistant.Abstractions.Devices.Interfaces
 @attribute [Authorize]
 
-<h3>Dashboard</h3>
+<div class="dashboard">
+    <h3 class="mt-2">@Localizer["Dashboard"]</h3>
+    <div class="row">
+        @foreach (var group in DashboardGroups)
+        {
+            <div class="dashboard-group-holder col col-sm-12 col-md-4 col-xl-3">
+                <div class="dashboard-group">
+                    <h5 class="dashboard-group-header">
+                        @if (group.IconLink != null)
+                        {
+                            <img src="@group.IconLink" 
+                                class="dashboard-group-header-icon figure-img img-fluid rounded">
+                        }
+                        <span class="dashboard-group-header-name">
+                            @group.Name
+                        </span>
+                    </h5>
 
-@code {
-
-}
+                    <table class="table table-hover">
+                        @foreach (var entry in group.Entries)
+                        {
+                            <tr>
+                                <td class="dashboard-col dashboard-name-col">
+                                    @entry.Name
+                                </td>
+                                <td class="dashboard-col dashboard-switch-col">
+                                    @if (entry is ILightDevice lightDevice)
+                                    {
+                                        <label class="switch">
+                                            <input type="checkbox" checked="@lightDevice.On" @onchange="(args) => ChangeLightStatusAsync(lightDevice, args)">
+                                            <span class="slider round"></span>
+                                        </label>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </table>
+                </div>
+            </div>
+        }
+    </div>
+</div>

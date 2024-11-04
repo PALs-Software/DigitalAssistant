@@ -1,6 +1,6 @@
 {
-  "Name": "Lautstärke Verringern Befehle",
-  "Description": "Befehl zum Verringern der Lautstärke des Clients",
+  "Name": "Lautstärke verringern",
+  "Description": "Befehl zum Verringern der Lautstärke des Clients.",
   "Templates": [
     "Leiser",
     "[Verringere|Senke] (die) Lautstärke",

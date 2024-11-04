@@ -14,7 +14,7 @@ namespace DigitalAssistant.Client.Modules.SpeechRecognition.Services;
 
 public class WakeWordListener : TimerBackgroundService
 {
-    protected override TimeSpan TimerInterval => TimeSpan.FromMilliseconds(500);
+    protected override TimeSpan TimerInterval => TimeSpan.FromMilliseconds(100);
 
     #region Injects
     protected readonly ServerConnectionService ServerConnectionService;
@@ -42,9 +42,11 @@ public class WakeWordListener : TimerBackgroundService
 
     #region Constants
     protected const int SAMPLE_RATE = 16000;
+    protected const int WAKE_WORD_WIDTH = 32000;
+    protected const int STEP_WIDTH = (int)(SAMPLE_RATE * 0.5f); // every 0.5 seconds
     protected const int MAX_AUDIO_BUFFER_LENGTH = SAMPLE_RATE * 10; // 10 seconds
     protected const int MAX_AUDIO_STREAM_LENGTH = SAMPLE_RATE * 10; // 10 seconds
-    protected const float WAKE_WORD_CONFIDENCE_LEVEL = 0.90f;
+    protected const float WAKE_WORD_CONFIDENCE_LEVEL = 0.93f;
     #endregion
 
     public WakeWordListener(ServerConnectionService serverConnectionService,
@@ -120,21 +122,21 @@ public class WakeWordListener : TimerBackgroundService
             Logger.LogWarning("Removed {samplesToDelete} samples from audio buffer for the wake word detection because calculation cannot take place in real time", samplesToDelete);
         }
 
-        if (AudioBuffer.Count < SAMPLE_RATE)
+        if (AudioBuffer.Count < WAKE_WORD_WIDTH)
             return;
 
         Stopwatch.Restart();
-        var currentAudioFrame = new float[SAMPLE_RATE];
+        var currentAudioFrame = new float[WAKE_WORD_WIDTH];
         await Semaphore.WaitAsync(StopServiceToken).ConfigureAwait(false);
         try
         {
-            AudioBuffer.CopyTo(0, currentAudioFrame, 0, SAMPLE_RATE);
-            AudioBuffer.RemoveRange(0, SAMPLE_RATE / 2);
+            AudioBuffer.CopyTo(0, currentAudioFrame, 0, WAKE_WORD_WIDTH);
+            AudioBuffer.RemoveRange(0, STEP_WIDTH);
         }
         finally { Semaphore.Release(); }
 
         AudioService.NormalizeAudioData(currentAudioFrame);
-        var spectrogram = AudioSpectrogram.GetSpectrogram(currentAudioFrame);
+        var spectrogram = AudioSpectrogram.GetSpectrogram(currentAudioFrame, useHannWindow: true);
 
         var input = new DenseTensor<float>([1, spectrogram.Length, spectrogram[0].Length, 1]);
         for (int i = 0; i < spectrogram.Length; i++)
@@ -153,9 +155,9 @@ public class WakeWordListener : TimerBackgroundService
         CalculationDurationSum += Stopwatch.ElapsedMilliseconds;
         CalculationNo++;
 
-        if (CalculationNo > 120) // ~ every minute
+        if (CalculationNo > 20)
         {
-            var averageCalculationTime = Math.Round(CalculationDurationSum / 10d, 1);
+            var averageCalculationTime = Math.Round(CalculationDurationSum / (float)CalculationNo, 1);
             CalculationDurationSum = 0;
             CalculationNo = 0;
             Logger.LogInformation("Average calculation time for the wakeword: {AverageCalculationTime} ms", averageCalculationTime);
@@ -165,6 +167,7 @@ public class WakeWordListener : TimerBackgroundService
             return;
 
         var isWakeWordProbability = results[0].GetTensorDataAsSpan<float>()[0];
+        Debug.WriteLine(isWakeWordProbability);
         if (isWakeWordProbability > WAKE_WORD_CONFIDENCE_LEVEL)
         {
             Logger.LogInformation("Wake word detected with a probability of {WakeWordProbability}", isWakeWordProbability);

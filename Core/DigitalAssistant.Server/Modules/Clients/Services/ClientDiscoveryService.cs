@@ -46,11 +46,18 @@ public class ClientDiscoveryService : BackgroundService
                     if (Logger.IsEnabled(LogLevel.Information))
                         Logger.LogInformation("Client discovery service received {clientRequest} from {remoteEndPointAddress}, sending response", clientRequestData, request.RemoteEndPoint.Address.ToString());
 
-                    if (clientRequestData != "GetDigitalAssistantServerIpAddress")
-                        continue;
+                    switch (clientRequestData)
+                    {
+                        case "GetDigitalAssistantServerIpAddress":
+                            var ipResponse = Encoding.UTF8.GetBytes("GDASIA_RESPONSE:" + ClientConnectionHandler.GetServerCertificateSubject());
+                            var res = await server.SendAsync(ipResponse, ipResponse.Length, request.RemoteEndPoint);
+                            break;
 
-                    var responseData = Encoding.UTF8.GetBytes(ClientConnectionHandler.GetServerCertificateSubject());
-                    await server.SendAsync(responseData, responseData.Length, request.RemoteEndPoint);
+                        case "GetDigitalAssistantServerPublicCertificateKey":
+                            var publicKeyResponse = Encoding.UTF8.GetBytes("GDASPCK_RESPONSE:" + ClientConnectionHandler.GetServerCertificatePublicKey());
+                            await server.SendAsync(publicKeyResponse, publicKeyResponse.Length, request.RemoteEndPoint);
+                            break;
+                    }
                 }
             }
             catch (Exception e)

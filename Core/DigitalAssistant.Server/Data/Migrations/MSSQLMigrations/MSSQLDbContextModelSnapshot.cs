@@ -38,6 +38,12 @@ namespace DigitalAssistant.Server.Data.Migrations.MSSQLMigrations
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("DashboardOrder")
+                        .HasColumnType("int");
+
+                    b.Property<Guid?>("GroupId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<bool>("HasBeenInitialized")
                         .HasColumnType("bit");
 
@@ -61,6 +67,9 @@ namespace DigitalAssistant.Server.Data.Migrations.MSSQLMigrations
                     b.Property<bool>("PlayRequestSound")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("ShowInDashboard")
+                        .HasColumnType("bit");
+
                     b.Property<byte[]>("SqlRowVersion")
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate()
@@ -82,7 +91,9 @@ namespace DigitalAssistant.Server.Data.Migrations.MSSQLMigrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Clients");
+                    b.HasIndex("GroupId");
+
+                    b.ToTable("Clients", (string)null);
                 });
 
             modelBuilder.Entity("DigitalAssistant.Server.Modules.Connectors.Models.ConnectorSettings", b =>
@@ -106,7 +117,7 @@ namespace DigitalAssistant.Server.Data.Migrations.MSSQLMigrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ConnectorSettings");
+                    b.ToTable("ConnectorSettings", (string)null);
                 });
 
             modelBuilder.Entity("DigitalAssistant.Server.Modules.Devices.Models.Device", b =>
@@ -132,6 +143,12 @@ namespace DigitalAssistant.Server.Data.Migrations.MSSQLMigrations
                     b.Property<bool>("CustomName")
                         .HasColumnType("bit");
 
+                    b.Property<int>("DashboardOrder")
+                        .HasColumnType("int");
+
+                    b.Property<Guid?>("GroupId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("InternalId")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -156,6 +173,9 @@ namespace DigitalAssistant.Server.Data.Migrations.MSSQLMigrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("ShowInDashboard")
+                        .HasColumnType("bit");
+
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
@@ -164,11 +184,13 @@ namespace DigitalAssistant.Server.Data.Migrations.MSSQLMigrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("GroupId");
+
                     b.HasIndex("ModelType");
 
                     b.HasIndex("Type");
 
-                    b.ToTable("Devices");
+                    b.ToTable("Devices", (string)null);
 
                     b.HasDiscriminator<string>("ModelType").HasValue("Device");
 
@@ -213,7 +235,47 @@ namespace DigitalAssistant.Server.Data.Migrations.MSSQLMigrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ServerFiles");
+                    b.ToTable("ServerFiles", (string)null);
+                });
+
+            modelBuilder.Entity("DigitalAssistant.Server.Modules.Groups.Models.Group", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("AlternativeNames")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("DashboardOrder")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid?>("IconId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("ModifiedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<bool>("ShowInDashboard")
+                        .HasColumnType("bit");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IconId");
+
+                    b.ToTable("Groups", (string)null);
                 });
 
             modelBuilder.Entity("DigitalAssistant.Server.Modules.Setups.Models.Setup", b =>
@@ -279,7 +341,7 @@ namespace DigitalAssistant.Server.Data.Migrations.MSSQLMigrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Setup");
+                    b.ToTable("Setup", (string)null);
                 });
 
             modelBuilder.Entity("DigitalAssistant.Server.Modules.Users.User", b =>
@@ -323,7 +385,7 @@ namespace DigitalAssistant.Server.Data.Migrations.MSSQLMigrations
 
                     b.HasIndex("ProfileImageId");
 
-                    b.ToTable("DbUsers");
+                    b.ToTable("DbUsers", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -582,6 +644,33 @@ namespace DigitalAssistant.Server.Data.Migrations.MSSQLMigrations
                     b.HasDiscriminator().HasValue("SwitchDevice");
                 });
 
+            modelBuilder.Entity("DigitalAssistant.Server.Modules.Clients.Models.Client", b =>
+                {
+                    b.HasOne("DigitalAssistant.Server.Modules.Groups.Models.Group", "Group")
+                        .WithMany("Clients")
+                        .HasForeignKey("GroupId");
+
+                    b.Navigation("Group");
+                });
+
+            modelBuilder.Entity("DigitalAssistant.Server.Modules.Devices.Models.Device", b =>
+                {
+                    b.HasOne("DigitalAssistant.Server.Modules.Groups.Models.Group", "Group")
+                        .WithMany("Devices")
+                        .HasForeignKey("GroupId");
+
+                    b.Navigation("Group");
+                });
+
+            modelBuilder.Entity("DigitalAssistant.Server.Modules.Groups.Models.Group", b =>
+                {
+                    b.HasOne("DigitalAssistant.Server.Modules.Files.ServerFile", "Icon")
+                        .WithMany()
+                        .HasForeignKey("IconId");
+
+                    b.Navigation("Icon");
+                });
+
             modelBuilder.Entity("DigitalAssistant.Server.Modules.Users.User", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "IdentityUser")
@@ -646,6 +735,13 @@ namespace DigitalAssistant.Server.Data.Migrations.MSSQLMigrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("DigitalAssistant.Server.Modules.Groups.Models.Group", b =>
+                {
+                    b.Navigation("Clients");
+
+                    b.Navigation("Devices");
                 });
 #pragma warning restore 612, 618
         }

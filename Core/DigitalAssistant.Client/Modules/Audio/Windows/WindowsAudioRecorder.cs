@@ -26,7 +26,7 @@ public class WindowsAudioRecorder : IAudioRecorder
     protected IWaveIn? WaveIn;
     protected bool IsRecording = false;
     protected TimeSpan AudioRecordingMinDataReceiveIntervall = TimeSpan.FromSeconds(10);
-    protected DateTime LastAudioDataReceived = DateTime.MinValue;
+    protected DateTime LastAudioDataReceived = DateTime.Now;
     protected SemaphoreSlim AudioRecorderSemaphore { get; init; } = new(1, 1);
 
     protected int NoOfSamplesRead = 0;

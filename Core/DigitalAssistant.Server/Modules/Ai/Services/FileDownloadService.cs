@@ -30,7 +30,7 @@ public class FileDownloadService(IStringLocalizer<FileDownloadService> localizer
         if (!Directory.Exists(directory))
             Directory.CreateDirectory(directory);
 
-        var progressIndicatorId = MessageHandler.ShowLoadingProgressMessage(Localizer["Downloading file {0}", fileName], onAborting: (id) =>
+        var progressIndicatorId = MessageHandler.ShowLoadingProgressMessage(Localizer["DownloadProgressTitle", fileName], onAborting: (id) =>
         {
             return cancellationTokenSource.CancelAsync();
         });
@@ -48,7 +48,7 @@ public class FileDownloadService(IStringLocalizer<FileDownloadService> localizer
 
                 var mbTransferred = (int)(args.BytesTransferred / 1048576);
                 var mbTotal = (int?)(args.TotalBytes / 1048576) ?? 0;
-                MessageHandler.UpdateLoadingProgressMessage(progressIndicatorId, Localizer["Downloading file {0}", fileName], progress, $"{progress} % ({mbTransferred} / {mbTotal} mb)", showProgressInText: false);
+                MessageHandler.UpdateLoadingProgressMessage(progressIndicatorId, Localizer["DownloadProgressTitle", fileName], progress, $"{progress} % ({mbTransferred} / {mbTotal} mb)", showProgressInText: false);
             };
 
             var client = new HttpClient(progressMessageHandler);

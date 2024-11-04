@@ -1,6 +1,6 @@
 # Host Client
 
-A Digital Assistant Client can be installed on any device, your desktop PC, a server or a single-board computer such as the Raspberry Pi or a microcontroller like the ESP32. The main thing is that a microphone and a loudspeaker are connected to it. Multiple clients can be connected to the server, for example to use the digital assistant in several rooms.
+A Digital Assistant Client can be installed on any device, your desktop PC, a server or a single-board computer such as the Raspberry Pi or a microcontroller. The main thing is that a microphone and a loudspeaker are connected to it. Multiple clients can be connected to the server, for example to use the digital assistant in several rooms.
 
 ## Installation
 
@@ -10,8 +10,16 @@ A Digital Assistant Client can be installed on any device, your desktop PC, a se
 ``` shell
 # For Linux run:
 sudo apt-get update && sudo apt-get install -y aspnetcore-runtime-8.0
+
+# For Raspberry Pi OS run:
+wget https://dot.net/v1/dotnet-install.sh -O dotnet-install.sh
+sudo chmod +x ./dotnet-install.sh
+./dotnet-install.sh --channel 8.0 --runtime aspnetcore
+echo 'export DOTNET_ROOT=$HOME/.dotnet' >> /home/pi/.bashrc
+echo 'export PATH=$PATH:$HOME/.dotnet' >> /home/pi/.bashrc
+source ~/.bashrc
 ```
-2. Download the binaries of your platform from the [release page of the github repository](https://github.com/PALs-Software/DigitalAssistant).
+2. Download the binaries of your platform from the [release page of the github repository](https://github.com/PALs-Software/DigitalAssistant/releases).
 3. Extract the compressed files.
 4. **Optional**: Change the default configuration of the client by adjusting the `appsettings.json` file like it is explained in the chapter "[Change default configuration](#change-default-configuration)".
 5. Add the server certificate as trusted in the operating system.
@@ -30,16 +38,42 @@ brew install ffmpeg
 ``` shell
  dotnet DigitalAssistant.Client.dll
 ```
+11. Use tools depending on your operating system to auto start the application at statup of your machine.
 
 Further information's how to connect the client with the server can be found in the [setup client](../setup/clients.md) chapter of this documentation.
 
 ### Microcontroller
 
-ToDo...
+See chapter [Host MicroClient](host-micro-client.md) for more details.
 
+### Docker
+This method is only working on a linux host system, because there only the driver for microphone and speaker can be mapped into the docker container.
+
+1. Install [Docker Desktop](https://www.docker.com/products/docker-desktop/).
+2. Use the integrated terminal in Docker Desktop or open another command terminal of your choice.
+3. Execute the following command. This will download and run the digital assistant client application inside a docker container.
+
+```
+# Run in host network
+docker run --name digital-assistant-client --network host --device /dev/snd:/dev/snd -v DigitalAssistantClient_Data:/app/DockerStorage -v DigitalAssistantClient_Keys:/home/app/.aspnet/DataProtection-Keys -d palssoftware/digital-assistant-client
+
+# Run in internal docker network (If server is also a docker container on the same host)
+docker run --name digital-assistant-client --device /dev/snd:/dev/snd -v DigitalAssistantClient_Data:/app/DockerStorage -v DigitalAssistantClient_Keys:/home/app/.aspnet/DataProtection-Keys -d palssoftware/digital-assistant-client
+
+```
+
+Further information's how to connect the client with the server can be found in the [setup client](../setup/clients.md) chapter of this documentation.
+   
 ### Raspberry Pi Image
 
-Currently not possible, but it is planned to provide a Raspberry Pi image for the client application.
+1. Download the image of your choice from the [release page of the github repository](https://github.com/PALs-Software/DigitalAssistant/releases). 
+2. Install and start the [Raspberry Pi Imager](https://www.raspberrypi.com/software/)
+3. Choose your Raspberry Pi Modell
+4. Under OS choose "Use Custom" and select the downloaded image
+5. Select the sd-card
+6. Preconfigure the RPI with username, password and hostname and if needed configure the Wifi Setings, in the configuration dialog
+
+Further information's how to connect the client with the server can be found in the [setup client](../setup/clients.md) chapter of this documentation.
 
 ## Change default configuration
 

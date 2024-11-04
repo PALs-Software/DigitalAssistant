@@ -1,6 +1,6 @@
 {
   "Name": "Get current time",
-  "Description": "Returns the current time",
+  "Description": "Returns the current time.",
   "Templates": [
     "What time (is it)",
     "What('s) (the) time (right now)",

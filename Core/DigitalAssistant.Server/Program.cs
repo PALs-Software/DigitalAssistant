@@ -4,6 +4,7 @@ using BlazorBase.Backup;
 using BlazorBase.CRUD;
 using BlazorBase.CRUD.ModelServiceProviderInjection;
 using BlazorBase.Files;
+using BlazorBase.RichTextEditor;
 using BlazorBase.Server;
 using BlazorBase.Server.Services;
 using BlazorBase.User;
@@ -11,6 +12,7 @@ using BlazorBase.User.Models;
 using Blazorise;
 using Blazorise.Bootstrap;
 using Blazorise.Icons.FontAwesome;
+using Blazorise.RichTextEdit;
 using DigitalAssistant.Abstractions.Devices.Interfaces;
 using DigitalAssistant.Abstractions.Services;
 using DigitalAssistant.Base.Audio;
@@ -62,11 +64,11 @@ var databaseProvider = webApplicationBuilder.Configuration["DatabaseProvider"];
 var connectionString = webApplicationBuilder.Configuration.GetConnectionString("DefaultConnection");
 
 #if CREATESQLITEMIGRATIONS
-//Add-Migration -Name Init -Context SQLiteDbContext -OutputDir Data\Migrations\SQLiteMigrations
+//Add-Migration -Name Name -Context SQLiteDbContext -OutputDir Data\Migrations\SQLiteMigrations
 databaseProvider = "SQLite";
 connectionString = "Data Source=DigitalAssistant_DEV.db";
 #elif CREATEMSSQLMIGRATIONS
-//Add-Migration -Name Init -Context MSSQLDbContext -OutputDir Data\Migrations\MSSQLMigrations
+//Add-Migration -Name Name -Context MSSQLDbContext -OutputDir Data\Migrations\MSSQLMigrations
 databaseProvider = "MSSQL";
 connectionString = "Server=localhost;Database=DigitalAssistantServer_DEV;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True";
 #endif
@@ -168,6 +170,11 @@ void ConfigureAspDotNetBasics(WebApplicationBuilder builder)
 void ConfigureBlazorBase<TDatabaseContext>(WebApplicationBuilder builder) where TDatabaseContext : ApplicationDbContext
 {
     builder.Services.AddBlazorise(options => { options.ChangeTextOnKeyPress = true; })
+            .AddBlazoriseRichTextEdit(options =>
+            {
+                options.UseShowTheme = true;
+                options.DynamicLoadReferences = false;
+            })
             .AddBootstrapProviders()
             .AddFontAwesomeIcons()
 
@@ -196,6 +203,11 @@ void ConfigureBlazorBase<TDatabaseContext>(WebApplicationBuilder builder) where 
             },
                 allowedUserAccessRoles: [UserRole.Admin.ToString(), UserRole.User.ToString()]
             )
+
+            .AddBlazorBaseRichTextEditor(options =>
+            {
+                options.ResizeBigImagesToMaxImageSize = false;
+            })
 
             .AddBlazorBaseAudioRecorderWithoutCRUDSupport()
     ;

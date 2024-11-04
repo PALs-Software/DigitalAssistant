@@ -5,6 +5,7 @@ using System.Net.Security;
 using System.Net.Sockets;
 using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
+using System.Text;
 
 namespace DigitalAssistant.Server.Modules.Clients.Services;
 
@@ -101,7 +102,7 @@ public class ClientConnectionHandler : BackgroundService
             await sslStream.AuthenticateAsServerAsync(ServerCertificate,
                 clientCertificateRequired: false,
                 checkCertificateRevocation: true,
-                enabledSslProtocols: SslProtocols.Tls13);
+                enabledSslProtocols: SslProtocols.Tls13); // | SslProtocols.Tls12); // Also enable Tls12 for ESP32 because it does not support Tls13
 
             if (!sslStream.IsEncrypted)
                 throw new Exception("Communication stream is not encrypted");
@@ -109,12 +110,12 @@ public class ClientConnectionHandler : BackgroundService
             ReadTasks.Add(await Task.Factory.StartNew(async () => await ProcessRequestsFromClientAsync(tcpClient, sslStream).ConfigureAwait(false), TaskCreationOptions.LongRunning));
 
             if (Logger.IsEnabled(LogLevel.Information))
-                Logger.LogInformation("Successfully connected to client {ClientIpAddress}", tcpClient.Client.RemoteEndPoint as IPEndPoint);
+                Logger.LogInformation("Successfully connected to client {ClientIpAddress}", tcpClient?.Client?.RemoteEndPoint as IPEndPoint ?? new IPEndPoint(0,0));
         }
         catch (Exception e)
         {
             if (Logger.IsEnabled(LogLevel.Error))
-                Logger.LogError(e, "Error by processing client {ClientIpAddress} connection", tcpClient.Client.RemoteEndPoint as IPEndPoint);
+                Logger.LogError(e, "Error by processing client {ClientIpAddress} connection", tcpClient?.Client?.RemoteEndPoint as IPEndPoint ?? new IPEndPoint(0, 0));
         }
     }
 
@@ -142,6 +143,17 @@ public class ClientConnectionHandler : BackgroundService
     public string GetServerCertificateSubject()
     {
         return ServerCertificate.Subject[3..]; // Remove the "CN=" at the beginning
+    }
+
+    public string GetServerCertificatePublicKey()
+    {
+        var builder = new StringBuilder();
+
+        builder.AppendLine("-----BEGIN CERTIFICATE-----");
+        builder.AppendLine(Convert.ToBase64String(ServerCertificate.Export(X509ContentType.Cert), Base64FormattingOptions.InsertLineBreaks));
+        builder.AppendLine("-----END CERTIFICATE-----");
+
+        return builder.ToString();
     }
     #endregion
 }

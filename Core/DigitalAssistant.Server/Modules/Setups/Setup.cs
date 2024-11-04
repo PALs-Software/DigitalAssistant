@@ -21,6 +21,7 @@ using DigitalAssistant.Server.Modules.Setups.Enums;
 using DigitalAssistant.Server.Modules.Users;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.Localization;
 using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 using System.Text;
@@ -401,11 +402,12 @@ public partial class Setup : BaseModel
     public static Task GetTtsModelQualitiesForSelectedModel(PropertyInfo propertyInfo, IBaseModel cardModel, List<KeyValuePair<string?, string>> lookupData, EventServices eventServices)
     {
         var setup = ((Setup)cardModel);
+        var localizer = eventServices.ServiceProvider.GetRequiredService<IStringLocalizer<TtsModelQuality>>();
         var language = ((Setup)cardModel).TtsLanguage;
         var modelSelectionService = eventServices.ServiceProvider.GetRequiredService<TtsModelSelectionService>();
         var models = modelSelectionService.GetModelsForLanguage(language).Where(entry => entry.Name == setup.TtsModel).ToList();
         foreach (var model in models)
-            lookupData.Add(new KeyValuePair<string?, string>(model.Quality.ToString(), model.Quality.ToString()));
+            lookupData.Add(new KeyValuePair<string?, string>(model.Quality.ToString(), localizer[model.Quality.ToString()]));
 
         if (!models.Any(entry => entry.Quality == setup.TtsModelQuality))
         {
@@ -446,6 +448,18 @@ public partial class Setup : BaseModel
 
         setup.InitalSetupCompleted = true;
         await dbContext.SaveChangesAsync();
+    }
+    #endregion
+
+    #region MISC
+    public override string GetDisplayKey()
+    {
+        return String.Empty;
+    }
+
+    public override string GetDisplayKey(string seperator)
+    {
+        return String.Empty;
     }
     #endregion
 

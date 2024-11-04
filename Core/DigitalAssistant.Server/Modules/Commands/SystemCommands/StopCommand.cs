@@ -12,7 +12,7 @@ public class StopCommand(IStringLocalizer localizer, IJsonStringLocalizer jsonLo
     public override CommandType Type => CommandType.Direct;
     public override int Priority => int.MaxValue;
 
-    public override string LlmFunctionTemplate => "Stop()";
+    public override string[] LlmFunctionTemplates => ["Stop()"];
     public override string LlmFunctionDescription => "Stops the current action.";
 
 

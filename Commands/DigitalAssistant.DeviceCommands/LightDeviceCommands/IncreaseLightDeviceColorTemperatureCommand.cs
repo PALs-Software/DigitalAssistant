@@ -3,6 +3,7 @@ using DigitalAssistant.Abstractions.Commands.Enums;
 using DigitalAssistant.Abstractions.Commands.Interfaces;
 using DigitalAssistant.Abstractions.Devices.Arguments;
 using DigitalAssistant.Abstractions.Devices.Interfaces;
+using DigitalAssistant.Abstractions.Groups.Interfaces;
 using DigitalAssistant.Abstractions.Localization;
 using Microsoft.Extensions.Localization;
 
@@ -13,14 +14,24 @@ public class IncreaseLightDeviceColorTemperatureCommand(IStringLocalizer localiz
     public override CommandType Type => CommandType.Direct;
     public override int Priority => 50005;
 
-    public override string LlmFunctionTemplate => "IncreaseLightColorTemperature(Name: LightDevice, Increase: Integer?)";
+    public override string[] LlmFunctionTemplates => [
+        "IncreaseLightColorTemperature(Name: LightDevice, Increase: Integer?)",
+        "IncreaseLightColorTemperatureByGroup(GroupName: Group, Increase: Integer?)"
+    ];
     public override string LlmFunctionDescription => "Increases the color temperature of the specified light.";
 
     public override Task<ICommandResponse> ExecuteAsync(ICommandParameters parameters)
     {
         SetUICulture(parameters.Language);
 
-        if (!parameters.TryGetValue<ILightDevice>("Name", out var lightDevice))
+        var lightDevices = new List<ILightDevice>();
+        if (parameters.TryGetValue<IGroup>("GroupName", out var group))
+            lightDevices.AddRange(group.Devices.OfType<ILightDevice>());
+
+        if (parameters.TryGetValue<ILightDevice>("Name", out var lightDevice))
+            lightDevices.Add(lightDevice);
+
+        if (lightDevices.Count == 0)
             return Task.FromResult(CreateResponse(success: false));
 
         parameters.TryGetValue<int?>("ColorTemperature", out var colorTemperatur);
@@ -29,8 +40,8 @@ public class IncreaseLightDeviceColorTemperatureCommand(IStringLocalizer localiz
             colorTemperatur = increase;
 
         var lightActionArgs = new LightActionArgs() { ColorTemperatureDelta = colorTemperatur ?? 20 };
-        var responseText = GetRandomResponses("Responses", lightDevice.Name, colorTemperatur);
+        var responseText = GetRandomResponses("Responses", GetNonNullNameOfObjects(group, lightDevice), colorTemperatur);
 
-        return Task.FromResult(CreateResponse(success: true, responseText, [(lightDevice, lightActionArgs)]));
+        return Task.FromResult(CreateResponse(success: true, responseText, CreateActionForAllDevices(lightDevices, lightActionArgs)));
     }
 }

@@ -28,6 +28,8 @@
     --side-panel-language-dropdown-background-color-hover: #d0d0d0;
     /*Connector List*/
     --connector-list-bg-color: #ffffff;
+    /*Dashboard*/
+    --dashboard-group-bg-color: #f3f3f3;
 }
 
 .top-menu-root .menu-item-center-header, .top-menu-root .navbar-nav i {

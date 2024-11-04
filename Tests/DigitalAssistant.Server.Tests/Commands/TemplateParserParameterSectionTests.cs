@@ -119,7 +119,7 @@ public class TemplateParserParameterSectionTests : DigitalAssistantTestContext
     {
         // Arrange
         var template = "Turn the {Device:LightDevice} {State:Boolean}";
-        TemplateParser.SetTemplateNames([], [("light", [], DeviceType.Light), ("light2", [], DeviceType.Light), ("switch", [], DeviceType.Switch)]);
+        TemplateParser.SetTemplateNames([], [("light", [], DeviceType.Light), ("light2", [], DeviceType.Light), ("switch", [], DeviceType.Switch)], [("group1", []), ("group2", [])]);
 
         // Act
         SwitchToLanguage(Language);
@@ -142,7 +142,7 @@ public class TemplateParserParameterSectionTests : DigitalAssistantTestContext
     {
         // Arrange
         var template = "Turn the {Device:LightDevice}{State:Boolean}";
-        TemplateParser.SetTemplateNames([], [("light", [], DeviceType.Light), ("light2", [], DeviceType.Light), ("switch", [], DeviceType.Switch)]);
+        TemplateParser.SetTemplateNames([], [("light", [], DeviceType.Light), ("light2", [], DeviceType.Light), ("switch", [], DeviceType.Switch)], [("group1", []), ("group2", [])]);
 
         // Act
         SwitchToLanguage(Language);

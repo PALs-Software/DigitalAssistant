@@ -13,7 +13,7 @@ public class LlmResearchCommand(IStringLocalizer localizer, IJsonStringLocalizer
     public override CommandType Type => CommandType.Direct;
     public override int Priority => 80000;
 
-    public override string LlmFunctionTemplate => "LlmResearch(Question: Text)";
+    public override string[] LlmFunctionTemplates => ["LlmResearch(Question: Text)"];
     public override string LlmFunctionDescription => "Request information on a specific topic.";
 
     #region Members

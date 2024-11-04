@@ -1,6 +1,6 @@
 {
   "Name": "Musikradios verwalten",
-  "Description": "Befehle zum abspielen von Internetradios",
+  "Description": "Befehle zum Abspielen von Internetradios.",
   "Templates": [
     "[Spiel|Spiele] [den|das] [Radiosender|Radio Sender|Internetradio|Radio] {Name:Text}"
   ],

@@ -12,7 +12,7 @@ public class ContinueCommand(IStringLocalizer localizer, IJsonStringLocalizer js
     public override CommandType Type => CommandType.Direct;
     public override int Priority => int.MaxValue;
 
-    public override string LlmFunctionTemplate => "Continue()";
+    public override string[] LlmFunctionTemplates => ["Continue()"];
     public override string LlmFunctionDescription => "Continues a paused action.";
 
     public override Task<ICommandResponse> ExecuteAsync(ICommandParameters parameters)

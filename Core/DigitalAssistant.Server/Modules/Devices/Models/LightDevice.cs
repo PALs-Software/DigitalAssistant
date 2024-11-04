@@ -58,7 +58,7 @@ public class LightDevice : Device, ILightDevice
             case nameof(ColorTemperature):
                 if (ColorTemperature < MinimumColorTemperature || ColorTemperature > MaximumColorTemperature)
                 {
-                    args.ErrorMessage = args.EventServices.Localizer["The \"{0}\" field must be between {1} and {2}",
+                    args.ErrorMessage = args.EventServices.Localizer["RangeErrorMessage",
                         args.EventServices.Localizer[nameof(ColorTemperature)],
                         MinimumColorTemperature,
                         MaximumColorTemperature];
@@ -70,7 +70,6 @@ public class LightDevice : Device, ILightDevice
 
         return base.OnBeforeValidateProperty(args);
     }
-
 
     protected List<string> ChangedProperties = [];
     public override Task OnAfterPropertyChanged(OnAfterPropertyChangedArgs args)
@@ -103,7 +102,7 @@ public class LightDevice : Device, ILightDevice
         
         var result = await connectorService.ExecuteDeviceActionAsync(this, actionArgs);
         if (!result.Success)
-            throw new CRUDException(result.ErrorMessage ?? args.EventServices.Localizer["Unkown error by updating the device"]);
+            throw new CRUDException(result.ErrorMessage ?? args.EventServices.Localizer["UnkownErrorMessage"]);
 
         ChangedProperties.Clear();
     }

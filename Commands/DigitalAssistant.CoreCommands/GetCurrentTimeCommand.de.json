@@ -1,6 +1,6 @@
 {
   "Name": "Aktuelle Zeit abrufen",
-  "Description": "Gibt die aktuelle Uhrzeit zurück",
+  "Description": "Gibt die aktuelle Uhrzeit zurück.",
   "Templates": [
     "Uhrzeit",
     "Wie spät (ist es) (gerade)",

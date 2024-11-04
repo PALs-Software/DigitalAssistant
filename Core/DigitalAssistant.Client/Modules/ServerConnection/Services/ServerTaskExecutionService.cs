@@ -55,13 +55,9 @@ public class ServerTaskExecutionService(
 
     #region Member
     protected ConcurrentQueue<TcpMessage> ServerMessages = new();
-    protected List<ServerTask> ServerTasks = [];
 
     protected Task? TurnUpMusicStreamVolumeTask;
-    protected JsonSerializerOptions JsonSerializerOptions = new() { IncludeFields = true };
-
-    #endregion
-    #region Init
+    protected JsonSerializerOptions JsonSerializerOptions = new() { IncludeFields = true };    
     #endregion
 
     public void ScheduleServerMessage(TcpMessage message)
@@ -110,11 +106,7 @@ public class ServerTaskExecutionService(
         try
         {
             var finalToken = Encoding.UTF8.GetString(message.Data).ToSecureString();
-#if DEBUG
-            var filePath = Path.Combine(AppContext.BaseDirectory, "appsettings.User.json");
-#else
-            var filePath = Path.Combine(AppContext.BaseDirectory, "appsettings.json");
-#endif
+            var filePath = GetAppSettingsFilePath();
             var appSettingsJson = await File.ReadAllTextAsync(filePath);
             var jsonNode = JsonNode.Parse(appSettingsJson)!;
 
@@ -144,11 +136,7 @@ public class ServerTaskExecutionService(
         try
         {
             var finalToken = Encoding.UTF8.GetString(message.Data).ToSecureString();
-#if DEBUG
-            var filePath = Path.Combine(AppContext.BaseDirectory, "appsettings.User.json");
-#else
-            var filePath = Path.Combine(AppContext.BaseDirectory, "appsettings.json");
-#endif
+            var filePath = GetAppSettingsFilePath();
             var appSettingsJson = await File.ReadAllTextAsync(filePath);
             var jsonNode = JsonNode.Parse(appSettingsJson)!;
 
@@ -237,11 +225,7 @@ public class ServerTaskExecutionService(
         {
             clientSettings.ClientIsInitialized = true;
             clientSettings.TransferPropertiesTo(Settings);
-#if DEBUG
-            var appsettingsFilePath = Path.Combine(AppContext.BaseDirectory, "appsettings.User.json");
-#else
-            var appsettingsFilePath = Path.Combine(AppContext.BaseDirectory, "appsettings.json");
-#endif
+            var appsettingsFilePath = GetAppSettingsFilePath();
             var appSettingsJson = await File.ReadAllTextAsync(appsettingsFilePath);
 
             var jsonNode = JsonNode.Parse(appSettingsJson)!;
@@ -314,6 +298,19 @@ public class ServerTaskExecutionService(
         var actionArgs = jsonArgs?.Deserialize<TClientActionArgs>();
         ArgumentNullException.ThrowIfNull(actionArgs);
         return actionArgs;
+    }
+
+    public string GetAppSettingsFilePath()
+    {
+#if DEBUG
+        var appsettingsFilePath = Path.Combine(AppContext.BaseDirectory, "appsettings.User.json");
+#else
+        var appsettingsFilePath = Path.Combine(AppContext.BaseDirectory, "appsettings.json");
+#endif
+        if (EnvironmentInformations.ApplicationRunsInDockerContainer)
+            appsettingsFilePath = Path.Combine(AppContext.BaseDirectory, "DockerStorage", "appsettings.json");
+
+        return appsettingsFilePath;
     }
     #endregion
 }

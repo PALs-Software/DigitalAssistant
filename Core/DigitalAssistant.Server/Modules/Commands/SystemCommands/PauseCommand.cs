@@ -12,7 +12,7 @@ public class PauseCommand(IStringLocalizer localizer, IJsonStringLocalizer jsonL
     public override CommandType Type => CommandType.Direct;
     public override int Priority => int.MaxValue;
 
-    public override string LlmFunctionTemplate => "Pause()";
+    public override string[] LlmFunctionTemplates => ["Pause()"];
     public override string LlmFunctionDescription => "Pauses the current action.";
 
 

@@ -159,4 +159,58 @@
   <data name="InterpreterModeWrongErr" xml:space="preserve">
     <value>The interpreter mode can not be any type with llm, when llm model is disabled</value>
   </data>
+  <data name="AsrMode" xml:space="preserve">
+    <value>Mode</value>
+  </data>
+  <data name="AsrPrecision" xml:space="preserve">
+    <value>Precision</value>
+  </data>
+  <data name="AsrProvider" xml:space="preserve">
+    <value>Provider</value>
+  </data>
+  <data name="Interpreter" xml:space="preserve">
+    <value>Interpreter</value>
+  </data>
+  <data name="InterpreterLanguage" xml:space="preserve">
+    <value>Language</value>
+  </data>
+  <data name="InterpreterMode" xml:space="preserve">
+    <value>Mode</value>
+  </data>
+  <data name="LlmContextSize" xml:space="preserve">
+    <value>Context Size</value>
+  </data>
+  <data name="LlmMode" xml:space="preserve">
+    <value>Mode</value>
+  </data>
+  <data name="LlmModel" xml:space="preserve">
+    <value>Model</value>
+  </data>
+  <data name="LlmPrecision" xml:space="preserve">
+    <value>Precision</value>
+  </data>
+  <data name="Speech Recognition Model" xml:space="preserve">
+    <value>Speech Recognition Model</value>
+  </data>
+  <data name="Text to Speech Model" xml:space="preserve">
+    <value>Text to Speech Model</value>
+  </data>
+  <data name="TtsLanguage" xml:space="preserve">
+    <value>Language</value>
+  </data>
+  <data name="TtsMode" xml:space="preserve">
+    <value>Mode</value>
+  </data>
+  <data name="TtsModel" xml:space="preserve">
+    <value>Model</value>
+  </data>
+  <data name="TtsModelQuality" xml:space="preserve">
+    <value>Model Quality</value>
+  </data>
+  <data name="CreateAndDownloadBackupAction" xml:space="preserve">
+    <value>Create &amp; Download Website Backup</value>
+  </data>
+  <data name="CreateAndDownloadBackupActionTooltip" xml:space="preserve">
+    <value>Creates an complete backup of the website including the database and all files and downloads it</value>
+  </data>
 </root>

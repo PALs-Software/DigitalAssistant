@@ -7,10 +7,12 @@ using BlazorBase.Abstractions.General.Extensions;
 using BlazorBase.MessageHandling.Enum;
 using BlazorBase.MessageHandling.Interfaces;
 using DigitalAssistant.Abstractions.Clients.Interfaces;
+using DigitalAssistant.Abstractions.Dashboards.Interfaces;
 using DigitalAssistant.Base.ClientServerConnection;
 using DigitalAssistant.Base.ClientServerConnection.MessageTransferModels;
 using DigitalAssistant.Server.Modules.CacheModule;
 using DigitalAssistant.Server.Modules.Clients.Services;
+using DigitalAssistant.Server.Modules.Groups.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
 using System.ComponentModel.DataAnnotations;
@@ -23,7 +25,7 @@ namespace DigitalAssistant.Server.Modules.Clients.Models;
 
 [Route("/Clients")]
 [Authorize(Roles = "Admin")]
-public partial class Client : ClientBase, IClient, IClientSettings
+public partial class Client : ClientBase, IClient, IClientSettings, IDashboardEntry
 {
     #region Properties
 
@@ -39,6 +41,16 @@ public partial class Client : ClientBase, IClient, IClientSettings
     [Editable(false)]
     public bool HasBeenInitialized { get; set; }
 
+    [Visible(DisplayOrder = 500, HideInGUITypes = [GUIType.ListPart])]
+    [ForeignKey(nameof(Group))]
+    public virtual Guid? GroupId { get; set; } = null;
+    public virtual Group? Group { get; set; } = null;
+
+    [Visible(DisplayOrder = 600)]
+    public bool ShowInDashboard { get; set; } = true;
+
+    [Visible(DisplayOrder = 700)]
+    public int DashboardOrder { get; set; }
 
     #region Client Settings
     public bool ClientNeedSettingsUpdate { get; set; }
@@ -97,8 +109,8 @@ public partial class Client : ClientBase, IClient, IClientSettings
         TokenHash = token.CreateSHA512Hash();
 
         args.EventServices.ServiceProvider.GetRequiredService<IMessageHandler>().ShowMessage(
-            args.EventServices.Localizer["New client"],
-            args.EventServices.Localizer["You have successfully added a new client. The initial setup token value is: {0}", token]
+            args.EventServices.Localizer["NewClient"],
+            args.EventServices.Localizer["NewClientAddedMessage", token]
         );
 
         return base.OnAfterAddEntry(args);
@@ -144,7 +156,7 @@ public partial class Client : ClientBase, IClient, IClientSettings
         if (success)
         {
             var messageHandler = eventServices.ServiceProvider.GetRequiredService<IMessageHandler>();
-            messageHandler.ShowSnackbar(eventServices.Localizer["Successfully updated the settings in the client. In order for the changes to take effect, the client now performs a soft restart."], messageType: MessageType.Information, millisecondsBeforeClose: 3000);
+            messageHandler.ShowSnackbar(eventServices.Localizer["UpdateSuccessMessage"], messageType: MessageType.Information, millisecondsBeforeClose: 3000);
             return true;
         }
 
@@ -158,7 +170,7 @@ public partial class Client : ClientBase, IClient, IClientSettings
     protected void ShowFailedUpdateSettingsOnClientMessage(EventServices eventServices)
     {
         var messageHandler = eventServices.ServiceProvider.GetRequiredService<IMessageHandler>();
-        messageHandler.ShowSnackbar(eventServices.Localizer["Failed to update settings on client. The client will update it's settings by the next time it's connected to the server."], messageType: MessageType.Error, millisecondsBeforeClose: 4000);
+        messageHandler.ShowSnackbar(eventServices.Localizer["UpdateFailedMessage"], messageType: MessageType.Error, millisecondsBeforeClose: 4000);
     }
 
     protected async Task SetClientNeedSettingsUpdateAsync(EventServices eventServices)

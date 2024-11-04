@@ -129,4 +129,91 @@
   <data name="AsrLanguage" xml:space="preserve">
     <value>Spracherkennungssprache</value>
   </data>
+  <data name="AsrMode" xml:space="preserve">
+    <value>Modus</value>
+  </data>
+  <data name="AsrModelNotExistErr" xml:space="preserve">
+    <value>Das aktuell ausgewählte Spracherkennungsmodell existiert nicht im huggingface Repository https://huggingface.co/PALs-Software/DigitalAssistant.AsrModels. Bitte wählen Sie eine andere Modellkonfiguration und versuchen Sie es erneut.</value>
+  </data>
+  <data name="AsrPrecision" xml:space="preserve">
+    <value>Präzision</value>
+  </data>
+  <data name="AsrProvider" xml:space="preserve">
+    <value>Provider</value>
+  </data>
+  <data name="DownloadCancelledMsg" xml:space="preserve">
+    <value>Der Download wurde abgebrochen. Wenn Sie den Download nicht selbst abgebrochen haben, überprüfen Sie bitte Ihre Internetverbindung. Die ausgewählten Einstellungen können nicht verwendet werden, ohne die ausgewählten Modelle herunterzuladen.</value>
+  </data>
+  <data name="DownloadCancelledTitle" xml:space="preserve">
+    <value>Download abgebrochen</value>
+  </data>
+  <data name="Interpreter" xml:space="preserve">
+    <value>Interpreter</value>
+  </data>
+  <data name="InterpreterLanguage" xml:space="preserve">
+    <value>Sprache</value>
+  </data>
+  <data name="InterpreterMode" xml:space="preserve">
+    <value>Modus</value>
+  </data>
+  <data name="InterpreterModeWrongErr" xml:space="preserve">
+    <value>Der Interpretermodus kann kein Typ mit LLM sein, wenn das LLM-Modell deaktiviert ist</value>
+  </data>
+  <data name="LlmContextSize" xml:space="preserve">
+    <value>Kontextgröße</value>
+  </data>
+  <data name="LlmCpuPrecisionNotSupportedErr" xml:space="preserve">
+    <value>Die Präzision FP16 ist nur für die Ausführung auf der GPU verfügbar.</value>
+  </data>
+  <data name="LlmGpuPrecisionNotSupportedErr" xml:space="preserve">
+    <value>Die Präzision INT4-Beschleunigt ist nur für die Ausführung auf der CPU verfügbar.</value>
+  </data>
+  <data name="LlmMediumPrecisionNotSupportedErr" xml:space="preserve">
+    <value>Nur die Präzision INT4-Beschleunigt ist für die CPU-Ausführung des Modells Medium verfügbar.</value>
+  </data>
+  <data name="LlmMode" xml:space="preserve">
+    <value>Modus</value>
+  </data>
+  <data name="LlmModel" xml:space="preserve">
+    <value>Modell</value>
+  </data>
+  <data name="LlmModelNotExistErr" xml:space="preserve">
+    <value>Das aktuell ausgewählte große Sprachmodell existiert nicht im huggingface Repository https://huggingface.co/microsoft. Bitte wählen Sie eine andere Modellkonfiguration und versuchen Sie es erneut.</value>
+  </data>
+  <data name="LlmPrecision" xml:space="preserve">
+    <value>Präzision</value>
+  </data>
+  <data name="SampleRateCanNotBeReadErr" xml:space="preserve">
+    <value>Die Abtastrate der Konfigurationsdatei {0} kann nicht gelesen werden. Stellen Sie sicher, dass das Modell gültig ist oder versuchen Sie ein anderes.</value>
+  </data>
+  <data name="Speech Recognition Model" xml:space="preserve">
+    <value>Sprache-zu-Text Modell</value>
+  </data>
+  <data name="Text to Speech Model" xml:space="preserve">
+    <value>Text-zu-Sprache Modell</value>
+  </data>
+  <data name="TtsLanguage" xml:space="preserve">
+    <value>Sprache</value>
+  </data>
+  <data name="TtsMode" xml:space="preserve">
+    <value>Modus</value>
+  </data>
+  <data name="TtsModel" xml:space="preserve">
+    <value>Modell</value>
+  </data>
+  <data name="TtsModelNotExistErr" xml:space="preserve">
+    <value>Das aktuell ausgewählte Text-to-Speech Modell existiert nicht im huggingface Repository https://huggingface.co/rhasspy/piper-voices. Bitte wählen Sie eine andere Modellkonfiguration und versuchen Sie es erneut.</value>
+  </data>
+  <data name="TtsModelQuality" xml:space="preserve">
+    <value>Modellqualität</value>
+  </data>
+  <data name="CreateAndDownloadBackupAction" xml:space="preserve">
+    <value>Serversicherung erstellen &amp; herunterladen</value>
+  </data>
+  <data name="CreateAndDownloadBackupActionTooltip" xml:space="preserve">
+    <value>Erstellt ein vollständiges Backup der Serverkomponente einschließlich der Datenbank und aller Dateien und lädt es herunter</value>
+  </data>
+  <data name="Large Language Model" xml:space="preserve">
+    <value>Large Language Modell</value>
+  </data>
 </root>

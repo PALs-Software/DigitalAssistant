@@ -3,6 +3,7 @@ using DigitalAssistant.Abstractions.Commands.Enums;
 using DigitalAssistant.Abstractions.Commands.Interfaces;
 using DigitalAssistant.Abstractions.Devices.Arguments;
 using DigitalAssistant.Abstractions.Devices.Interfaces;
+using DigitalAssistant.Abstractions.Groups.Interfaces;
 using DigitalAssistant.Abstractions.Localization;
 using Microsoft.Extensions.Localization;
 
@@ -13,20 +14,29 @@ public class SetLightDeviceBrightnessCommand(IStringLocalizer localizer, IJsonSt
     public override CommandType Type => CommandType.Direct;
     public override int Priority => 50001;
 
-    public override string LlmFunctionTemplate => "SetLightBrightness(Name: LightDevice, Brightness: Integer)";
+    public override string[] LlmFunctionTemplates => [
+        "SetLightBrightness(Name: LightDevice, Brightness: Integer)",
+        "SetLightBrightnessByGroup(GroupName: Group, Brightness: Integer)"
+    ];
     public override string LlmFunctionDescription => "Sets the brightness level of the specified light.";
 
     public override Task<ICommandResponse> ExecuteAsync(ICommandParameters parameters)
     {
         SetUICulture(parameters.Language);
 
-        if (!parameters.TryGetValue<ILightDevice>("Name", out var lightDevice) ||
-            !parameters.TryGetValue<int?>("Brightness", out var brightness))
+        var lightDevices = new List<ILightDevice>();
+        if (parameters.TryGetValue<IGroup>("GroupName", out var group))
+            lightDevices.AddRange(group.Devices.OfType<ILightDevice>());
+
+        if (parameters.TryGetValue<ILightDevice>("Name", out var lightDevice))
+            lightDevices.Add(lightDevice);
+
+        if (lightDevices.Count == 0 || !parameters.TryGetValue<int?>("Brightness", out var brightness))
             return Task.FromResult(CreateResponse(success: false));
 
         var lightActionArgs = new LightActionArgs() { Brightness = brightness };
-        var responseText = GetRandomResponses("Responses", lightDevice.Name, $"{brightness}%");
+        var responseText = GetRandomResponses("Responses", GetNonNullNameOfObjects(group, lightDevice), $"{brightness}%");
 
-        return Task.FromResult(CreateResponse(success: true, responseText, [(lightDevice, lightActionArgs)]));
-    }   
+        return Task.FromResult(CreateResponse(success: true, responseText, CreateActionForAllDevices(lightDevices, lightActionArgs)));
+    }
 }

@@ -14,7 +14,7 @@ public class RadioCommand(IStringLocalizer localizer, IJsonStringLocalizer jsonL
     public override CommandType Type => CommandType.Direct;
     public override int Priority => 70000;
 
-    public override string LlmFunctionTemplate => "PlayRadio(Name: Text)";
+    public override string[] LlmFunctionTemplates => ["PlayRadio(Name: Text)"];
     public override string LlmFunctionDescription => "Play Radio.";
 
     #region Members

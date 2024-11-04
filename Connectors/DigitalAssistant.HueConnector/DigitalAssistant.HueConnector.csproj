@@ -8,6 +8,13 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Remove="Extensions\**" />
+	  <Content Remove="Extensions\**" />
+	  <EmbeddedResource Remove="Extensions\**" />
+	  <None Remove="Extensions\**" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<SupportedPlatform Include="browser" />
 	</ItemGroup>
 
@@ -37,10 +44,6 @@
 	    <Generator>ResXFileCodeGenerator</Generator>
 	    <LastGenOutput>Resources.Designer.cs</LastGenOutput>
 	  </EmbeddedResource>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="Extensions\" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -1,8 +1,8 @@
 {
-  "Name": "Timer setzen",
-  "Description": "Befehle zum erstellen eines Timers",
+  "Name": "Wecker setzen",
+  "Description": "Befehle zum erstellen eines Weckers.",
   "Templates": [
-    "([Erstell(e)|Stell(e)|Setz(e)]) (einen) Timer ((mit (dem) Namen) {Name:Text}) [auf|für|in] {Duration:Decimal} {DurationType:Option} (und {Duration2:Decimal} {DurationType2:Option})"
+    "([Erstell(e)|Stell(e)|Setz(e)]) (einen) [Timer|Wecker] ((mit (dem) Namen) {Name:Text}) [auf|für|in] {Duration:Decimal} {DurationType:Option} (und {Duration2:Decimal} {DurationType2:Option})"
   ],
   "Options": [
     {

@@ -11,7 +11,7 @@ public enum CommandParameterType
     Color,
     ColorTemperatureColor,
     Option,
-    Area,
+    Group,
     Client,
     Device,
     LightDevice,

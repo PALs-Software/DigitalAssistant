@@ -5,7 +5,6 @@ using DigitalAssistant.Abstractions.Devices.Enums;
 using DigitalAssistant.Server.Modules.Ai.Llm.Services;
 using DigitalAssistant.Server.Modules.Commands.Parser;
 using DigitalAssistant.Server.Modules.Commands.Services;
-using System.Diagnostics.CodeAnalysis;
 
 namespace DigitalAssistant.Server.Modules.Commands.Interpreter;
 
@@ -35,11 +34,12 @@ You can execute the following functions:
 %%COMMANDFUNCTIONTEMPLATEPLACEHOLDER%%
 None() = Undefined command. No valid command found. Use if the user's input doesn't match any function.
 ;
-%%DEVICETEMPLATEPLACEHOLDER%%
+%%EXTENDEDTEMPLATEPLACEHOLDER%%
 ;
 Reminder:
 Function calls must follow the format specified.
 All required parameters must be provided.
+If a group name is provided use the ByGroup function.
 Only one function call should be returned per user request.
 Include all parameter names in the response.
 Return the function call as a single line.
@@ -62,42 +62,49 @@ If the user's input doesn't match any function, return None().";
         var commands = CommandHandler.GetCommands().OrderBy(entry => entry.Priority).ToList();
         foreach (var command in commands)
         {
-            if (String.IsNullOrEmpty(command.LlmFunctionTemplate))
-                continue;
-
-            var functionName = command.GetLlmFunctionName();
-            if (functionName == null)
-                continue;
-
-            ICommandTemplate? template = null;
-            var parameters = command.GetLlmParameters();
-            if (parameters.Count > 0)
+            foreach (var functionTemplate in command.LlmFunctionTemplates)
             {
-                var parameterTemplate = String.Empty;
-                foreach (var parameter in parameters)
-                    parameterTemplate += $"{{{parameter.Key}:{parameter.Value}}}";
+                if (String.IsNullOrEmpty(functionTemplate))
+                    continue;
 
-                template = CommandTemplateParser.ParseTemplate(command, parameterTemplate, String.Empty);
+                var functionName = ICommand.GetLlmFunctionName(functionTemplate);
+                if (functionName == null)
+                    continue;
+
+                ICommandTemplate? commandTemplate = null;
+                var parameters = ICommand.GetLlmParameters(functionTemplate, trimOptionalCharacter: true);
+                if (parameters.Count > 0)
+                {
+                    var parameterTemplate = String.Empty;
+                    foreach (var parameter in parameters)
+                        parameterTemplate += $"{{{parameter.Key}:{parameter.Value}}}";
+
+                    commandTemplate = CommandTemplateParser.ParseTemplate(command, parameterTemplate, String.Empty);
+                }
+
+                if (Commands.ContainsKey(functionName))
+                    throw new Exception($"The llm function name \"{functionName}\" is declaried twice, that is not allowed. Each function name can only be used once");
+
+                Commands.Add(functionName, (command, commandTemplate));
+
+                var functionTemplateText = functionTemplate.Replace("Boolean", "On or Off");
+                LlmFunctions += $"{functionTemplateText} = {command.LlmFunctionDescription}" + Environment.NewLine;
             }
-
-            Commands.Add(functionName, (command, template));
-
-            var functionTemplate = command.LlmFunctionTemplate.Replace("Boolean", "On or Off");
-            LlmFunctions += $"{functionTemplate} = {command.LlmFunctionDescription}" + Environment.NewLine;
         }
         LlmFunctions = TrimEnd(LlmFunctions, Environment.NewLine);
     }
 
-    public void SetTemplateNames(List<string> clients, List<(string Name, List<string> AlternativeNames, DeviceType Type)> devices)
+    public void SetTemplateNames(List<string> clients, List<(string Name, List<string> AlternativeNames, DeviceType Type)> devices, List<(string Name, List<string> AlternativeNames)> groups)
     {
-        List<string?> deviceTemplates = [];
-        deviceTemplates.Add(GetDeviceDescription("You can control the following lights:", "LightDevice", DeviceType.Light, devices));
-        deviceTemplates.Add(GetDeviceDescription("You can control the following switches:", "SwitchDevice", DeviceType.Switch, devices));
-        deviceTemplates = deviceTemplates.Where(entry => entry != null).ToList();
+        List<string?> extendedTemplates = [];
+        extendedTemplates.Add(GetGroupDescription("You can control the following groups:", "Group", groups));
+        extendedTemplates.Add(GetDeviceDescription("You can control the following lights:", "LightDevice", DeviceType.Light, devices));
+        extendedTemplates.Add(GetDeviceDescription("You can control the following switches:", "SwitchDevice", DeviceType.Switch, devices));
+        extendedTemplates = extendedTemplates.Where(entry => entry != null).ToList();
 
         SystemPrompt = SystemPromptTemplate
                         .Replace("%%COMMANDFUNCTIONTEMPLATEPLACEHOLDER%%", LlmFunctions)
-                        .Replace("%%DEVICETEMPLATEPLACEHOLDER%%", String.Join(Environment.NewLine + ";" + Environment.NewLine, deviceTemplates));
+                        .Replace("%%EXTENDEDTEMPLATEPLACEHOLDER%%", String.Join(Environment.NewLine + ";" + Environment.NewLine, extendedTemplates));
     }
 
     public async Task<(ICommand Command, ICommandTemplate? Template, ICommandParameters? Parameters)> InterpretUserCommandAsync(string userCommand, string language, IClient client)
@@ -119,7 +126,7 @@ If the user's input doesn't match any function, return None().";
             var parameters = ICommand.GetLlmParameters(result);
             if (String.IsNullOrEmpty(functionName))
                 return default;
-          
+
             foreach (var parameter in parameters)
             {
                 parameters[parameter.Key] = parameters[parameter.Key].Trim('\"', '\'');
@@ -142,6 +149,19 @@ If the user's input doesn't match any function, return None().";
     }
 
     #region MISC
+
+    protected string? GetGroupDescription(string intro, string parameterType, List<(string Name, List<string> AlternativeNames)> groups)
+    {
+        var template = intro + Environment.NewLine;
+        foreach (var item in groups)
+        {
+            template += $"{item.Name}: {parameterType}" + Environment.NewLine;
+
+            foreach (var alternativeName in item.AlternativeNames)
+                template += $"{alternativeName}: {parameterType}" + Environment.NewLine;
+        }
+        return TrimEnd(template, Environment.NewLine);
+    }
 
     protected string? GetDeviceDescription(string intro, string parameterType, DeviceType deviceType, List<(string Name, List<string> AlternativeNames, DeviceType Type)> devices)
     {

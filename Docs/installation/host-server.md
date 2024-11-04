@@ -23,8 +23,17 @@ docker run --name digital-assistant-server -p 8079:8079 -p 8080:8080 -v DigitalA
 ``` shell
 # For Linux run:
 sudo apt-get update && sudo apt-get install -y aspnetcore-runtime-8.0
+
+# For Raspberry Pi OS run:
+wget https://dot.net/v1/dotnet-install.sh -O dotnet-install.sh
+sudo chmod +x ./dotnet-install.sh
+./dotnet-install.sh --channel 8.0 --runtime aspnetcore
+echo 'export DOTNET_ROOT=$HOME/.dotnet' >> /home/pi/.bashrc
+echo 'export PATH=$PATH:$HOME/.dotnet' >> /home/pi/.bashrc
+source ~/.bashrc
 ```
-2. Download the binaries of your platform from the [release page of the github repository](https://github.com/PALs-Software/DigitalAssistant).
+
+2. Download the binaries of your platform from the [release page of the github repository](https://github.com/PALs-Software/DigitalAssistant/releases).
 3. Extract the compressed files.
 4. **Optional**: Change the default configuration of the server by adjusting the `appsettings.{YourPlattform}.json` file like it is explained in the chapter "[Change default configuration](#change-default-configuration)".
 5. Create a self signed certificate for the server like described in [this chapter](#create-self-signed-certificate-for-the-server).
@@ -35,9 +44,18 @@ sudo apt-get update && sudo apt-get install -y aspnetcore-runtime-8.0
 dotnet DigitalAssistant.Server.dll --urls="http://localhost:8079/;https://localhost:8080/"
 ```
 9. Open [https://localhost:8080/](https://localhost:8080/) in a browser and enjoy the digital assistant. Further information's how to configure and use the digital assistant can be found in the [setup](../setup/setup.md) chapter of this documentation.
-
+11. Use tools depending on your operating system to auto start the application at statup of your machine.
+    
 ### Raspberry Pi Image
-Currently not possible, but it is planned to provide a Raspberry Pi image for the server application.
+1. Download the image of your choice from the [release page of the github repository](https://github.com/PALs-Software/DigitalAssistant/releases). 
+2. Install and start the [Raspberry Pi Imager](https://www.raspberrypi.com/software/)
+3. Choose your Raspberry Pi Modell
+4. Under OS choose "Use Custom" and select the downloaded image
+5. Select the sd-card
+6. Preconfigure the RPI with username, password and hostname and if needed configure the Wifi Setings, in the configuration dialog
+   - Note, that the preconfigured certificate for the server application is created with the hostname "digital-assistant-pi". If you choose another hostname, you must recreate the certificate like descripted in [this chapter](#create-self-signed-certificate-for-the-server).
+
+Further information's how to connect the client with the server can be found in the [setup client](../setup/clients.md) chapter of this documentation.
 
 ### [Windows only] Host with Internet Information Service (IIS)
 Under Windows, the server application can also be executed with another web server, the Internet Information Service, as an alternative to the integrated Kestrel. To set this up, follow the described steps:

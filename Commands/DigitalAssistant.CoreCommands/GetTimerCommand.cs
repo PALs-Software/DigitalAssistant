@@ -12,7 +12,7 @@ public class GetTimerCommand(IStringLocalizer localizer, IJsonStringLocalizer js
     public override CommandType Type => CommandType.Direct;
     public override int Priority => 1101;
 
-    public override string LlmFunctionTemplate => "GetTimer(Name: Text?)";
+    public override string[] LlmFunctionTemplates => ["GetTimer(Name: Text?)"];
     public override string LlmFunctionDescription => "Get Timer.";
 
     public override Task<ICommandResponse> ExecuteAsync(ICommandParameters parameters)

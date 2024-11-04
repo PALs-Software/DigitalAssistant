@@ -222,7 +222,7 @@ public class CommandParameterParserTests : DigitalAssistantTestContext
     {
         // Arrange
         var template = "Turn the {Device:Device} off";
-        TemplateParser.SetTemplateNames([], [("light", [], DeviceType.Light), ("light2", [], DeviceType.Light), ("switch", [], DeviceType.Switch)]);
+        TemplateParser.SetTemplateNames([], [("light", [], DeviceType.Light), ("light2", [], DeviceType.Light), ("switch", [], DeviceType.Switch)], [("group1", []), ("group2", [])]);
         var commandTemplate = TemplateParser.ParseTemplate(DummyCommand, template, Language);
         var match = commandTemplate.Regex.Match("Turn the light off");
 
@@ -246,7 +246,7 @@ public class CommandParameterParserTests : DigitalAssistantTestContext
     {
         // Arrange
         var template = "Turn the {Device:LightDevice} off";
-        TemplateParser.SetTemplateNames([], [("light", [], DeviceType.Light), ("light2", [], DeviceType.Light), ("switch", [], DeviceType.Switch)]);
+        TemplateParser.SetTemplateNames([], [("light", [], DeviceType.Light), ("light2", [], DeviceType.Light), ("switch", [], DeviceType.Switch)], [("group1", []), ("group2", [])]);
         var commandTemplate = TemplateParser.ParseTemplate(DummyCommand, template, Language);
         var match = commandTemplate.Regex.Match("Turn the light off");
 
@@ -270,7 +270,7 @@ public class CommandParameterParserTests : DigitalAssistantTestContext
     {
         // Arrange
         var template = "Turn the {Device:SwitchDevice} off";
-        TemplateParser.SetTemplateNames([], [("light", [], DeviceType.Light), ("light2", [], DeviceType.Light), ("switch", [], DeviceType.Switch)]);
+        TemplateParser.SetTemplateNames([], [("light", [], DeviceType.Light), ("light2", [], DeviceType.Light), ("switch", [], DeviceType.Switch)], [("group1", []), ("group2", [])]);
         var commandTemplate = TemplateParser.ParseTemplate(DummyCommand, template, Language);
         var match = commandTemplate.Regex.Match("Turn the switch off");
 
@@ -294,7 +294,7 @@ public class CommandParameterParserTests : DigitalAssistantTestContext
     {
         // Arrange
         var template = "Turn the [{LightDevice:LightDevice}|{SwitchDevice:SwitchDevice}] off";
-        TemplateParser.SetTemplateNames([], [("light", [], DeviceType.Light), ("light2", [], DeviceType.Light), ("switch", [], DeviceType.Switch)]);
+        TemplateParser.SetTemplateNames([], [("light", [], DeviceType.Light), ("light2", [], DeviceType.Light), ("switch", [], DeviceType.Switch)], [("group1", []), ("group2", [])]);
         var commandTemplate = TemplateParser.ParseTemplate(DummyCommand, template, Language);
         var match = commandTemplate.Regex.Match("Turn the switch off");
 

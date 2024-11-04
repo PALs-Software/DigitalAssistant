@@ -20,11 +20,11 @@ public class CommandTemplateParser
 
     #region Member
     protected Dictionary<char, char> SectionBrackets = new() { { '(', ')' }, { '[', ']' }, { '{', '}' } };
-    protected string AreaNames = string.Empty;
-    protected string ClientNames = string.Empty;
-    protected string DeviceNames = string.Empty;
-    protected string LightDeviceNames = string.Empty;
-    protected string SwitchDeviceNames = string.Empty;
+    protected string GroupNames = String.Empty;
+    protected string ClientNames = String.Empty;
+    protected string DeviceNames = String.Empty;
+    protected string LightDeviceNames = String.Empty;
+    protected string SwitchDeviceNames = String.Empty;
     protected JsonSerializerOptions JsonSerializerOptions = new();
     #endregion
 
@@ -37,19 +37,25 @@ public class CommandTemplateParser
         JsonSerializerOptions.Converters.Add(new JsonTypeMappingConverter<ICommandOptionValue, CommandOptionValue>());
     }
 
-    public void SetTemplateNames(List<string> clients, List<(string Name, List<string> AlternativeNames, DeviceType Type)> devices)
+    public void SetTemplateNames(List<string> clients, List<(string Name, List<string> AlternativeNames, DeviceType Type)> devices, List<(string Name, List<string> AlternativeNames)> groups)
     {
         List<(string CombinedNames, DeviceType Type)> names = [];
         foreach (var device in devices)
         {
-            var combinedName = string.Join('|', new List<string>() { device.Name }.Concat(device.AlternativeNames));
+            var combinedName = String.Join('|', new List<string>() { device.Name }.Concat(device.AlternativeNames));
             names.Add((combinedName, device.Type));
         }
 
-        ClientNames = string.Join('|', clients);
-        DeviceNames = string.Join('|', names.Select(entry => entry.CombinedNames));
-        LightDeviceNames = string.Join('|', names.Where(entry => entry.Type == DeviceType.Light).Select(entry => entry.CombinedNames));
-        SwitchDeviceNames = string.Join('|', names.Where(entry => entry.Type == DeviceType.Switch).Select(entry => entry.CombinedNames));
+        List<string> groupNames = [];
+        foreach (var group in groups)
+            groupNames.Add(String.Join('|', new List<string>() { group.Name }.Concat(group.AlternativeNames)));
+
+        ClientNames = String.Join('|', clients);
+        GroupNames = String.Join('|', groupNames);
+
+        DeviceNames = String.Join('|', names.Select(entry => entry.CombinedNames));
+        LightDeviceNames = String.Join('|', names.Where(entry => entry.Type == DeviceType.Light).Select(entry => entry.CombinedNames));
+        SwitchDeviceNames = String.Join('|', names.Where(entry => entry.Type == DeviceType.Switch).Select(entry => entry.CombinedNames));
     }
 
     public ICommandTemplate ParseTemplate(ICommand command, string template, string language)
@@ -249,8 +255,8 @@ public class CommandTemplateParser
                 regexTemplate += $"(?'{parameterName}'{string.Join('|', options)})";
                 parameters.Add(parameterName, new CommandOptionParameter(parameterName, parameterType, isInOptionalSection, commandOption));
                 break;
-            case CommandParameterType.Area:
-                regexTemplate += $"(?'{parameterName}'{AreaNames})";
+            case CommandParameterType.Group:
+                regexTemplate += $"(?'{parameterName}'{GroupNames})";
                 break;
             case CommandParameterType.Client:
                 regexTemplate += $"(?'{parameterName}'{ClientNames})";

@@ -1,6 +1,6 @@
 {
   "Name": "Manage Music Radios",
-  "Description": "Commands for playing internet radios",
+  "Description": "Commands for playing internet radios.",
   "Templates": [
     "Play (the) (internet) radio (station) {Name:Text}"
   ],

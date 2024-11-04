@@ -1,6 +1,5 @@
-﻿using DigitalAssistant.Base;
+﻿using DigitalAssistant.Base.BackgroundServiceAbstracts;
 using DigitalAssistant.Base.General;
-using DigitalAssistant.Base.BackgroundServiceAbstracts;
 using DigitalAssistant.Server.Modules.Connectors.Services;
 
 namespace DigitalAssistant.Server.Modules.BackgroundJobs;

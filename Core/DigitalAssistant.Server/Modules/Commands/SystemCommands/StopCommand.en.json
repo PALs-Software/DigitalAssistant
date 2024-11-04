@@ -1,6 +1,6 @@
 {
-  "Name": "Stop Command",
-  "Description": "Command to stop the currently running task",
+  "Name": "Stop",
+  "Description": "Command to stop the currently running task.",
   "Templates": [
     "Stop",
     "Cease",

@@ -1,8 +1,8 @@
 {
-  "Name": "Farbtemperatur der Lichtgeräte verringern",
-  "Description": "Verringert die Farbtemperatur des angegebenen Lichts",
+  "Name": "Lichtgerät Farbtemperatur verringern",
+  "Description": "Verringert die Farbtemperatur des angegebenen Lichts.",
   "Templates": [
-    "[Reduziere|Verringere|Senke] (die) [Farbtemperatur|Farb Temperatur] ([von|des]) {Name:LightDevice}( )(Lichts) (um {ColorTemperature:Integer})"
+    "[Reduziere|Verringere|Senke] (die) [Farbtemperatur|Farb Temperatur] ([von|des]) [{Name:LightDevice}|{GroupName:Group}]( )(Lichts) (um {ColorTemperature:Integer})"
   ],
   "Options": [],
   "Responses": [

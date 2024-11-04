@@ -34,6 +34,12 @@ namespace DigitalAssistant.Server.Data.Migrations.SQLiteMigrations
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("DashboardOrder")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<Guid?>("GroupId")
+                        .HasColumnType("TEXT");
+
                     b.Property<bool>("HasBeenInitialized")
                         .HasColumnType("INTEGER");
 
@@ -57,6 +63,9 @@ namespace DigitalAssistant.Server.Data.Migrations.SQLiteMigrations
                     b.Property<bool>("PlayRequestSound")
                         .HasColumnType("INTEGER");
 
+                    b.Property<bool>("ShowInDashboard")
+                        .HasColumnType("INTEGER");
+
                     b.Property<byte[]>("SqlRowVersion")
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate()
@@ -77,6 +86,8 @@ namespace DigitalAssistant.Server.Data.Migrations.SQLiteMigrations
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("GroupId");
 
                     b.ToTable("Clients");
                 });
@@ -128,6 +139,12 @@ namespace DigitalAssistant.Server.Data.Migrations.SQLiteMigrations
                     b.Property<bool>("CustomName")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("DashboardOrder")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<Guid?>("GroupId")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("InternalId")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -152,6 +169,9 @@ namespace DigitalAssistant.Server.Data.Migrations.SQLiteMigrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<bool>("ShowInDashboard")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("Status")
                         .HasColumnType("INTEGER");
 
@@ -159,6 +179,8 @@ namespace DigitalAssistant.Server.Data.Migrations.SQLiteMigrations
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("GroupId");
 
                     b.HasIndex("ModelType");
 
@@ -210,6 +232,46 @@ namespace DigitalAssistant.Server.Data.Migrations.SQLiteMigrations
                     b.HasKey("Id");
 
                     b.ToTable("ServerFiles");
+                });
+
+            modelBuilder.Entity("DigitalAssistant.Server.Modules.Groups.Models.Group", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("AlternativeNames")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("DashboardOrder")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid?>("IconId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("ModifiedOn")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("ShowInDashboard")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("IconId");
+
+                    b.ToTable("Groups");
                 });
 
             modelBuilder.Entity("DigitalAssistant.Server.Modules.Setups.Models.Setup", b =>
@@ -572,6 +634,33 @@ namespace DigitalAssistant.Server.Data.Migrations.SQLiteMigrations
                     b.HasDiscriminator().HasValue("SwitchDevice");
                 });
 
+            modelBuilder.Entity("DigitalAssistant.Server.Modules.Clients.Models.Client", b =>
+                {
+                    b.HasOne("DigitalAssistant.Server.Modules.Groups.Models.Group", "Group")
+                        .WithMany("Clients")
+                        .HasForeignKey("GroupId");
+
+                    b.Navigation("Group");
+                });
+
+            modelBuilder.Entity("DigitalAssistant.Server.Modules.Devices.Models.Device", b =>
+                {
+                    b.HasOne("DigitalAssistant.Server.Modules.Groups.Models.Group", "Group")
+                        .WithMany("Devices")
+                        .HasForeignKey("GroupId");
+
+                    b.Navigation("Group");
+                });
+
+            modelBuilder.Entity("DigitalAssistant.Server.Modules.Groups.Models.Group", b =>
+                {
+                    b.HasOne("DigitalAssistant.Server.Modules.Files.ServerFile", "Icon")
+                        .WithMany()
+                        .HasForeignKey("IconId");
+
+                    b.Navigation("Icon");
+                });
+
             modelBuilder.Entity("DigitalAssistant.Server.Modules.Users.User", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "IdentityUser")
@@ -636,6 +725,13 @@ namespace DigitalAssistant.Server.Data.Migrations.SQLiteMigrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("DigitalAssistant.Server.Modules.Groups.Models.Group", b =>
+                {
+                    b.Navigation("Clients");
+
+                    b.Navigation("Devices");
                 });
 #pragma warning restore 612, 618
         }

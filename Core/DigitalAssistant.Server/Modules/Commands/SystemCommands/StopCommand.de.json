@@ -1,6 +1,6 @@
 {
-  "Name": "Stopp Befehl",
-  "Description": "Befehl zum stoppen der aktuell ausgeführten Aufgabe",
+  "Name": "Stopp",
+  "Description": "Befehl zum stoppen der aktuell ausgeführten Aufgabe.",
   "Templates": [
     "Stopp",
     "Aufhören",

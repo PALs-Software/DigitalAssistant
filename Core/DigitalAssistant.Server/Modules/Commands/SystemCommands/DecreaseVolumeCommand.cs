@@ -12,7 +12,7 @@ public class DecreaseVolumeCommand(IStringLocalizer localizer, IJsonStringLocali
     public override CommandType Type => CommandType.Direct;
     public override int Priority => 2000000002;
 
-    public override string LlmFunctionTemplate => "DecreaseVolume()";
+    public override string[] LlmFunctionTemplates => ["DecreaseVolume()"];
     public override string LlmFunctionDescription => "Decreases the volume of the device to make it quieter.";
 
     public override Task<ICommandResponse> ExecuteAsync(ICommandParameters parameters)

@@ -1,5 +1,6 @@
 ﻿using BlazorBase.Abstractions.CRUD.Arguments;
 using BlazorBase.Abstractions.CRUD.Attributes;
+using BlazorBase.Abstractions.CRUD.Enums;
 using BlazorBase.Abstractions.CRUD.Structures;
 using BlazorBase.Files.Attributes;
 using BlazorBase.User.Models;
@@ -9,6 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Reflection;
 using System.Security.Claims;
 
 namespace DigitalAssistant.Server.Modules.Users;
@@ -24,10 +26,9 @@ public partial class User : BaseUser<IdentityUser, UserRole>
     [Visible(DisplayGroup = "User Settings", DisplayGroupOrder = 100, DisplayOrder = 100)]
     public virtual ServerFile? ProfileImage { get; set; }
 
-    [Visible(DisplayGroup = "User Settings", DisplayOrder = 200)]
     public int PreferredCulture { get; set; }
 
-    [Visible(DisplayGroup = "User Settings", DisplayOrder = 300)]
+    [Visible(DisplayGroup = "User Settings", DisplayOrder = 200)]
     public bool? PrefersDarkMode { get; set; }
 
     #endregion
@@ -60,6 +61,15 @@ public partial class User : BaseUser<IdentityUser, UserRole>
         return base.OnAfterCardSaveChanges(args);
     }
 
+    public override List<PropertyInfo> GetVisibleProperties(GUIType guiType, List<string> userRoles)
+    {
+        var properties = base.GetVisibleProperties(guiType, userRoles);
+
+        if (!userRoles.Contains("Admin"))
+            properties.RemoveAll(entry => entry.Name == nameof(IdentityRole));
+
+        return properties;
+    }
     #endregion
 
 }

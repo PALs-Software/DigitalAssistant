@@ -38,8 +38,8 @@ public class HueConnector : IConnector
     #endregion
 
     #region Properties
-    public string Name => Localizer["Hue Connector"];
-    public string Description => Localizer["Connects the Philips Hue Bridge to the Digital Assistant Server, allowing the Assistant to view and control devices connected to the Hue Bridge."];
+    public string Name => Localizer["Name"];
+    public string Description => Localizer["Description"];
     public string Base64JpgImage => Convert.ToBase64String(Resources.HueLogo);
     public bool Enabled => Settings != null;
 
@@ -93,7 +93,7 @@ public class HueConnector : IConnector
         var response = await client.GetFromJsonAsync<List<DiscoverHueBridgeResponse>>(new Uri(DISCOVER_HUE_BRIDGE_URL), cancellationToken).ConfigureAwait(false);
         var firstBridge = response?.FirstOrDefault();
         if (firstBridge == null || string.IsNullOrEmpty(firstBridge.InternalIpAddress) || firstBridge.Port == 0)
-            return (false, Localizer["No Hue bridge found in the local network."], firstBridge);
+            return (false, Localizer["NoHueBridgeAvailable"], firstBridge);
 
         return (true, null, firstBridge);
     }

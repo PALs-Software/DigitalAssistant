@@ -20,7 +20,7 @@ public partial class EnableConnectorModal
 
     #region Injects
     [Inject] public IBaseDbContext DbContext { get; set; } = null!;
-    [Inject] public IStringLocalizer<ConnectorDisplayItem> Localizer { get; set; } = null!;
+    [Inject] public IStringLocalizer<EnableConnectorModal> Localizer { get; set; } = null!;
     [Inject] public IMessageHandler MessageHandler { get; set; } = null!;
     [Inject] public ConnectorService ConnectorService { get; set; } = null!;
     [Inject] public BaseErrorHandler ErrorHandler { get; set; } = null!;
@@ -53,7 +53,7 @@ public partial class EnableConnectorModal
             if (!args.Success || args.Settings == null || !Connector.Enabled)
                 return;
 
-            messageId = MessageHandler.ShowLoadingMessage(Localizer["Save connector settings and discover new devices from the connector..."]);
+            messageId = MessageHandler.ShowLoadingMessage(Localizer["SaveConnectorSettingsMessage"]);
             var connectorTypeName = Connector.GetType().AssemblyQualifiedName;
             if (String.IsNullOrEmpty(connectorTypeName))
                 return;
@@ -73,7 +73,7 @@ public partial class EnableConnectorModal
         }
         catch (Exception e)
         {
-            MessageHandler.ShowMessage("Unexpected error by enabling new connector", ErrorHandler.PrepareExceptionErrorMessage(e), BlazorBase.MessageHandling.Enum.MessageType.Error);
+            MessageHandler.ShowMessage("UnexpectedError", ErrorHandler.PrepareExceptionErrorMessage(e), BlazorBase.MessageHandling.Enum.MessageType.Error);
         }
         finally
         {

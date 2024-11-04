@@ -7,6 +7,7 @@ using DigitalAssistant.Client.Modules.Audio.Linux;
 using DigitalAssistant.Client.Modules.Audio.Mac;
 using DigitalAssistant.Client.Modules.Audio.Windows;
 using DigitalAssistant.Client.Modules.Commands;
+using DigitalAssistant.Client.Modules.General;
 using DigitalAssistant.Client.Modules.ServerConnection.Models;
 using DigitalAssistant.Client.Modules.ServerConnection.Services;
 using DigitalAssistant.Client.Modules.SpeechRecognition.Services;
@@ -29,6 +30,12 @@ builder.Configuration.AddJsonFile("appsettings.json");
 builder.Configuration.AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json");
 builder.Configuration.AddJsonFile("appsettings.User.json");
 #endif
+
+if (EnvironmentInformations.ApplicationRunsInDockerContainer)
+{
+    builder.Configuration.SetBasePath(AppContext.BaseDirectory);
+    builder.Configuration.AddJsonFile("DockerStorage/appsettings.json");
+}
 
 builder.Services
     .AddDataProtection()

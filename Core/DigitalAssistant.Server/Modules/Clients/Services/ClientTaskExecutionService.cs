@@ -1,6 +1,8 @@
 ﻿using BlazorBase.Abstractions.CRUD.Interfaces;
 using BlazorBase.Abstractions.General.Extensions;
+using BlazorBase.AudioRecorder.Services;
 using BlazorBase.CRUD.Extensions;
+using DigitalAssistant.Abstractions.Clients.Enums;
 using DigitalAssistant.Abstractions.Commands.Abstracts;
 using DigitalAssistant.Base.Audio;
 using DigitalAssistant.Base.BackgroundServiceAbstracts;
@@ -49,6 +51,10 @@ public class ClientTaskExecutionService(IServiceProvider serviceProvider,
     protected ConcurrentQueue<ClientTcpMessage> ClientMessages { get; set; } = new();
     protected ConcurrentDictionary<Guid, List<ClientTask>> ClientTasks { get; set; } = new();
     protected JsonSerializerOptions JsonSerializerOptions = new() { IncludeFields = true };
+
+    protected float[] AudioConvertFloatBuffer = new float[SAMPLE_RATE * 10];
+    protected Int16[] AudioConvertInt16Buffer = new Int16[SAMPLE_RATE * 10];
+    protected readonly object AudioConvertLock = new();
     #endregion
 
     #region Constants
@@ -214,8 +220,19 @@ public class ClientTaskExecutionService(IServiceProvider serviceProvider,
         }
 
         var commandClientTask = (CommandClientTask)commandTask;
-        commandClientTask.AudioData.AddRangeBinary(message.Data, sizeof(float));
+        if (client.Type == ClientType.Microcontroller)
+            AddByteInt16SamplesToCommandClientTask(commandClientTask, message.Data);
+        else
+            commandClientTask.AudioData.AddRangeBinary(message.Data, sizeof(float));
 
+        ///// DEBUG
+        //var audioConverter = new AudioConverter();
+        //var shorts = audioConverter.ConvertFloatToShortSamples(commandClientTask.AudioData.AsSpan());
+        //var bytes = audioConverter.ConvertSamplesToWav(shorts, samplesPerSecond: 16000);
+        //File.WriteAllBytes(@"C:\\Temp\Test\test.wav", bytes);
+
+        ///// DEBUG
+        ///
         var speakerHasFinished = AudioService.SpeakerFinishedSpeaking(commandClientTask.AudioData.AsSpan(), SAMPLE_RATE, threshold: 40, maxDetectionDurationInSeconds: 15);
         if (!speakerHasFinished)
             return;
@@ -226,6 +243,8 @@ public class ClientTaskExecutionService(IServiceProvider serviceProvider,
         await message.ClientConnection.SendMessageToClientAsync(new TcpMessage(TcpMessageType.StopSendingAudioData, message.EventId, [])).ConfigureAwait(false);
         openTasks.Remove(commandTask);
         client.LastProcessedAudioMessageEventId = message.EventId;
+
+      
 
         _ = Task.Factory.StartNew(async () =>
         {
@@ -282,6 +301,27 @@ public class ClientTaskExecutionService(IServiceProvider serviceProvider,
         Logger.LogWarning(warningMessage);
         message.ClientConnection.SslStream.Close();
         message.ClientConnection.TcpClient.Close();
+    }
+
+    protected void AddByteInt16SamplesToCommandClientTask(CommandClientTask commandClientTask, byte[] data)
+    {
+        lock (AudioConvertLock)
+        {
+            var noOfSamplesRead = data.Length / 2;
+            var bytesProcessed = 0;
+
+            do
+            {
+                var bytesToConvert = Math.Min(data.Length - bytesProcessed, AudioConvertInt16Buffer.Length * 2);
+                Buffer.BlockCopy(data, bytesProcessed, AudioConvertInt16Buffer, bytesProcessed, bytesToConvert);
+                bytesProcessed += bytesToConvert;
+                var samplesConverted = bytesToConvert / 2;
+
+                for (int i = 0; i < samplesConverted; i++)
+                    commandClientTask.AudioData.Add(AudioConvertInt16Buffer[i]);
+
+            } while (bytesProcessed < data.Length);
+        }
     }
     #endregion
 }

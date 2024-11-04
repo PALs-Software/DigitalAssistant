@@ -12,7 +12,7 @@ public class SetTimerCommand(IStringLocalizer localizer, IJsonStringLocalizer js
     public override CommandType Type => CommandType.Direct;
     public override int Priority => 1100;
 
-    public override string LlmFunctionTemplate => "SetTimer(Hours: Decimal, Minutes: Decimal, Seconds: Decimal, Name: Text?)";
+    public override string[] LlmFunctionTemplates => ["SetTimer(Hours: Decimal, Minutes: Decimal, Seconds: Decimal, Name: Text?)"];
     public override string LlmFunctionDescription => $"Sets a timer for the specified duration. Hours = {JsonLocalizer["Hours"]}, Minutes = {JsonLocalizer["Minutes"]}, Seconds = {JsonLocalizer["Seconds"]}.";
 
     public override Task<ICommandResponse> ExecuteAsync(ICommandParameters parameters)
@@ -49,7 +49,7 @@ public class SetTimerCommand(IStringLocalizer localizer, IJsonStringLocalizer js
     protected Task<ICommandResponse> ProcessLlmParameters(ICommandParameters parameters)
     {
         var timerTimeSpan = TimeSpan.Zero;
-     
+
         if (parameters.TryGetValue<decimal>("Hours", out var hours))
             AddDurationToTimeSpan(ref timerTimeSpan, hours, "Hours");
 

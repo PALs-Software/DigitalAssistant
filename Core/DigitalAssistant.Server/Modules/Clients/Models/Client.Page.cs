@@ -24,8 +24,8 @@ public partial class Client
                 [
                     new PageAction()
                     {
-                        Caption = "Add new Client",
-                        ToolTip = "Adds a new client to the server",
+                        Caption = "AddNewClient",
+                        ToolTip = "AddNewClientTooltip",
                         Image = FontAwesomeIcons.Plus,
                         VisibleInGUITypes = [GUIType.List],
                         RenderComponentByActionArgs = new RenderComponentByActionArgs()

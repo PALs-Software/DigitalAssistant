@@ -1,6 +1,6 @@
 {
-  "Name": "Fortsetzen Befehl",
-  "Description": "Befehl zum fortsetzen der zuletzt ausgeführten Aufgabe",
+  "Name": "Fortsetzen",
+  "Description": "Befehl zum fortsetzen der zuletzt ausgeführten Aufgabe.",
   "Templates": [
     "Fortsetzen",
     "Fortfahren",

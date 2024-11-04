@@ -16,7 +16,6 @@ public partial class ConnectorDisplayItem
     [Inject] public IStringLocalizer<ConnectorDisplayItem> Localizer { get; set; } = null!;
     #endregion
 
-
     protected Task EnableConnectorAsync()
     {
         return OnEnableConnector.InvokeAsync(Connector);

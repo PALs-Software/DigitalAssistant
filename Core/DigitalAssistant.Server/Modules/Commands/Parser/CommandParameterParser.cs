@@ -216,8 +216,23 @@ public class CommandParameterParser
                     convertedValue = commandValue.Name;
                 }
                 break;
-            case CommandParameterType.Area:
-                throw new NotImplementedException();
+            case CommandParameterType.Group:
+                var group = await DbContext.SetAsync((IQueryable<Groups.Models.Group> query) =>
+                {
+                    return query.Where(entry => entry.Name.ToLower() == value.ToLower() ||
+                                       entry.AlternativeNames.Any(alternativeName => alternativeName.ToLower() == value.ToLower()))
+                                .AsNoTracking()
+                                .Include(entry => entry.Devices)
+                                .Include(entry => entry.Clients)
+                                .FirstOrDefault();
+                });
+
+                if (group != null)
+                {
+                    success = true;
+                    convertedValue = group;
+                }
+                break;
             case CommandParameterType.Client:
                 var client = await DbContext.FirstOrDefaultAsync<Client>(entry => entry.Name.ToLower() == value.ToLower(),
                                                                         asNoTracking: true);

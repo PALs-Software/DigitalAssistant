@@ -10,7 +10,7 @@ public interface IDevice
 
     List<string> AlternativeNames { get; set; }
 
-    public bool CustomName { get; set; }
+    bool CustomName { get; set; }
 
     DeviceType Type { get; set; }
 

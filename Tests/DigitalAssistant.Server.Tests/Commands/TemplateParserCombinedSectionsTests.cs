@@ -66,7 +66,7 @@ public class TemplateParserCombinedSectionsTests : DigitalAssistantTestContext
     {
         // Arrange
         var template = "Turn the {Light:LightDevice} ({State:Boolean})";
-        TemplateParser.SetTemplateNames([], [("light", [], DeviceType.Light), ("light2", [], DeviceType.Light), ("switch", [], DeviceType.Switch)]);
+        TemplateParser.SetTemplateNames([], [("light", [], DeviceType.Light), ("light2", [], DeviceType.Light), ("switch", [], DeviceType.Switch)], [("group1", []), ("group2", [])]);
 
         // Act
         var commandTemplate = TemplateParser.ParseTemplate(DummyCommand, template, Language);
@@ -86,7 +86,7 @@ public class TemplateParserCombinedSectionsTests : DigitalAssistantTestContext
         string language = "de";
         var template = "[Schalte|Setze|Wechsle|Ändere|Stelle] ([das|die]) {Light:LightDevice}( )(Licht) (auf) {State:Boolean}";
         SwitchToLanguage(language);
-        TemplateParser.SetTemplateNames([], [("Küchenlicht", [], DeviceType.Light), ("light", [], DeviceType.Light), ("switch", [], DeviceType.Switch)]);
+        TemplateParser.SetTemplateNames([], [("Küchenlicht", [], DeviceType.Light), ("light", [], DeviceType.Light), ("switch", [], DeviceType.Switch)], [("group1", []), ("group2", [])]);
         var commandTemplate = TemplateParser.ParseTemplate(DummyCommand, template, language);
         var match = commandTemplate.Regex.Match("Schalte das Küchenlicht an");
 

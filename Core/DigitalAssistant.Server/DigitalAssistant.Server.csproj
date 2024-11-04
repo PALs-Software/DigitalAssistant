@@ -66,6 +66,7 @@
 		<Content Remove="C:\Users\patri\.nuget\packages\blazorise\0.9.3.6\contentFiles\any\net5.0\Resources\Localization\FileEdit\nl.json" />
 		<Content Remove="C:\Users\patri\.nuget\packages\blazorise\0.9.3.6\contentFiles\any\net5.0\Resources\Localization\FileEdit\pt.json" />
 		<Content Remove="C:\Users\patri\.nuget\packages\pdfsharp.netstandard2\1.51.5185.2\contentFiles\any\netstandard2.0\SharpZipLib\ReadMe.txt" />
+		<Content Remove="C:\Users\patri\.nuget\packages\pdfsharp.netstandard2\1.51.5185.3\contentFiles\any\net8.0\SharpZipLib\ReadMe.txt" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -74,6 +75,7 @@
 		<PackageReference Include="Blazorise.Bootstrap" Version="0.9.3.6" />
 		<PackageReference Include="Blazorise.Components" Version="0.9.3.6" />
 		<PackageReference Include="Blazorise.Icons.FontAwesome" Version="0.9.3.6" />
+		<PackageReference Include="Blazorise.RichTextEdit" Version="0.9.3.6" />
 		<PackageReference Include="Blazorise.Sidebar" Version="0.9.3.6" />
 		<PackageReference Include="Blazorise.Snackbar" Version="0.9.3.6" />
 		<PackageReference Include="Magick.NET-Q16-AnyCPU" Version="14.0.0" />
@@ -100,7 +102,7 @@
 		<PackageReference Include="PDFSharp.NetStandard2" Version="1.51.5185.3" />
 		<PackageReference Include="System.Formats.Asn1" Version="8.0.1" />
 		<PackageReference Include="System.Security.Cryptography.ProtectedData" Version="8.0.0" />
-		<PackageReference Include="System.Text.Json" Version="8.0.4" />
+		<PackageReference Include="System.Text.Json" Version="8.0.5" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(Configuration)'!='Debug_WithGpuSupport' And '$(Configuration)'!='Release_WithGpuSupport'">
@@ -121,6 +123,7 @@
 		<ProjectReference Include="..\..\..\BlazorBase\BlazorBase.Files\BlazorBase.Files.csproj" />
 		<ProjectReference Include="..\..\..\BlazorBase\BlazorBase.MessageHandling\BlazorBase.MessageHandling.csproj" />
 		<ProjectReference Include="..\..\..\BlazorBase\BlazorBase.RecurringJobQueue\BlazorBase.RecurringBackgroundJobQueue.csproj" />
+		<ProjectReference Include="..\..\..\BlazorBase\BlazorBase.RichTextEditor\BlazorBase.RichTextEditor.csproj" />
 		<ProjectReference Include="..\..\..\BlazorBase\BlazorBase.Server\BlazorBase.Server.csproj" />
 		<ProjectReference Include="..\..\..\BlazorBase\BlazorBase.Themes\BlazorBase.Themes.csproj" />
 		<ProjectReference Include="..\..\..\BlazorBase\BlazorBase.User\BlazorBase.User.csproj" />

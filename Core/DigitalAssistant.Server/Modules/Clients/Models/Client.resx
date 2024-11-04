@@ -117,26 +117,65 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AddNewClient" xml:space="preserve">
+    <value>Add new Client</value>
+  </data>
+  <data name="AddNewClientTooltip" xml:space="preserve">
+    <value>Adds a new client to the server</value>
+  </data>
   <data name="Client" xml:space="preserve">
     <value>Client</value>
   </data>
   <data name="Client_Plural" xml:space="preserve">
     <value>Clients</value>
   </data>
+  <data name="DashboardOrder" xml:space="preserve">
+    <value>Dashboard Order</value>
+  </data>
+  <data name="GroupId" xml:space="preserve">
+    <value>Group</value>
+  </data>
   <data name="HasBeenInitialized" xml:space="preserve">
     <value>Initialized</value>
   </data>
+  <data name="Id" xml:space="preserve">
+    <value>Id</value>
+  </data>
   <data name="InputDeviceId" xml:space="preserve">
-    <value>Input DeviceId</value>
+    <value>Input Device</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="NewClient" xml:space="preserve">
+    <value>New client</value>
+  </data>
+  <data name="NewClientAddedMessage" xml:space="preserve">
+    <value>You have successfully added a new client. The initial setup token value is: {0}</value>
+  </data>
+  <data name="Online" xml:space="preserve">
+    <value>Online</value>
   </data>
   <data name="OutputAudioVolume" xml:space="preserve">
     <value>Output Audio Volume</value>
   </data>
   <data name="OutputDeviceId" xml:space="preserve">
-    <value>Output DeviceId</value>
+    <value>Output Device</value>
   </data>
   <data name="PlayRequestSound" xml:space="preserve">
     <value>Play Request Sound</value>
+  </data>
+  <data name="ShowInDashboard" xml:space="preserve">
+    <value>Show in Dashboard</value>
+  </data>
+  <data name="Type" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="UpdateFailedMessage" xml:space="preserve">
+    <value>Failed to update settings on client. The client will update it's settings by the next time it's connected to the server.</value>
+  </data>
+  <data name="UpdateSuccessMessage" xml:space="preserve">
+    <value>Successfully updated the settings in the client. In order for the changes to take effect, the client now performs a soft restart.</value>
   </data>
   <data name="ValidUntil" xml:space="preserve">
     <value>Valid Until</value>

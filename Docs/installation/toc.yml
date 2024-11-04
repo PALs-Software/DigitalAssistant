@@ -4,5 +4,9 @@
   href: host-server.md
 - name: Host Client
   href: host-client.md
+- name: Host MicroClient
+  href: host-micro-client.md
+- name: Update your system to the newest version
+  href: update.md
 - name: Compatibility
   href: compatibility.md

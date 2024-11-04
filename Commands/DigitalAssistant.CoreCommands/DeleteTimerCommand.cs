@@ -12,7 +12,7 @@ public class DeleteTimerCommand(IStringLocalizer localizer, IJsonStringLocalizer
     public override CommandType Type => CommandType.Direct;
     public override int Priority => 1102;
 
-    public override string LlmFunctionTemplate => "DeleteTimer(Name: Text?)";
+    public override string[] LlmFunctionTemplates => ["DeleteTimer(Name: Text?)"];
     public override string LlmFunctionDescription => "Delete Timer.";
 
     public override Task<ICommandResponse> ExecuteAsync(ICommandParameters parameters)

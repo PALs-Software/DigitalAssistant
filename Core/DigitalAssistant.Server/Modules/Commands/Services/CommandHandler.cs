@@ -9,6 +9,7 @@ using DigitalAssistant.Server.Modules.Commands.Parser;
 using DigitalAssistant.Server.Modules.Commands.SystemCommands;
 using DigitalAssistant.Server.Modules.Connectors.Services;
 using DigitalAssistant.Server.Modules.Devices.Models;
+using DigitalAssistant.Server.Modules.Groups.Models;
 using DigitalAssistant.Server.Modules.Localization;
 using DigitalAssistant.Server.Modules.Plugins;
 using Microsoft.EntityFrameworkCore;
@@ -134,8 +135,14 @@ public class CommandHandler(IServiceProvider serviceProvider,
                         .Select(entry => new Tuple<string, List<string>, DeviceType>(entry.Name, entry.AlternativeNames, entry.Type).ToValueTuple())
                         .ToList();
         });
-        CommandTemplateParser.SetTemplateNames(clients, devices);
-        ServiceProvider.GetRequiredService<CommandLlmInterpreter>().SetTemplateNames(clients, devices);
+        var groups = await dbContext.SetAsync((IQueryable<Group> query) =>
+        {
+            return query.AsNoTracking()
+                        .Select(entry => new Tuple<string, List<string>>(entry.Name, entry.AlternativeNames).ToValueTuple())
+                        .ToList();
+        });
+        CommandTemplateParser.SetTemplateNames(clients, devices, groups);
+        ServiceProvider.GetRequiredService<CommandLlmInterpreter>().SetTemplateNames(clients, devices, groups);
 
         try
         {

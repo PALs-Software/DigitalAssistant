@@ -69,4 +69,19 @@ public class TemplateParserGeneralTests : DigitalAssistantTestContext
         Assert.AreEqual(0, commandTemplate.Parameters.Count);
         Assert.AreEqual("This is a test", commandTemplate.Regex.ToString());
     }
+
+    [TestMethod]
+    [Timeout(10000)]
+    public void asdf()
+    {
+        // Arrange
+        var template = "[a|[a|b]]";
+
+        // Act
+        var commandTemplate = TemplateParser.ParseTemplate(DummyCommand, template, Language);
+
+        // Assert
+        //Assert.AreEqual(0, commandTemplate.Parameters.Count);
+        //Assert.AreEqual("This is a test", commandTemplate.Regex.ToString());
+    }
 }

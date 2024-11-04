@@ -23,8 +23,8 @@ public partial class Setup
                 [
                     new PageAction()
                     {
-                        Caption = "Create & Download Website Backup",
-                        ToolTip = "Creates an complete backup of the website including the database and all files and downloads it",
+                        Caption = "CreateAndDownloadBackupAction",
+                        ToolTip = "CreateAndDownloadBackupActionTooltip",
                         Image = FontAwesomeIcons.Database,
                         VisibleInGUITypes = [GUIType.Card],
                         Action = (source, eventServices, model) =>

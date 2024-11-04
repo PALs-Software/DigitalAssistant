@@ -13,6 +13,8 @@ public class DeviceCard : BaseCard<Device>
         await base.ShowAsync(addingMode, viewMode, primaryKeys, template);
 
         await SetUpDisplayListsAsync(Model?.GetType() ?? typeof(Device), GUIType.Card, null);
+        ForeignKeyProperties = null;
+        await PrepareForeignKeyPropertiesAsync(DbContext, Model);
 
         if (Model != null)
             await Model.OnShowEntry(new OnShowEntryArgs(GUIType.Card, Model, addingMode, viewMode, VisibleProperties, DisplayGroups, EventServices));

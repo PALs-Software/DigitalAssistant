@@ -12,7 +12,7 @@ public class IncreaseVolumeCommand(IStringLocalizer localizer, IJsonStringLocali
     public override CommandType Type => CommandType.Direct;
     public override int Priority => 2000000001;
 
-    public override string LlmFunctionTemplate => "IncreaseVolume()";
+    public override string[] LlmFunctionTemplates => ["IncreaseVolume()"];
     public override string LlmFunctionDescription => "Increases the volume of the device to make it louder.";
 
 

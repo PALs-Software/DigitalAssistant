@@ -122,6 +122,8 @@ public class ConnectorService(IServiceProvider serviceProvider, IDataProtectionS
                     nameof(Device.Id),
                     nameof(Device.Type),
                     nameof(Device.Name),
+                    nameof(Device.Group),
+                    nameof(Device.GroupId),
                     nameof(Device.AlternativeNames),
                     nameof(Device.CustomName),
                     nameof(Device.Connector),

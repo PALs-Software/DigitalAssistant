@@ -8,3 +8,5 @@
   href: create-new-command.md
 - name: Add new localizations
   href: localization.md
+- name: Train custom wake words
+  href: train-custom-wakewords.md

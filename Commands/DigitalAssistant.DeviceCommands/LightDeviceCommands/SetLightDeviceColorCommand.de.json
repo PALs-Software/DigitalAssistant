@@ -1,8 +1,8 @@
 {
-  "Name": "Farbe der Lichtgeräte einstellen",
-  "Description": "Legt die Farbe des angegebenen Lichts fest",
+  "Name": "Lichtgerät Farbe einstellen",
+  "Description": "Legt die Farbe des angegebenen Lichts fest.",
   "Templates": [
-    "[Schalte|Setze|Wechsle|Ändere|Passe an|Stelle|Stell] (das|die) (Farbe) (von) {Name:LightDevice}( )(Licht) (auf) {Color:Color}"
+    "[Schalte|Setze|Wechsle|Ändere|Passe an|Stelle|Stell] (das|die) (Farbe) (von) [{Name:LightDevice}|{GroupName:Group}]( )(Licht) (auf) {Color:Color}"
   ],
   "Options": [],
   "Responses": [

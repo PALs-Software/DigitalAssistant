@@ -1,10 +1,10 @@
 {
-  "Name": "Decreases light devices brightness",
+  "Name": "Light device decrease brightness",
   "Description": "Decreases the brightness of the specified light.",
   "Templates": [
-    "[Decrease|Lower|Reduce|Darker] (the) brightness ([from|of]) {Name:LightDevice} (light) by {Brightness:Integer}( )([percent|%])",
-    "[Decrease|Lower|Reduce|Darker] (the) brightness ([from|of]) {Name:LightDevice} (light)",
-    "Make (the) {Name:LightDevice} (light) ({Brightness:Integer}( )([percent|%])) [lower|darker]"
+    "[Decrease|Lower|Reduce|Darker] (the) brightness ([from|of]) [{Name:LightDevice}|{GroupName:Group}] (light) by {Brightness:Integer}( )([percent|%])",
+    "[Decrease|Lower|Reduce|Darker] (the) brightness ([from|of]) [{Name:LightDevice}|{GroupName:Group}] (light)",
+    "Make (the) [{Name:LightDevice}|{GroupName:Group}] (light) ({Brightness:Integer}( )([percent|%])) [lower|darker]"
   ],
   "Options": [],
   "Responses": [

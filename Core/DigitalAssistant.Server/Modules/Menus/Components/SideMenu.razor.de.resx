@@ -123,16 +123,28 @@
   <data name="Setup" xml:space="preserve">
     <value>Einrichtung</value>
   </data>
-  <data name="Access Tokens" xml:space="preserve">
-    <value>Zugriffstokens</value>
+  <data name="Administration" xml:space="preserve">
+    <value>Administration</value>
   </data>
   <data name="General" xml:space="preserve">
     <value>Allgemein</value>
   </data>
-  <data name="Telemetry" xml:space="preserve">
-    <value>Telemetrie</value>
+  <data name="Clients" xml:space="preserve">
+    <value>Clients</value>
   </data>
   <data name="Users" xml:space="preserve">
     <value>Benutzer</value>
+  </data>
+  <data name="Commands" xml:space="preserve">
+    <value>Befehle</value>
+  </data>
+  <data name="Connectors" xml:space="preserve">
+    <value>Konnektoren</value>
+  </data>
+  <data name="Devices" xml:space="preserve">
+    <value>Geräte</value>
+  </data>
+  <data name="Groups" xml:space="preserve">
+    <value>Gruppen</value>
   </data>
 </root>

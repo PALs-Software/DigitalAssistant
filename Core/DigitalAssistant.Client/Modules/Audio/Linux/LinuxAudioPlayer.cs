@@ -181,6 +181,9 @@ public class LinuxAudioPlayer : IAudioPlayer
 
     public void SetVolume(AudioType audioType, float volume)
     {
+        if (EnvironmentInformations.ApplicationRunsInDockerContainer)
+            return; // amixer is not available inside docker
+
         byte percent = (byte)(volume * 100);
         var process = GetBashProcess($"amixer -M set 'Master' {percent}%");
         process.Start();

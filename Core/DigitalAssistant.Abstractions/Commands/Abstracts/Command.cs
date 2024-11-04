@@ -2,6 +2,7 @@
 using DigitalAssistant.Abstractions.Commands.Enums;
 using DigitalAssistant.Abstractions.Commands.Interfaces;
 using DigitalAssistant.Abstractions.Devices.Interfaces;
+using DigitalAssistant.Abstractions.Groups.Interfaces;
 using DigitalAssistant.Abstractions.Localization;
 using Microsoft.Extensions.Localization;
 using System.Globalization;
@@ -24,7 +25,7 @@ public abstract class Command : ICommand
 
     public abstract CommandType Type { get; }
     public virtual int Priority { get; } = 0;
-    public abstract string LlmFunctionTemplate { get; }
+    public abstract string[] LlmFunctionTemplates { get; }
     public abstract string LlmFunctionDescription { get; }
 
     public abstract Task<ICommandResponse> ExecuteAsync(ICommandParameters parameters);
@@ -59,23 +60,6 @@ public abstract class Command : ICommand
         return JsonLocalizer.GetTranslationList(name);
     }
 
-    #region Llm
-    public string? GetLlmFunctionName()
-    {
-        return ICommand.GetLlmFunctionName(LlmFunctionTemplate);
-    }
-
-    public Dictionary<string, string> GetLlmParameters()
-    {
-        var parameters = ICommand.GetLlmParameters(LlmFunctionTemplate);
-        foreach (var parameter in parameters)
-            if (parameter.Value.EndsWith("?"))
-                parameters[parameter.Key] = parameter.Value.Remove(parameter.Value.Length - 1);
-
-        return parameters;
-    }
-    #endregion
-
     public string GetRandomResponses(string name = "Responses", params object?[] args)
     {
         var responses = GetResponses(name);
@@ -99,4 +83,31 @@ public abstract class Command : ICommand
     {
         return new CommandResponse(success, response, clientActions);
     }
+
+    #region MISC
+
+    public string? GetNonNullNameOfObjects(IGroup? group, IDevice? device)
+    {
+        return group == null ? device?.Name : group.Name;
+    }
+
+    public string? GetNonNullNameOfObjects(IGroup? group, ILightDevice? device)
+    {
+        return GetNonNullNameOfObjects(group, device as IDevice);
+    }
+
+    public List<(IDevice Device, IDeviceActionArgs Action)> CreateActionForAllDevices(IEnumerable<IDevice> devices, IDeviceActionArgs args)
+    {
+        var response = new List<(IDevice Device, IDeviceActionArgs Action)>();
+        foreach (var device in devices)
+            response.Add((device, args));
+        return response;
+    }
+
+    public List<(IDevice Device, IDeviceActionArgs Action)> CreateActionForAllDevices(IEnumerable<ILightDevice> devices, IDeviceActionArgs args)
+    {
+        return CreateActionForAllDevices(devices.Cast<IDevice>(), args);
+    }
+
+    #endregion
 }

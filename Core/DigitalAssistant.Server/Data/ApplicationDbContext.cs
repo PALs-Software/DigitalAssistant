@@ -2,6 +2,7 @@
 using DigitalAssistant.Server.Modules.Connectors.Models;
 using DigitalAssistant.Server.Modules.Devices.Models;
 using DigitalAssistant.Server.Modules.Files;
+using DigitalAssistant.Server.Modules.Groups.Models;
 using DigitalAssistant.Server.Modules.Setups.Models;
 using DigitalAssistant.Server.Modules.Users;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -30,6 +31,10 @@ public class ApplicationDbContext(DbContextOptions options) : IdentityDbContext(
     public DbSet<Device> Devices { get; set; } = null!;
     public DbSet<LightDevice> LightDevices { get; set; } = null!;
     public DbSet<SwitchDevice> SwitchDevices { get; set; } = null!;
+    #endregion
+
+    #region Misc
+    public DbSet<Group> Groups{ get; set; } = null!;
     #endregion
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

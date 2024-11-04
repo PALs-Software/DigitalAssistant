@@ -1,6 +1,6 @@
 {
-  "Name": "Lautstärke Setzen Befehl",
-  "Description": "Befehl zum setzen der Lautstärke des Clients",
+  "Name": "Lautstärke setzen",
+  "Description": "Befehl zum setzen der Lautstärke des Clients.",
   "Templates": [
     "[Stell|Stelle|Setz|Erhöhe|Steigere|Reduziere|Verringere|Senke] die Lautstärke auf {Volume:Integer} ([Prozent|%])",
     "Lautstärke (auf) {Volume:Integer} ([Prozent|%])"

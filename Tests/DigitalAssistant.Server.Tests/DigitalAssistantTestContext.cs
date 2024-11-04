@@ -30,7 +30,8 @@ public abstract class DigitalAssistantTestContext : TestContextWrapper
             options.LogTo((input) => Debug.WriteLine(input), LogLevel.Information);
             options.EnableSensitiveDataLogging();
             options.EnableDetailedErrors();
-        });
+        }, contextLifetime: ServiceLifetime.Transient, optionsLifetime: ServiceLifetime.Transient);
+
         TestContext.Services.AddBlazorBaseCRUD<SQLiteDbContext>(options =>
         {
             options.UseAsyncDbContextMethodsPerDefaultInBaseDbContext = false;

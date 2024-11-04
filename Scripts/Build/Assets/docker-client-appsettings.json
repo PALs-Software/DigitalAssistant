@@ -1,0 +1,25 @@
+{
+  "ClientSettings": {
+    "ClientIsInitialized": false,
+    "PlayRequestSound": true,
+    "VoiceAudioOutputSampleRate": 22050,
+    "OutputAudioVolume": 0.5,
+    "OutputDeviceId": null,
+    "InputDeviceId": null
+  },
+  "ServerConnection": {
+    "ServerName": null,
+    "ServerPort": 59142,
+    "ServerAccessToken": null,
+    "IgnoreServerCertificateErrors": true
+  },
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.Hosting.Lifetime": "Information"
+    },
+    "Console": {
+      "TimestampFormat": "[yyyy-MM-dd HH:mm:ss] "
+    }
+  }
+}

@@ -136,7 +136,7 @@
     <value>Set Administrator Password</value>
   </data>
   <data name="SuccessMessage" xml:space="preserve">
-    <value>The initial setup of the digital assistant was successful.</value>
+    <value>The initial setup of the digital assistant was successful. After the login, navigate to the  connector tab to connect the digital assistant to your smart home devices.</value>
   </data>
   <data name="Finish" xml:space="preserve">
     <value>Finish</value>

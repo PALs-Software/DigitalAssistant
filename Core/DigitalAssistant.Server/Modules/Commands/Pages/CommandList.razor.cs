@@ -1,6 +1,4 @@
 ﻿using BlazorBase.MessageHandling.Interfaces;
-using BlazorBase.Modules;
-using DigitalAssistant.Server.Modules.Commands.Models;
 using DigitalAssistant.Server.Modules.Commands.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
@@ -10,7 +8,7 @@ using System.Globalization;
 namespace DigitalAssistant.Server.Modules.Commands.Pages;
 
 [Route("/Commands")]
-[Authorize(Roles = "Admin")]
+[Authorize(Roles = "Admin, User")]
 public partial class CommandList
 {
     #region Injects
@@ -20,7 +18,10 @@ public partial class CommandList
     #endregion
 
     #region Members
-    protected BaseObservableCollection<CommandDisplayEntry> CommandEntries = [];
+    protected record CommandDisplayGroup(string Name, string Description, int Priority, List<CommandDisplayEntry> Entries);
+    protected record CommandDisplayEntry(string Template, string Regex, string? Parameters, string? Options);
+
+    protected List<CommandDisplayGroup> CommandGroups = [];
     #endregion
 
     protected override Task OnInitializedAsync()
@@ -35,25 +36,27 @@ public partial class CommandList
         var loadingMessageId = MessageHandler.ShowLoadingMessage(Localizer["Loading commands..."]);
 
         var commands = await CommandHandler.GetLocalizedCommandTemplatesAsync(CultureInfo.CurrentCulture.TwoLetterISOLanguageName);
-        var commandDisplayEntries = new List<CommandDisplayEntry>();
-
+        var commandGroups = new List<CommandDisplayGroup>();
         foreach (var command in commands)
         {
+            if (command.Count == 0)
+                continue;
+
+            var commandDisplayEntries = new List<CommandDisplayEntry>();
             foreach (var commandTemplate in command)
             {
-                commandDisplayEntries.Add(new CommandDisplayEntry
-                {
-                    Name = commandTemplate.Command.GetName(),
-                    Description = commandTemplate.Command.GetDescription(),
-                    Template = commandTemplate.Template,
-                    Regex = commandTemplate.Regex.ToString(),
-                    Parameters = String.Join(", ", commandTemplate.Parameters.Select(entry => $"{entry.Value.Name}:{entry.Value.Type}")),
-                    Options = commandTemplate.Command.GetOptionsJson()
-                });
+                commandDisplayEntries.Add(new CommandDisplayEntry(
+                    commandTemplate.Template,
+                    commandTemplate.Regex.ToString(),
+                    String.Join(", ", commandTemplate.Parameters.Select(entry => $"{entry.Value.Name}:{entry.Value.Type}")),
+                    commandTemplate.Command.GetOptionsJson()
+                ));
             }
+
+            commandGroups.Add(new CommandDisplayGroup(command[0].Command.GetName(), command[0].Command.GetDescription(), command[0].Command.Priority, commandDisplayEntries));
         }
 
-        CommandEntries.ReplaceItems(commandDisplayEntries);
+        CommandGroups = commandGroups.OrderBy(entry => entry.Priority).ToList();
         MessageHandler.CloseLoadingMessage(loadingMessageId);
     }
 

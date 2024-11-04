@@ -76,8 +76,8 @@ public class AudioService
 
         float max = 0;
         foreach (var sample in audioSamples)
-            if (sample > max)
-                max = sample;
+            if (Math.Abs(sample) > max)
+                max = Math.Abs(sample);
 
         if (max > 0)
             for (int i = 0; i < audioSamples.Length; i++)

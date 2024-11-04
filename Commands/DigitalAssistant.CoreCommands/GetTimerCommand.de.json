@@ -1,10 +1,10 @@
 {
-  "Name": "Timer abrufen",
-  "Description": "Befehle zum abrufen von Timern",
+  "Name": "Wecker abrufen",
+  "Description": "Befehle zum abrufen von Weckern.",
   "Templates": [
     "Wie [lang|lange] noch",
     "Wie viel Zeit ist noch übrig",
-    "Wie [lang|lange] geht der Timer ({Name:Text}) (noch)"
+    "Wie [lang|lange] geht der [Wecker|Timer] ({Name:Text}) (noch)"
   ],
   "Options": []
 }

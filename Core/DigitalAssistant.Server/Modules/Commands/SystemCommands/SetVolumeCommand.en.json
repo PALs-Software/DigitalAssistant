@@ -1,6 +1,6 @@
 {
-  "Name": "Set Volume Command",
-  "Description": "Command to set the client's volume",
+  "Name": "Set Volume",
+  "Description": "Command to set the client's volume.",
   "Templates": [
     "[Set|Increase|Raise|Reduce|Decrease|Lower] the volume to {Volume:Integer} ([percent|%])",
     "Volume (to) {Volume:Integer} ([percent|%])"

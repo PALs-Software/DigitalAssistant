@@ -250,7 +250,7 @@ public partial class Main : Form
         {
             var audioWindow = AudioBuffer[..WindowSize].ToArray();
             AudioBuffer.RemoveRange(0, StepSize);
-            var fft = audioSpectrogram.GetSpectrogram(audioWindow)[0];
+            var fft = audioSpectrogram.GetSpectrogram(audioWindow, UseHannWindow.Checked)[0];
 
             foreach (var value in fft)
             {
@@ -318,7 +318,5 @@ public partial class Main : Form
         return audio.AsSpan();
     }
 
-    #endregion
-
-
+#endregion
 }

@@ -200,12 +200,23 @@ public class ServerConnectionHandler : TimerBackgroundService
                     Logger.LogInformation("Server discovery received {serverRequest} from {remoteEndPointAddress}", serverResponseData, response.RemoteEndPoint.Address.ToString());
 
                 client.Close();
-                ServerConnectionSettings.ServerName = serverResponseData;
+
+                if (!serverResponseData.StartsWith("GDASIA_RESPONSE:")) { 
+                    if (Logger.IsEnabled(LogLevel.Information))
+                        Logger.LogInformation("Unkown udp package type received");
+                    continue;
+                }
+
+                if (EnvironmentInformations.ApplicationRunsInDockerContainer && serverResponseData == "localhost")
+                    ServerConnectionSettings.ServerName = response.RemoteEndPoint.Address.ToString();
+                else
+                    ServerConnectionSettings.ServerName = serverResponseData[16..];
                 break;
             }
             catch (OperationCanceledException)
             {
-
+                if (Logger.IsEnabled(LogLevel.Error))
+                    Logger.LogInformation("No server is responding... try again");
             }
             catch (Exception e)
             {

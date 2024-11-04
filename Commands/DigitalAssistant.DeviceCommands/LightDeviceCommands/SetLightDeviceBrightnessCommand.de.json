@@ -1,10 +1,10 @@
 {
-  "Name": "Helligkeitsstufe der Lichtgeräte einstellen",
-  "Description": "Legt die Helligkeitsstufe des angegebenen Lichts fest",
+  "Name": "Lichtgerät Helligkeitsstufe einstellen",
+  "Description": "Legt die Helligkeitsstufe des angegebenen Lichts fest.",
   "Templates": [
-    "[Schalte|Setze|Wechsle|Ändere|Stelle|Stell|Passe an|Dimme] (das) {Name:LightDevice}( )(Licht) (auf) {Brightness:Integer}( )([Prozent|%])",
-    "[Verringere|Erhöhe|Stelle|Stell] (die) Helligkeit von {Name:LightDevice}( )(Licht) auf {Brightness:Integer}( )([Prozent|%])",
-    "{Name:LightDevice} (auf) {Brightness:Integer}( )([Prozent|%])"
+    "[Schalte|Setze|Wechsle|Ändere|Stelle|Stell|Passe an|Dimme] (das) [{Name:LightDevice}|{GroupName:Group}]( )(Licht) (auf) {Brightness:Integer}( )([Prozent|%])",
+    "[Verringere|Erhöhe|Stelle|Stell] (die) Helligkeit von [{Name:LightDevice}|{GroupName:Group}]( )(Licht) auf {Brightness:Integer}( )([Prozent|%])",
+    "[{Name:LightDevice}|{GroupName:Group}] (auf) {Brightness:Integer}( )([Prozent|%])"
   ],
   "Options": [],
   "Responses": [

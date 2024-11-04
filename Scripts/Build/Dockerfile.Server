@@ -1,5 +1,5 @@
-# docker build -t palssoftware/digital-assistant-server -f ./DigitalAssistant/Scripts/Build/Dockerfile .
-# docker run --name digital-assistant-server -p 8079:8079 -p 8080:8080 -v DigitalAssistantServer_Data:/app/DigitalAssistantServer -v DigitalAssistantServer_Keys:/home/app/.aspnet/DataProtection-Keys -d palssoftware/digital-assistant-server
+# docker build -t palssoftware/digital-assistant-server -f ./DigitalAssistant/Scripts/Build/Dockerfile.Server .
+# docker run --name digital-assistant-server -p 8079:8079 -p 8080:8080 -p 59142:59142/tcp -p 59142:59142/udp -v DigitalAssistantServer_Data:/app/DigitalAssistantServer -v DigitalAssistantServer_Keys:/home/app/.aspnet/DataProtection-Keys -d palssoftware/digital-assistant-server
 
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 ENV ASPNETCORE_URLS=http://+:8079;https://+:8080
@@ -7,6 +7,8 @@ USER app
 WORKDIR /app
 EXPOSE 8079
 EXPOSE 8080
+EXPOSE 59142/tcp
+EXPOSE 59142/udp
 
 # Install needed modules
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS modules
@@ -50,6 +52,7 @@ WORKDIR /src/DigitalAssistant/Commands
 RUN dotnet publish "./DigitalAssistant.CoreCommands/DigitalAssistant.CoreCommands.csproj" -v normal -c $BUILD_CONFIGURATION -o /app/publish-misc /p:UseAppHost=false
 RUN dotnet publish "./DigitalAssistant.DeviceCommands/DigitalAssistant.DeviceCommands.csproj" -v normal -c $BUILD_CONFIGURATION -o /app/publish-misc /p:UseAppHost=false
 RUN dotnet publish "./DigitalAssistant.MusicCommands/DigitalAssistant.MusicCommands.csproj" -v normal -c $BUILD_CONFIGURATION -o /app/publish-misc /p:UseAppHost=false
+RUN dotnet publish "./DigitalAssistant.ResearchCommands/DigitalAssistant.ResearchCommands.csproj" -v normal -c $BUILD_CONFIGURATION -o /app/publish-misc /p:UseAppHost=false
 
 # Publish digital assistant server project
 FROM build-commands AS build-server

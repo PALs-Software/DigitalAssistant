@@ -1,11 +1,10 @@
-﻿using DigitalAssistant.Server.Modules.Users;
-using BlazorBase.CRUD.Models;
+﻿using BlazorBase.CRUD.Models;
 using BlazorBase.DataUpgrade;
 using Blazorise.Icons.FontAwesome;
+using DigitalAssistant.Server.Modules.Users;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.Localization;
-using DigitalAssistant.Server.Modules.Commands.Components;
 
 namespace DigitalAssistant.Server.Modules.Menus.Components;
 
@@ -40,11 +39,12 @@ public partial class SideMenu : ComponentBase
                 new(Localizer[$"Files"], "ServerFiles", FontAwesomeIcons.FolderOpen),
                 new(Localizer[$"Users"], "Users", FontAwesomeIcons.Users),
                 new(Localizer[$"Connectors"], "Connectors", FontAwesomeIcons.Link),
-                new(Localizer[$"Commands"], "Commands", "fa-book-journal-whills"),
             ]);
         }
 
         GeneralNavigationEntries.AddRange([
+            new(Localizer[$"Commands"], "Commands", "fa-book-journal-whills"),
+            new(Localizer[$"Groups"], "Groups", FontAwesomeIcons.ObjectGroup),
             new(Localizer[$"Devices"], "Devices", FontAwesomeIcons.Microchip),
         ]);
     }

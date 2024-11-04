@@ -46,6 +46,8 @@
             PictureBoxPanel = new Panel();
             ProgressBar = new ProgressBar();
             PictureBox = new PictureBox();
+            UseHannWindowLbl = new Label();
+            UseHannWindow = new CheckBox();
             panel1.SuspendLayout();
             panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)PoolingSizeCtr).BeginInit();
@@ -58,6 +60,8 @@
             // 
             // panel1
             // 
+            panel1.Controls.Add(UseHannWindow);
+            panel1.Controls.Add(UseHannWindowLbl);
             panel1.Controls.Add(panel2);
             panel1.Controls.Add(PoolingSizeLbl);
             panel1.Controls.Add(PoolingSizeCtr);
@@ -220,6 +224,26 @@
             PictureBox.TabIndex = 3;
             PictureBox.TabStop = false;
             // 
+            // UseHannWindowLbl
+            // 
+            UseHannWindowLbl.AutoSize = true;
+            UseHannWindowLbl.Location = new Point(430, 7);
+            UseHannWindowLbl.Name = "UseHannWindowLbl";
+            UseHannWindowLbl.Size = new Size(131, 20);
+            UseHannWindowLbl.TabIndex = 10;
+            UseHannWindowLbl.Text = "Use Hann Window";
+            // 
+            // UseHannWindow
+            // 
+            UseHannWindow.AutoSize = true;
+            UseHannWindow.Checked = true;
+            UseHannWindow.CheckState = CheckState.Checked;
+            UseHannWindow.Location = new Point(484, 35);
+            UseHannWindow.Name = "UseHannWindow";
+            UseHannWindow.Size = new Size(18, 17);
+            UseHannWindow.TabIndex = 11;
+            UseHannWindow.UseVisualStyleBackColor = true;
+            // 
             // Main
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -260,5 +284,7 @@
         private Panel PictureBoxPanel;
         private PictureBox PictureBox;
         private ProgressBar ProgressBar;
+        private Label UseHannWindowLbl;
+        private CheckBox UseHannWindow;
     }
 }

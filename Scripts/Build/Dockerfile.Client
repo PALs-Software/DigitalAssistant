@@ -1,0 +1,52 @@
+# docker build -t palssoftware/digital-assistant-client -f ./DigitalAssistant/Scripts/Build/Dockerfile.Client .
+
+# Run in host network
+# docker run --name digital-assistant-client --network host --device /dev/snd:/dev/snd -v DigitalAssistantClient_Data:/app/DockerStorage -v DigitalAssistantClient_Keys:/home/app/.aspnet/DataProtection-Keys -d palssoftware/digital-assistant-client
+
+# Run in internal docker network (If server is also a docker container on the same host)
+# docker run --name digital-assistant-client --device /dev/snd:/dev/snd -v DigitalAssistantClient_Data:/app/DockerStorage -v DigitalAssistantClient_Keys:/home/app/.aspnet/DataProtection-Keys -d palssoftware/digital-assistant-client
+
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+USER app
+WORKDIR /app
+
+# Install needed modules
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS modules
+WORKDIR /src
+
+RUN apt update
+RUN apt install -y tree
+
+# Copy needed project files
+FROM modules AS copy-files
+COPY ./DigitalAssistant/ ./DigitalAssistant
+COPY ./BlazorBase/ ./BlazorBase
+
+# Publish digital assistant client project
+FROM copy-files AS build-client
+ARG BUILD_CONFIGURATION=Release
+WORKDIR /src/DigitalAssistant/Core/DigitalAssistant.Client
+RUN dotnet publish "./DigitalAssistant.Client.csproj" -v normal -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+
+RUN rm /app/publish/appsettings.Development.json
+RUN rm /app/publish/appsettings.User.json || true
+
+RUN mkdir -p /app/publish/DockerStorage/
+RUN chown -R app:app /app/publish/DockerStorage
+RUN cp /src/DigitalAssistant/Scripts/Build/Assets/docker-client-appsettings.json /app/publish/DockerStorage/appsettings.json
+RUN chmod 777 /app/publish/DockerStorage/appsettings.json
+
+RUN tree /app/publish/
+
+FROM base AS final
+WORKDIR /app
+COPY --from=build-client /app/publish .
+RUN mkdir -p /home/app/.aspnet/DataProtection-Keys/
+RUN chown -R app:app /home/app/.aspnet/
+RUN ls -l /home/app/.aspnet/
+
+RUN apt update
+RUN apt install -y mpg123
+RUN apt install -y alsa-base alsa-utils
+
+ENTRYPOINT ["dotnet", "DigitalAssistant.Client.dll"]

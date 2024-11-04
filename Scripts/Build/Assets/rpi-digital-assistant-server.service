@@ -1,0 +1,10 @@
+[Unit]
+Description=Digital Assistant Server
+
+[Service]
+ExecStart=dotnet /home/pi/DigitalAssistantServer/bin/DigitalAssistant.Server.dll --urls="http://*:80/;https://*:443/"
+WorkingDirectory=/home/pi/DigitalAssistantServer/bin/
+User=pi
+
+[Install]
+WantedBy=multi-user.target

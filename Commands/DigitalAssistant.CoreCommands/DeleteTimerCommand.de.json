@@ -1,8 +1,8 @@
 {
-  "Name": "Timer löschen",
-  "Description": "Befehle zum löschen von Timern",
+  "Name": "Wecker löschen",
+  "Description": "Befehle zum löschen von Weckern.",
   "Templates": [
-    "[Lösch|Lösche] (den) Timer ({Name:Text})"
+    "[Lösch|Lösche] (den) [Wecker|Timer] ({Name:Text})"
   ],
   "Options": []
 }

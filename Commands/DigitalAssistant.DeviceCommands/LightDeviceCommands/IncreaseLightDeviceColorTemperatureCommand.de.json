@@ -1,8 +1,8 @@
 {
-  "Name": "Farbtemperatur der Lichtgeräte erhöhen",
-  "Description": "Erhöht die Farbtemperatur des angegebenen Lichts",
+  "Name": "Lichtgerät Farbtemperatur erhöhen",
+  "Description": "Erhöht die Farbtemperatur des angegebenen Lichts.",
   "Templates": [
-    "[Erhöhe|Steigere|Hebe] (die) [Farbtemperatur|Farb Temperatur] ([von|des]) {Name:LightDevice}( )(Lichts) (um {ColorTemperature:Integer})"
+    "[Erhöhe|Steigere|Hebe] (die) [Farbtemperatur|Farb Temperatur] ([von|des]) [{Name:LightDevice}|{GroupName:Group}]( )(Lichts) (um {ColorTemperature:Integer})"
   ],
   "Options": [],
   "Responses": [

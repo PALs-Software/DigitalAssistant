@@ -1,8 +1,8 @@
 {
-  "Name": "Set light devices color",
-  "Description": "Sets the color of the specified light",
+  "Name": "Light device set color",
+  "Description": "Sets the color of the specified light.",
   "Templates": [
-    "[Turn|Set|Switch|Change|Adjust] (the) (color) (from) (the) {Name:LightDevice} (light) (to) {Color:Color}"
+    "[Turn|Set|Switch|Change|Adjust] (the) (color) (from) (the) [{Name:LightDevice}|{GroupName:Group}] (light) (to) {Color:Color}"
   ],
   "Options": [],
   "Responses": [
