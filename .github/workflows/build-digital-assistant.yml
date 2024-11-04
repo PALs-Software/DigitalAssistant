@@ -1,0 +1,91 @@
+name: Build DigitalAssistant
+
+# Trigger the action on push to main
+on:
+  push:
+    branches:
+      - main
+      
+jobs:
+
+  build:
+    name: Build DigitalAssistant
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        path: DigitalAssistant
+    - name: Clone BlazorBase
+      uses: actions/checkout@v4
+      with:
+        repository: PALs-Software/BlazorBase
+        ref: develop
+        path: BlazorBase
+      
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x  
+
+#    - name: Test
+#      run: dotnet test "./DigitalAssistant/Tests/DigitalAssistant.Server.Tests/DigitalAssistant.Server.Tests.csproj" -c Release
+      
+    - name: Build Hue Connector
+      run: dotnet publish "./DigitalAssistant/Connectors/DigitalAssistant.HueConnector/DigitalAssistant.HueConnector.csproj" -c Release -o ${{ github.workspace }}/ReleaseMisc /p:UseAppHost=false
+
+    - name: Build Core Commands
+      run: dotnet publish "./DigitalAssistant/Commands/DigitalAssistant.CoreCommands/DigitalAssistant.CoreCommands.csproj" -c Release -o ${{ github.workspace }}/ReleaseMisc /p:UseAppHost=false
+    - name: Build Device Commands
+      run: dotnet publish "./DigitalAssistant/Commands/DigitalAssistant.DeviceCommands/DigitalAssistant.DeviceCommands.csproj" -c Release -o ${{ github.workspace }}/ReleaseMisc /p:UseAppHost=false
+    - name: Build Music Commands
+      run: dotnet publish "./DigitalAssistant/Commands/DigitalAssistant.MusicCommands/DigitalAssistant.MusicCommands.csproj" -c Release -o ${{ github.workspace }}/ReleaseMisc /p:UseAppHost=false
+    - name: Build Research Commands
+      run: dotnet publish "./DigitalAssistant/Commands/DigitalAssistant.ResearchCommands/DigitalAssistant.ResearchCommands.csproj" -c Release -o ${{ github.workspace }}/ReleaseMisc /p:UseAppHost=false
+
+    - name: Build Server
+      run: dotnet publish "./DigitalAssistant/Core/DigitalAssistant.Server/DigitalAssistant.Server.csproj" -c Release -o ${{ github.workspace }}/ReleaseServer /p:UseAppHost=false
+    - name: Build Server with GPU Support
+      run: dotnet publish "./DigitalAssistant/Core/DigitalAssistant.Server/DigitalAssistant.Server.csproj" -c Release_WithGpuSupport -o ${{ github.workspace }}/ReleaseServerWithGpuSupport /p:UseAppHost=false
+
+    - name: Build Client
+      run: dotnet publish "./DigitalAssistant/Core/DigitalAssistant.Client/DigitalAssistant.Client.csproj" -c Release -o ${{ github.workspace }}/ReleaseClient /p:UseAppHost=false
+      
+    - name: Configure and Zip Release Packages
+      shell: pwsh
+      run: |
+        $basePathServer =  "${{ github.workspace }}/ReleaseServer"
+        $basePathServerWithGpuSupport =  "${{ github.workspace }}/ReleaseServerWithGpuSupport"
+        $basePathClient =  "${{ github.workspace }}/ReleaseClient"
+        $basePathMisc =  "${{ github.workspace }}/ReleaseMisc"
+
+        Write-Host "Remove no longer required configuration files"
+        Remove-Item -Path (Join-Path $basePathServer "appsettings.Development.json") -Force
+        Remove-Item -Path (Join-Path $basePathServerWithGpuSupport "appsettings.Development.json") -Force
+
+        Write-Host "Copy connectors and commands"
+        Copy-Item -Path "$basePathMisc/Publish/*" -Destination $basePathServer -Recurse
+        Copy-Item -Path "$basePathMisc/Publish/*" -Destination $basePathServerWithGpuSupport -Recurse
+    
+        Write-Host "Zip packages"
+        Compress-Archive -Path "$basePathClient/*" -DestinationPath "${{ github.workspace }}/Client.zip"
+        Compress-Archive -Path "$basePathServer/*" -DestinationPath "${{ github.workspace }}/Server.zip"
+        Compress-Archive -Path "$basePathServerWithGpuSupport/*" -DestinationPath "${{ github.workspace }}/Server.With.Gpu.Support.zip"
+
+    - name: Upload client build artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: ClientArtifact
+        path: ${{ github.workspace }}/Client.zip
+
+    - name: Upload server build artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: ServerArtifact
+        path: ${{ github.workspace }}/Server.zip
+
+    - name: Upload server with gpu support build artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: ServerWithGpuSupportArtifact
+        path: ${{ github.workspace }}/Server.With.Gpu.Support.zip
