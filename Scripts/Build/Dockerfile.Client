@@ -16,6 +16,7 @@ WORKDIR /src
 
 RUN apt update
 RUN apt install -y tree
+RUN apt install -y mpg123
 
 # Copy needed project files
 FROM modules AS copy-files
@@ -44,9 +45,5 @@ COPY --from=build-client /app/publish .
 RUN mkdir -p /home/app/.aspnet/DataProtection-Keys/
 RUN chown -R app:app /home/app/.aspnet/
 RUN ls -l /home/app/.aspnet/
-
-RUN apt update
-RUN apt install -y mpg123
-RUN apt install -y alsa-base alsa-utils
 
 ENTRYPOINT ["dotnet", "DigitalAssistant.Client.dll"]
