@@ -38,7 +38,7 @@ module Top(){
     
     difference(){
         translate([0,0,-Thickness])
-        cylinder(d = InnerDiameter+0.0, h = Thickness); 
+        cylinder(d = InnerDiameter-0.7, h = Thickness); 
         translate([0,0,-Thickness-1])
         cylinder(d = InnerDiameter-6, h = Thickness+2); 
     }

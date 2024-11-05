@@ -17,7 +17,7 @@ Befehle zur Steuerung der Lautstärke des Clients.
 - Hey Quinn, verringere die Lautstärke.
 - Hey Quinn, stelle die Lautstärke auf 50 Prozent.
 
-### Stop
+### Stopp
 
 Befehle, um die aktuelle Aktion des Clients zu stoppen.
 

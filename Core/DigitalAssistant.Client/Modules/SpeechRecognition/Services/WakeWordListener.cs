@@ -155,7 +155,7 @@ public class WakeWordListener : TimerBackgroundService
         CalculationDurationSum += Stopwatch.ElapsedMilliseconds;
         CalculationNo++;
 
-        if (CalculationNo > 20)
+        if (CalculationNo > 120)
         {
             var averageCalculationTime = Math.Round(CalculationDurationSum / (float)CalculationNo, 1);
             CalculationDurationSum = 0;
@@ -167,7 +167,6 @@ public class WakeWordListener : TimerBackgroundService
             return;
 
         var isWakeWordProbability = results[0].GetTensorDataAsSpan<float>()[0];
-        Debug.WriteLine(isWakeWordProbability);
         if (isWakeWordProbability > WAKE_WORD_CONFIDENCE_LEVEL)
         {
             Logger.LogInformation("Wake word detected with a probability of {WakeWordProbability}", isWakeWordProbability);

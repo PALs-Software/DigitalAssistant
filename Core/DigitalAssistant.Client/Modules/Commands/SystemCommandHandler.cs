@@ -104,7 +104,7 @@ public class SystemCommandHandler(IAudioPlayer audioPlayer, ClientState clientSt
 
     protected Task HandleDecreaseVolumeCommandAsync()
     {
-        Settings.OutputAudioVolume = Math.Min(1, Settings.OutputAudioVolume - 0.1f);
+        Settings.OutputAudioVolume = Math.Max(0, Settings.OutputAudioVolume - 0.1f);
         AudioPlayer.SetVolume(AudioType.Speech, Settings.OutputAudioVolume);
         return Task.CompletedTask;
     }

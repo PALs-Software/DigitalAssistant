@@ -75,6 +75,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ESpeakWrapper", "Libs\ESpea
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorBase.RichTextEditor", "..\BlazorBase\BlazorBase.RichTextEditor\BlazorBase.RichTextEditor.csproj", "{7191B917-2EF9-4524-90F1-AA501ACAB43A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WavBinaryConverter", "Libs\WavBinaryConverter\WavBinaryConverter.csproj", "{E8F5E168-3AC4-45E4-A2BD-900882A1F00D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		CreateMSSQLMigrations|Any CPU = CreateMSSQLMigrations|Any CPU
@@ -415,6 +417,18 @@ Global
 		{7191B917-2EF9-4524-90F1-AA501ACAB43A}.Release_WithGpuSupport|Any CPU.Build.0 = Release|Any CPU
 		{7191B917-2EF9-4524-90F1-AA501ACAB43A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7191B917-2EF9-4524-90F1-AA501ACAB43A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E8F5E168-3AC4-45E4-A2BD-900882A1F00D}.CreateMSSQLMigrations|Any CPU.ActiveCfg = Debug|Any CPU
+		{E8F5E168-3AC4-45E4-A2BD-900882A1F00D}.CreateMSSQLMigrations|Any CPU.Build.0 = Debug|Any CPU
+		{E8F5E168-3AC4-45E4-A2BD-900882A1F00D}.CreateSQLiteMigrations|Any CPU.ActiveCfg = Debug|Any CPU
+		{E8F5E168-3AC4-45E4-A2BD-900882A1F00D}.CreateSQLiteMigrations|Any CPU.Build.0 = Debug|Any CPU
+		{E8F5E168-3AC4-45E4-A2BD-900882A1F00D}.Debug_WithGpuSupport|Any CPU.ActiveCfg = Debug|Any CPU
+		{E8F5E168-3AC4-45E4-A2BD-900882A1F00D}.Debug_WithGpuSupport|Any CPU.Build.0 = Debug|Any CPU
+		{E8F5E168-3AC4-45E4-A2BD-900882A1F00D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E8F5E168-3AC4-45E4-A2BD-900882A1F00D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E8F5E168-3AC4-45E4-A2BD-900882A1F00D}.Release_WithGpuSupport|Any CPU.ActiveCfg = Release|Any CPU
+		{E8F5E168-3AC4-45E4-A2BD-900882A1F00D}.Release_WithGpuSupport|Any CPU.Build.0 = Release|Any CPU
+		{E8F5E168-3AC4-45E4-A2BD-900882A1F00D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E8F5E168-3AC4-45E4-A2BD-900882A1F00D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -449,6 +463,7 @@ Global
 		{063448A9-8831-4D48-B7B1-877137312AB3} = {45BD2BC4-30DC-4C41-81DE-B101D760FB65}
 		{854C4FCF-48C6-44A8-8312-F51B8A56FAC9} = {49B8EDA0-69AB-4C29-80B6-02B06C8FD3FB}
 		{7191B917-2EF9-4524-90F1-AA501ACAB43A} = {BAFE8A5F-BB3B-4174-959C-542623A1F146}
+		{E8F5E168-3AC4-45E4-A2BD-900882A1F00D} = {49B8EDA0-69AB-4C29-80B6-02B06C8FD3FB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {19DD1890-C638-4AD3-9271-08BB518C2296}

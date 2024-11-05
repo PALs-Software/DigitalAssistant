@@ -31,6 +31,7 @@ public class ClientTaskExecutionService(IServiceProvider serviceProvider,
                                         TtsService ttsService,
                                         ClientInformationService clientInformationService,
                                         AudioService audioService,
+                                        AudioConverter audioConverter,
                                         ILogger<ClientTaskExecutionService> logger,
                                         BaseErrorService baseErrorService
     ) : TimerBackgroundService(logger, baseErrorService)
@@ -45,6 +46,8 @@ public class ClientTaskExecutionService(IServiceProvider serviceProvider,
     protected readonly TtsService TextToSpeechService = ttsService;
     protected readonly ClientInformationService ClientInformationService = clientInformationService;
     protected readonly AudioService AudioService = audioService;
+    protected readonly AudioConverter AudioConverter = audioConverter;
+    
     #endregion
 
     #region Member
@@ -52,8 +55,7 @@ public class ClientTaskExecutionService(IServiceProvider serviceProvider,
     protected ConcurrentDictionary<Guid, List<ClientTask>> ClientTasks { get; set; } = new();
     protected JsonSerializerOptions JsonSerializerOptions = new() { IncludeFields = true };
 
-    protected float[] AudioConvertFloatBuffer = new float[SAMPLE_RATE * 10];
-    protected Int16[] AudioConvertInt16Buffer = new Int16[SAMPLE_RATE * 10];
+    protected Int16[] AudioConvertInt16Buffer = new Int16[SAMPLE_RATE * 5];
     protected readonly object AudioConvertLock = new();
     #endregion
 
@@ -167,7 +169,7 @@ public class ClientTaskExecutionService(IServiceProvider serviceProvider,
 
         if (!cachedClient.ClientNeedSettingsUpdate)
             return;
-
+        
         var localDbContext = ServiceProvider.GetRequiredService<IBaseDbContext>();
         var client = await localDbContext.FindAsync<Client>(cachedClient.Id);
         if (client == null)
@@ -225,14 +227,6 @@ public class ClientTaskExecutionService(IServiceProvider serviceProvider,
         else
             commandClientTask.AudioData.AddRangeBinary(message.Data, sizeof(float));
 
-        ///// DEBUG
-        //var audioConverter = new AudioConverter();
-        //var shorts = audioConverter.ConvertFloatToShortSamples(commandClientTask.AudioData.AsSpan());
-        //var bytes = audioConverter.ConvertSamplesToWav(shorts, samplesPerSecond: 16000);
-        //File.WriteAllBytes(@"C:\\Temp\Test\test.wav", bytes);
-
-        ///// DEBUG
-        ///
         var speakerHasFinished = AudioService.SpeakerFinishedSpeaking(commandClientTask.AudioData.AsSpan(), SAMPLE_RATE, threshold: 40, maxDetectionDurationInSeconds: 15);
         if (!speakerHasFinished)
             return;
@@ -243,8 +237,6 @@ public class ClientTaskExecutionService(IServiceProvider serviceProvider,
         await message.ClientConnection.SendMessageToClientAsync(new TcpMessage(TcpMessageType.StopSendingAudioData, message.EventId, [])).ConfigureAwait(false);
         openTasks.Remove(commandTask);
         client.LastProcessedAudioMessageEventId = message.EventId;
-
-      
 
         _ = Task.Factory.StartNew(async () =>
         {
@@ -262,7 +254,19 @@ public class ClientTaskExecutionService(IServiceProvider serviceProvider,
             var audioResponse = await TextToSpeechService.ConvertTextToSpeechAsync(commandResponse).ConfigureAwait(false);
             if (audioResponse == null)
                 return;
-            await message.ClientConnection.SendMessageToClientAsync(new TcpMessage(TcpMessageType.AudioData, message.EventId, audioResponse.ToByteArray(sizeof(float)))).ConfigureAwait(false);
+
+            byte[] audioResponseBytes;
+            if (client.Type == ClientType.Microcontroller)
+            {
+                var resampledResponse = AudioConverter.Resample(audioResponse.AsSpan(), TextToSpeechService.GetCurrentModelSampleRate().GetValueOrDefault(22050), 16000);
+                var shorts = AudioConverter.ConvertFloatToShortSamples(resampledResponse, withScaling: true);
+                audioResponseBytes = new byte[shorts.Length * 2];
+                Buffer.BlockCopy(shorts, 0, audioResponseBytes, 0, audioResponseBytes.Length);
+            }                
+            else
+                audioResponseBytes = audioResponse.ToByteArray(sizeof(float));
+
+            await message.ClientConnection.SendMessageToClientAsync(new TcpMessage(TcpMessageType.AudioData, message.EventId, audioResponseBytes)).ConfigureAwait(false);
         });
     }
 
@@ -313,7 +317,7 @@ public class ClientTaskExecutionService(IServiceProvider serviceProvider,
             do
             {
                 var bytesToConvert = Math.Min(data.Length - bytesProcessed, AudioConvertInt16Buffer.Length * 2);
-                Buffer.BlockCopy(data, bytesProcessed, AudioConvertInt16Buffer, bytesProcessed, bytesToConvert);
+                Buffer.BlockCopy(data, bytesProcessed, AudioConvertInt16Buffer, 0, bytesToConvert);
                 bytesProcessed += bytesToConvert;
                 var samplesConverted = bytesToConvert / 2;
 

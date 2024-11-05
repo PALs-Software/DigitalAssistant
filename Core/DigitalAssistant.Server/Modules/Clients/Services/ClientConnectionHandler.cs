@@ -102,7 +102,7 @@ public class ClientConnectionHandler : BackgroundService
             await sslStream.AuthenticateAsServerAsync(ServerCertificate,
                 clientCertificateRequired: false,
                 checkCertificateRevocation: true,
-                enabledSslProtocols: SslProtocols.Tls13); // | SslProtocols.Tls12); // Also enable Tls12 for ESP32 because it does not support Tls13
+                enabledSslProtocols: SslProtocols.Tls13 | SslProtocols.Tls12); // Also enable Tls12 for ESP32 because it does not support Tls13
 
             if (!sslStream.IsEncrypted)
                 throw new Exception("Communication stream is not encrypted");
