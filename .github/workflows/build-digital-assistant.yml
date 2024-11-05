@@ -1,10 +1,6 @@
 name: Build DigitalAssistant
 
-# Trigger the action on push to main
-on:
-  push:
-    branches:
-      - main
+on: workflow_dispatch
       
 jobs:
 
