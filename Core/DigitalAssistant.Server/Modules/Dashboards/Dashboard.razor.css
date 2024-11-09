@@ -22,6 +22,12 @@
     padding-top: .5rem;
 }
 
+.dashboard-group-body {
+    max-height: 250px;
+    overflow: auto;
+    overflow-x: hidden;
+}
+
 .dashboard-col {
     vertical-align: middle;
     width: 100%;

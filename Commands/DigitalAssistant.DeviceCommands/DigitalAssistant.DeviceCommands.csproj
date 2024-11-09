@@ -8,6 +8,23 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <None Remove="GroupCommands\SetSwitchDeviceStateCommand.de.json" />
+	  <None Remove="GroupCommands\SetSwitchDeviceStateCommand.en.json" />
+	  <None Remove="SwitchDeviceCommands\SetLightDeviceStateCommand.de.json" />
+	  <None Remove="SwitchDeviceCommands\SetLightDeviceStateCommand.en.json" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Content Include="GroupCommands\SetGroupStateCommand.de.json">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+		  <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+		</Content>
+		<Content Include="GroupCommands\SetGroupStateCommand.en.json">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+		  <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+		</Content>
 		<Content Include="LightDeviceCommands\DecreaseLightDeviceBrightnessCommand.de.json">
 		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		  <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
@@ -84,6 +101,16 @@
 		  <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
 		</Content>
 		<Content Include="LightDeviceCommands\SetLightDeviceStateCommand.en.json">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+		  <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+		</Content>
+		<Content Include="SwitchDeviceCommands\SetSwitchDeviceStateCommand.de.json">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+		  <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+		</Content>
+		<Content Include="SwitchDeviceCommands\SetSwitchDeviceStateCommand.en.json">
 		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		  <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
 		  <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>

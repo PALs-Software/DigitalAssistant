@@ -72,4 +72,10 @@ public partial class Dashboard
         if (args.Value is bool boolValue)
             await ConnectorService.ExecuteDeviceActionAsync(lightDevice, new LightActionArgs { On = boolValue });
     }
+
+    protected async Task ChangeSwitchStatusAsync(ISwitchDevice switchDevice, ChangeEventArgs args)
+    {
+        if (args.Value is bool boolValue)
+            await ConnectorService.ExecuteDeviceActionAsync(switchDevice, new SwitchActionArgs { On = boolValue });
+    }
 }

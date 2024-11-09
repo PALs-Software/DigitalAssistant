@@ -35,4 +35,22 @@ public class DeviceFactory : IDeviceFactory
             AdditionalJsonData = additionalJsonData
         };
     }
+
+    public ISwitchDevice CreateSwitchDevice(IConnector connector, string internalId, string name, DeviceStatus status,
+        string manufacturer, string productName, bool on,
+        string? additionalJsonData = null)
+    {
+        return new SwitchDevice()
+        {
+            InternalId = internalId,
+            Name = name,
+            Type = DeviceType.Switch,
+            Status = status,
+            Connector = connector.Name,
+            Manufacturer = manufacturer,
+            ProductName = productName,
+            On = on,          
+            AdditionalJsonData = additionalJsonData
+        };
+    }
 }

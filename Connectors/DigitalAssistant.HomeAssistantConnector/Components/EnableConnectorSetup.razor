@@ -1,0 +1,43 @@
+﻿<div class="enable-connector-setup">
+
+    <div class="modal-body">
+        <p>
+            @Localizer["ExplainText"]
+        </p>
+
+        <form>
+            <div class="form-group">
+                <label for="ha-connector-url-setup">@Localizer["UrlLabel"]</label>
+                <input @bind="HaUrl" type="url" class="form-control" id="ha-connector-url-setup" aria-describedby="ha-connector-url-help" placeholder="@Localizer["UrlPlaceholder"]">
+                <small id="ha-connector-url-help" class="form-text text-muted">@Localizer["UrlHelpText"]</small>
+            </div>
+            <div class="form-group">
+                <label for="ha-connector-accesstoken-setup">@Localizer["AccessTokenLabel"]</label>
+                <input @bind="HaAccessToken" type="password" class="form-control" id="ha-connector-accesstoken-setup" placeholder="@Localizer["AccessTokenPlaceholder"]">
+            </div>
+        </form>
+
+        @if (!String.IsNullOrEmpty(ErrorMessage))
+        {
+            <p class="text-danger">
+                @Localizer["ConnectingError"]
+                @ErrorMessage
+            </p>
+        }
+    </div>
+
+    <div class="modal-footer">
+
+        <button type="button" class="btn btn-secondary" @onclick="() => CloseSetup(false, null)">
+            @Localizer["Close"]
+        </button>
+
+        <button type="button" class="btn btn-primary" @onclick="EnableConnectorAsync">
+            @Localizer["Continue"]
+        </button>
+    </div>
+
+
+    <LoadingIndicator Visible="ShowLoadingIndicator" />
+
+</div>

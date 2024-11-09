@@ -42,8 +42,9 @@ RUN ls -l /app/publish/DigitalAssistantServer/Certificates
 # Publish connector projects
 FROM create-certificates AS build-connectors
 ARG BUILD_CONFIGURATION=Release
-WORKDIR /src/DigitalAssistant/Connectors/DigitalAssistant.HueConnector
-RUN dotnet publish "./DigitalAssistant.HueConnector.csproj" -v normal -c $BUILD_CONFIGURATION -o /app/publish-misc /p:UseAppHost=false
+WORKDIR /src/DigitalAssistant/Connectors
+RUN dotnet publish "./DigitalAssistant.HueConnector/DigitalAssistant.HueConnector.csproj" -v normal -c $BUILD_CONFIGURATION -o /app/publish-misc /p:UseAppHost=false
+RUN dotnet publish "./DigitalAssistant.HomeAssistantConnector/DigitalAssistant.HomeAssistantConnector.csproj" -v normal -c $BUILD_CONFIGURATION -o /app/publish-misc /p:UseAppHost=false
 
 # Publish command projects
 FROM build-connectors AS build-commands

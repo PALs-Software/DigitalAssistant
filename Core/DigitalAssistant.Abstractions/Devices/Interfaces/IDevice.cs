@@ -18,9 +18,9 @@ public interface IDevice
 
     string Connector { get; set; }
 
-    string Manufacturer { get; set; }
+    string? Manufacturer { get; set; }
 
-    string ProductName { get; set; }
+    string? ProductName { get; set; }
 
     string? AdditionalJsonData { get; set; }
 }

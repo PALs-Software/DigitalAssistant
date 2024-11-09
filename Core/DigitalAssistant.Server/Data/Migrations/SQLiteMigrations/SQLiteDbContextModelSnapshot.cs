@@ -150,7 +150,6 @@ namespace DigitalAssistant.Server.Data.Migrations.SQLiteMigrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Manufacturer")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("ModelType")
@@ -166,7 +165,6 @@ namespace DigitalAssistant.Server.Data.Migrations.SQLiteMigrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("ProductName")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("ShowInDashboard")

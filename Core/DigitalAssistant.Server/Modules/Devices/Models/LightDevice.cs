@@ -1,10 +1,8 @@
 ﻿using BlazorBase.Abstractions.CRUD.Arguments;
 using BlazorBase.Abstractions.CRUD.Attributes;
 using BlazorBase.Abstractions.CRUD.Enums;
-using BlazorBase.CRUD.Models;
 using DigitalAssistant.Abstractions.Devices.Arguments;
 using DigitalAssistant.Abstractions.Devices.Interfaces;
-using DigitalAssistant.Server.Modules.Connectors.Services;
 using System.ComponentModel.DataAnnotations;
 
 namespace DigitalAssistant.Server.Modules.Devices.Models;
@@ -70,43 +68,6 @@ public class LightDevice : Device, ILightDevice
 
         return base.OnBeforeValidateProperty(args);
     }
-
-    protected List<string> ChangedProperties = [];
-    public override Task OnAfterPropertyChanged(OnAfterPropertyChangedArgs args)
-    {
-        if (args.OldValue != args.NewValue && !ChangedProperties.Contains(args.PropertyName))
-            ChangedProperties.Add(args.PropertyName);
-
-        return base.OnAfterPropertyChanged(args);
-    }
-
-    public override async Task OnAfterCardSaveChanges(OnAfterCardSaveChangesArgs args)
-    {
-        await base.OnAfterCardSaveChanges(args);
-
-        if (ChangedProperties.Count == 0 || !(
-            ChangedProperties.Contains(nameof(On)) ||
-            ChangedProperties.Contains(nameof(Brightness)) ||
-            ChangedProperties.Contains(nameof(ColorTemperature)) ||
-            ChangedProperties.Contains(nameof(Color))))
-            return;
-
-        var connectorService = args.EventServices.ServiceProvider.GetRequiredService<ConnectorService>();
-        var actionArgs = new LightActionArgs()
-        {
-            On = ChangedProperties.Contains(nameof(On)) ? On : null,
-            Brightness = ChangedProperties.Contains(nameof(Brightness)) ? Brightness : null,
-            ColorTemperature = ChangedProperties.Contains(nameof(ColorTemperature)) ? ColorTemperature : null,
-            Color = ChangedProperties.Contains(nameof(Color)) ? Color : null,
-        };
-        
-        var result = await connectorService.ExecuteDeviceActionAsync(this, actionArgs);
-        if (!result.Success)
-            throw new CRUDException(result.ErrorMessage ?? args.EventServices.Localizer["UnkownErrorMessage"]);
-
-        ChangedProperties.Clear();
-    }
-
     #endregion
 
     #region Property Handling
@@ -137,5 +98,27 @@ public class LightDevice : Device, ILightDevice
         return base.OnShowEntry(args);
     }
 
+    #endregion
+
+    #region Actions
+    protected override Task<bool> ActionRelevantPropertiesChangedAsync()
+    {
+        return Task.FromResult(ChangedProperties.Count != 0 && (
+            ChangedProperties.Contains(nameof(On)) ||
+            ChangedProperties.Contains(nameof(Brightness)) ||
+            ChangedProperties.Contains(nameof(ColorTemperature)) ||
+            ChangedProperties.Contains(nameof(Color))));
+    }
+
+    protected override Task<IDeviceActionArgs> CreateActionArgsAsync()
+    {
+        return Task.FromResult((IDeviceActionArgs)new LightActionArgs()
+        {
+            On = ChangedProperties.Contains(nameof(On)) ? On : null,
+            Brightness = ChangedProperties.Contains(nameof(Brightness)) ? Brightness : null,
+            ColorTemperature = ChangedProperties.Contains(nameof(ColorTemperature)) ? ColorTemperature : null,
+            Color = ChangedProperties.Contains(nameof(Color)) ? Color : null,
+        });
+    }
     #endregion
 }

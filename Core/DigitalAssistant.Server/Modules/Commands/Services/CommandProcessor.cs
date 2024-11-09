@@ -6,7 +6,6 @@ using DigitalAssistant.Server.Modules.CacheModule;
 using DigitalAssistant.Server.Modules.Commands.Interpreter;
 using DigitalAssistant.Server.Modules.Commands.Parser;
 using DigitalAssistant.Server.Modules.Connectors.Services;
-using DigitalAssistant.Server.Modules.Setups.Enums;
 using Microsoft.Extensions.Localization;
 using System.Diagnostics;
 using System.Globalization;

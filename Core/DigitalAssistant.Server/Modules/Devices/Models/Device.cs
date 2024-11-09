@@ -7,6 +7,7 @@ using DigitalAssistant.Abstractions.Dashboards.Interfaces;
 using DigitalAssistant.Abstractions.Devices.Enums;
 using DigitalAssistant.Abstractions.Devices.Interfaces;
 using DigitalAssistant.Server.Modules.Commands.Services;
+using DigitalAssistant.Server.Modules.Connectors.Services;
 using DigitalAssistant.Server.Modules.Groups.Models;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
@@ -64,15 +65,13 @@ public partial class Device : BaseModel, IDevice, IDashboardEntry
     [Visible(DisplayOrder = 800)]
     public string Connector { get; set; } = null!;
 
-    [Required]
     [Editable(false)]
     [Visible(DisplayOrder = 900)]
-    public string Manufacturer { get; set; } = null!;
+    public string? Manufacturer { get; set; }
 
-    [Required]
     [Editable(false)]
     [Visible(DisplayOrder = 1000)]
-    public string ProductName { get; set; } = null!;
+    public string? ProductName { get; set; }
 
     public string? AdditionalJsonData { get; set; }
 
@@ -88,6 +87,7 @@ public partial class Device : BaseModel, IDevice, IDashboardEntry
 
     #region Not Mapped
     [NotMapped] private bool NameChanged = false;
+    [NotMapped] protected List<string> ChangedProperties = [];
     #endregion
 
     #endregion
@@ -102,6 +102,9 @@ public partial class Device : BaseModel, IDevice, IDashboardEntry
                 NameChanged = true;
                 break;
         }
+
+        if (args.OldValue != args.NewValue && !ChangedProperties.Contains(args.PropertyName))
+            ChangedProperties.Add(args.PropertyName);
 
         return base.OnAfterPropertyChanged(args);
     }
@@ -134,6 +137,31 @@ public partial class Device : BaseModel, IDevice, IDashboardEntry
             await commandHandler.RefreshLocalizedCommandTemplatesCacheAsync(clearAllLanguages: true).ConfigureAwait(false);
             NameChanged = false;
         }
+
+        if (ChangedProperties.Count == 0 || !await ActionRelevantPropertiesChangedAsync())
+            return;
+
+        var connectorService = args.EventServices.ServiceProvider.GetRequiredService<ConnectorService>();
+        var actionArgs = await CreateActionArgsAsync();
+        var result = await connectorService.ExecuteDeviceActionAsync(this, actionArgs);
+        if (!result.Success)
+            throw new CRUDException(result.ErrorMessage ?? args.EventServices.Localizer["UnkownErrorMessage"]);
+
+        ChangedProperties.Clear();
     }
+    #endregion
+
+    #region Actions
+
+    protected virtual Task<bool> ActionRelevantPropertiesChangedAsync()
+    {
+        return Task.FromResult(false);
+    }
+
+    protected virtual Task<IDeviceActionArgs> CreateActionArgsAsync()
+    {
+        throw new NotImplementedException("Must be implemented in the derived class");
+    }
+
     #endregion
 }

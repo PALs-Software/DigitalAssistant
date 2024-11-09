@@ -12,4 +12,7 @@ public interface IDeviceFactory
         bool colorIsAdjustable, string? color,
         string? additionalJsonData = null);
 
+    ISwitchDevice CreateSwitchDevice(IConnector connector, string internalId, string name, DeviceStatus status,
+      string manufacturer, string productName, bool on,
+      string? additionalJsonData = null);
 }

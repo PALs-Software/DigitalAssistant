@@ -1,0 +1,15 @@
+{
+  "Name": "Switch device on or off",
+  "Description": "Commands for switching switch devices on or off.",
+  "Templates": [
+    "[Turn|Set|Switch|Change] {State:Boolean} (the) {Name:SwitchDevice}",
+    "[Turn|Set|Switch|Change] (the) {Name:SwitchDevice} {State:Boolean}",
+    "{Name:SwitchDevice} {State:Boolean}"
+  ],
+  "Options": [],
+  "On": "on",
+  "Off": "off",
+  "Responses": [
+    "The switch {0} is switched to {1}"
+  ]
+}

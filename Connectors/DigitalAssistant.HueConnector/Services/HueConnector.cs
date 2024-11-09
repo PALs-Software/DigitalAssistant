@@ -1,9 +1,8 @@
-﻿using BlazorBase.Abstractions.General.Extensions;
-using DigitalAssistant.Abstractions.Connectors;
-using DigitalAssistant.Abstractions.Services;
+﻿using DigitalAssistant.Abstractions.Connectors;
 using DigitalAssistant.Abstractions.Devices.Arguments;
 using DigitalAssistant.Abstractions.Devices.Enums;
 using DigitalAssistant.Abstractions.Devices.Interfaces;
+using DigitalAssistant.Abstractions.Services;
 using DigitalAssistant.HueConnector.ApiModels;
 using DigitalAssistant.HueConnector.Components;
 using DigitalAssistant.HueConnector.Enums;
@@ -12,9 +11,9 @@ using DigitalAssistant.HueConnector.Properties;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using System.Net.Http.Json;
+using System.Runtime.Versioning;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Runtime.Versioning;
 
 namespace DigitalAssistant.HueConnector.Services;
 

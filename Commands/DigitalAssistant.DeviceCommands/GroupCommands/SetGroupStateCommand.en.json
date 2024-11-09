@@ -1,0 +1,15 @@
+{
+  "Name": "Switch group on or off",
+  "Description": "Commands for switching groups on or off.",
+  "Templates": [
+    "[Turn|Set|Switch|Change] {State:Boolean} (the) {GroupName:Group}",
+    "[Turn|Set|Switch|Change] (the) {GroupName:Group} {State:Boolean}",
+    "{GroupName:Group} {State:Boolean}"
+  ],
+  "Options": [],
+  "On": "on",
+  "Off": "off",
+  "Responses": [
+    "The group {0} is switched to {1}"
+  ]
+}

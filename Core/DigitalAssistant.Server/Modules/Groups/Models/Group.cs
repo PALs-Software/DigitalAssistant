@@ -1,5 +1,6 @@
 ﻿using BlazorBase.Abstractions.CRUD.Attributes;
 using BlazorBase.Abstractions.CRUD.Enums;
+using BlazorBase.CRUD.Attributes;
 using BlazorBase.CRUD.Models;
 using BlazorBase.Files.Attributes;
 using DigitalAssistant.Abstractions.Clients.Interfaces;
@@ -45,9 +46,11 @@ public class Group : BaseModel, IGroup
     [Visible(DisplayGroup = "Alternative Names", DisplayGroupOrder = 200, DisplayOrder = 100, HideInGUITypes = [GUIType.List])]
     public List<string> AlternativeNames { get; set; } = [];
 
+    [BaseListPartDisplayOptions(ShowAddButton = false)]
     [Visible(DisplayGroup = "Devices", DisplayGroupOrder = 300, DisplayOrder = 100)]
     public virtual List<Device> Devices { get; set; } = [];
 
+    [BaseListPartDisplayOptions(ShowAddButton = false)]
     [Visible(DisplayGroup = "Clients", DisplayGroupOrder = 400, DisplayOrder = 100)]
     public virtual List<Client> Clients { get; set; } = [];
 

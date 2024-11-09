@@ -2,9 +2,9 @@
   "Name": "Light device switch on or off",
   "Description": "Commands for switching light devices on or off.",
   "Templates": [
-    "[Turn|Set|Switch|Change] {State:Boolean} (the) [{Name:LightDevice}|{GroupName:Group}] (light)",
-    "[Turn|Set|Switch|Change] (the) [{Name:LightDevice}|{GroupName:Group}] (light) {State:Boolean}",
-    "[{Name:LightDevice}|{GroupName:Group}] {State:Boolean}"
+    "[Turn|Set|Switch|Change] {State:Boolean} (the) {Name:LightDevice} (light)",
+    "[Turn|Set|Switch|Change] (the) {Name:LightDevice} (light) {State:Boolean}",
+    "{Name:LightDevice} {State:Boolean}"
   ],
   "Options": [],
   "On": "on",

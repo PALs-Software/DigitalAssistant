@@ -183,6 +183,10 @@ public class ConnectorService(IServiceProvider serviceProvider, IDataProtectionS
                             lightDevice.Color = lightActionArgs.Color ?? lightDevice.Color;
                             break;
                         case DeviceType.Switch:
+                            if (device is not ISwitchDevice switchDevice || args.ActionArgs is not SwitchActionArgs switchActionArgs)
+                                continue;
+
+                            switchDevice.On = switchActionArgs.On ?? switchDevice.On;
                             break;
                     }
                     break;

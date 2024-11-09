@@ -6,31 +6,31 @@ using DigitalAssistant.Abstractions.Devices.Interfaces;
 using DigitalAssistant.Abstractions.Localization;
 using Microsoft.Extensions.Localization;
 
-namespace DigitalAssistant.DeviceCommands.LightDeviceCommands;
+namespace DigitalAssistant.DeviceCommands.SwitchDeviceCommands;
 
-public class SetLightDeviceStateCommand(IStringLocalizer localizer, IJsonStringLocalizer jsonLocalizer) : Command(localizer, jsonLocalizer)
+public class SetSwitchDeviceStateCommand(IStringLocalizer localizer, IJsonStringLocalizer jsonLocalizer) : Command(localizer, jsonLocalizer)
 {
     public override CommandType Type => CommandType.Direct;
-    public override int Priority => 50000;
+    public override int Priority => 60000;
 
     public override string[] LlmFunctionTemplates => [
-        "SetLightState(Name: LightDevice, State: Boolean)",
+        "SetSwitchState(Name: LightDevice, State: Boolean)"
     ];
-    public override string LlmFunctionDescription => "Turns the specified light on or off. Example SetLightState(Name: MyLight, State: On).";
+    public override string LlmFunctionDescription => "Turns the specified switch on or off. Example SetSwitchState(Name: MySwitch, State: On).";
 
     public override Task<ICommandResponse> ExecuteAsync(ICommandParameters parameters)
     {
         SetUICulture(parameters.Language);
 
-        if (!parameters.TryGetValue<ILightDevice>("Name", out var lightDevice))
+        if (!parameters.TryGetValue<ISwitchDevice>("Name", out var switchDevice))
             return Task.FromResult(CreateResponse(success: false));
 
         if (!parameters.TryGetValue<bool>("State", out var state))
             return Task.FromResult(CreateResponse(success: false));
 
-        var actionArgs = new LightActionArgs() { On = state };
-        var responseText = GetRandomResponses("Responses", lightDevice.Name, state ? JsonLocalizer["On"] : JsonLocalizer["Off"]);
+        var actionArgs = new SwitchActionArgs() { On = state };
+        var responseText = GetRandomResponses("Responses", switchDevice.Name, state ? JsonLocalizer["On"] : JsonLocalizer["Off"]);
 
-        return Task.FromResult(CreateResponse(success: true, responseText, [(lightDevice, actionArgs)]));
+        return Task.FromResult(CreateResponse(success: true, responseText, [(switchDevice, actionArgs)]));
     }
 }

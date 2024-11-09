@@ -12,33 +12,42 @@
                     <h5 class="dashboard-group-header">
                         @if (group.IconLink != null)
                         {
-                            <img src="@group.IconLink" 
-                                class="dashboard-group-header-icon figure-img img-fluid rounded">
+                            <img src="@group.IconLink"
+                                 class="dashboard-group-header-icon figure-img img-fluid rounded">
                         }
                         <span class="dashboard-group-header-name">
                             @group.Name
                         </span>
                     </h5>
 
-                    <table class="table table-hover">
-                        @foreach (var entry in group.Entries)
-                        {
-                            <tr>
-                                <td class="dashboard-col dashboard-name-col">
-                                    @entry.Name
-                                </td>
-                                <td class="dashboard-col dashboard-switch-col">
-                                    @if (entry is ILightDevice lightDevice)
-                                    {
-                                        <label class="switch">
-                                            <input type="checkbox" checked="@lightDevice.On" @onchange="(args) => ChangeLightStatusAsync(lightDevice, args)">
-                                            <span class="slider round"></span>
-                                        </label>
-                                    }
-                                </td>
-                            </tr>
-                        }
-                    </table>
+                    <div class="dashboard-group-body">
+                        <table class="table table-hover">
+                            @foreach (var entry in group.Entries)
+                            {
+                                <tr>
+                                    <td class="dashboard-col dashboard-name-col">
+                                        @entry.Name
+                                    </td>
+                                    <td class="dashboard-col dashboard-switch-col">
+                                        @if (entry is ILightDevice lightDevice)
+                                        {
+                                            <label class="switch">
+                                                <input type="checkbox" checked="@lightDevice.On" @onchange="(args) => ChangeLightStatusAsync(lightDevice, args)">
+                                                <span class="slider round"></span>
+                                            </label>
+                                        }
+                                        else if (entry is ISwitchDevice switchDevice)
+                                        {
+                                            <label class="switch">
+                                                <input type="checkbox" checked="@switchDevice.On" @onchange="(args) => ChangeSwitchStatusAsync(switchDevice, args)">
+                                                <span class="slider round"></span>
+                                            </label>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </table>
+                    </div>
                 </div>
             </div>
         }
