@@ -111,6 +111,14 @@ public class WindowsAudioDeviceService : IAudioDeviceService
                 return i;
         }
 
+        for (int i = 0; i < WaveInEvent.DeviceCount; i++)
+        {
+            var capabilities = WaveInEvent.GetCapabilities(i);
+            var normalizedWaveInDeviceName = capabilities.ProductName.Replace("(", "").Replace(")", "").Replace(" ", "").ToLower();
+            if (normalizedWasabiDeviceName.Contains(normalizedWaveInDeviceName))
+                return i;
+        }
+
         return null;
     }
     #endregion
