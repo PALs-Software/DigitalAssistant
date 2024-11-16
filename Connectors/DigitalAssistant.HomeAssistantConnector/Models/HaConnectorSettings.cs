@@ -1,5 +1,4 @@
-﻿using BlazorBase.Abstractions.CRUD.Attributes;
-using DigitalAssistant.Abstractions.Connectors;
+﻿using DigitalAssistant.Abstractions.Connectors;
 
 namespace DigitalAssistant.HomeAssistantConnector.Models;
 

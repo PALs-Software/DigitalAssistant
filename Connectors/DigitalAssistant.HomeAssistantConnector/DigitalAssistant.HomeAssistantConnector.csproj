@@ -45,13 +45,16 @@
 		<ItemGroup>
 			<MySourceFiles Include="$(OutDir)\DigitalAssistant.HomeAssistantConnector.*" />
 			<HassClientDllFiles Include="$(OutDir)\HassClient.*" />
+			<LanguageFiles Include="$(OutDir)\de\*.dll" />
 		</ItemGroup>
 
 		<Copy SourceFiles="@(MySourceFiles)" DestinationFolder="$(ProjectDir)..\..\Core\DigitalAssistant.Server\bin\$(Configuration)\net8.0\Connectors\DigitalAssistant.HomeAssistantConnector" />
 		<Copy SourceFiles="@(HassClientDllFiles)" DestinationFolder="$(ProjectDir)..\..\Core\DigitalAssistant.Server\bin\$(Configuration)\net8.0\Connectors\DigitalAssistant.HomeAssistantConnector" />
+		<Copy SourceFiles="@(LanguageFiles)" DestinationFolder="$(ProjectDir)..\..\Core\DigitalAssistant.Server\bin\$(Configuration)\net8.0\Connectors\DigitalAssistant.HomeAssistantConnector\de" />
 		
 		<Copy Condition="'$(_IsPublishing)'=='true'" SourceFiles="@(MySourceFiles)" DestinationFolder="$(PublishDir)\Publish\Connectors\DigitalAssistant.HomeAssistantConnector" />
 		<Copy Condition="'$(_IsPublishing)'=='true'" SourceFiles="@(HassClientDllFiles)" DestinationFolder="$(PublishDir)\Publish\Connectors\DigitalAssistant.HomeAssistantConnector\%(RecursiveDir)" />
+		<Copy Condition="'$(_IsPublishing)'=='true'" SourceFiles="@(LanguageFiles)" DestinationFolder="$(PublishDir)\Publish\Connectors\DigitalAssistant.HomeAssistantConnector\de" />
 	</Target>
 	
 </Project>

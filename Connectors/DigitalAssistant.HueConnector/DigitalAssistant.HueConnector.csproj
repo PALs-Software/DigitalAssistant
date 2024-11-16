@@ -55,11 +55,14 @@
 		
 		<ItemGroup>
 			<MySourceFiles Include="$(OutDir)\DigitalAssistant.HueConnector.*" />
+			<LanguageFiles Include="$(OutDir)\de\*.dll" />
 		</ItemGroup>
 		
 		<Copy SourceFiles="@(MySourceFiles)" DestinationFolder="$(ProjectDir)..\..\Core\DigitalAssistant.Server\bin\$(Configuration)\net8.0\Connectors\DigitalAssistant.HueConnector" />
+		<Copy SourceFiles="@(LanguageFiles)" DestinationFolder="$(ProjectDir)..\..\Core\DigitalAssistant.Server\bin\$(Configuration)\net8.0\Connectors\DigitalAssistant.HueConnector\de" />
 		
 		<Copy Condition="'$(_IsPublishing)'=='true'" SourceFiles="@(MySourceFiles)" DestinationFolder="$(PublishDir)\Publish\Connectors\DigitalAssistant.HueConnector" />
+		<Copy Condition="'$(_IsPublishing)'=='true'" SourceFiles="@(LanguageFiles)" DestinationFolder="$(PublishDir)\Publish\Connectors\DigitalAssistant.HueConnector\de" />
 	</Target>
 	
 </Project>
