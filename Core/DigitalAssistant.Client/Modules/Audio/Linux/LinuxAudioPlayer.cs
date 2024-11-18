@@ -5,6 +5,7 @@ using DigitalAssistant.Base.ClientServerConnection;
 using DigitalAssistant.Client.Modules.Audio.Enums;
 using DigitalAssistant.Client.Modules.Audio.Interfaces;
 using DigitalAssistant.Client.Modules.General;
+using NAudio.CoreAudioApi;
 
 namespace DigitalAssistant.Client.Modules.Audio.Linux;
 
@@ -32,6 +33,10 @@ public class LinuxAudioPlayer : IAudioPlayer
 
     protected Dictionary<SoundEffect, byte[]> SoundEffects = [];
 
+
+    protected string? OutputDevice;
+    protected string? AudioCardNumber;
+    protected string? MixerName;
     #endregion
 
     #region Init
@@ -43,12 +48,20 @@ public class LinuxAudioPlayer : IAudioPlayer
 
         InitSoundEffects();
 
+        OutputDevice = AudioDeviceService.GetOutputDevice(Settings);
+        AudioCardNumber = GetCurrentAudioCardNumber();
+        MixerName = String.IsNullOrEmpty(AudioCardNumber) ? null : AudioDeviceService.GetAudioCardMixerNames(AudioCardNumber)?.FirstOrDefault();
+
         SetVolume(AudioType.Speech, Settings.OutputAudioVolume);
         SoftRestartService.OnSoftRestart += async (sender, args) => await OnSoftRestartAsync();
     }
 
     protected virtual Task OnSoftRestartAsync()
     {
+        OutputDevice = AudioDeviceService.GetOutputDevice(Settings);
+        AudioCardNumber = GetCurrentAudioCardNumber();
+        MixerName = String.IsNullOrEmpty(AudioCardNumber) ? null : AudioDeviceService.GetAudioCardMixerNames(AudioCardNumber)?.FirstOrDefault();
+
         SetVolume(AudioType.Speech, Settings.OutputAudioVolume);
         return StopAllAsync();
     }
@@ -105,9 +118,7 @@ public class LinuxAudioPlayer : IAudioPlayer
         var audioType = AudioType.Stream;
         await StopAsync(audioType).ConfigureAwait(false);
 
-        var outputDevice = AudioDeviceService.GetOutputDevice(Settings);
-        var deviceSelection = outputDevice == null ? "" : $" -a \"{outputDevice}\"";
-
+        var deviceSelection = OutputDevice == null ? "" : $" -a \"{OutputDevice}\"";
         var process = GetBashProcess($"LD_LIBRARY_PATH=/usr/local/lib;export LD_LIBRARY_PATH;mpg123{deviceSelection} -q {url}", addEvents: true, audioType: audioType);
         Processes[audioType] = process;
         process.Start();
@@ -184,8 +195,11 @@ public class LinuxAudioPlayer : IAudioPlayer
         if (EnvironmentInformations.ApplicationRunsInDockerContainer)
             return; // amixer is not available inside docker
 
+        var mixerName = String.IsNullOrEmpty(MixerName) ? "Master" : MixerName;
+        var cardSelection = OutputDevice == null ? "" : $" -c {AudioCardNumber}";
+
         byte percent = (byte)(volume * 100);
-        var process = GetBashProcess($"amixer -M set 'Master' {percent}%");
+        var process = GetBashProcess($"amixer{cardSelection} -M set '{mixerName}' {percent}%");
         process.Start();
         process.WaitForExit();
     }
@@ -219,8 +233,7 @@ public class LinuxAudioPlayer : IAudioPlayer
 
     public Process GetAPlayProcess(AudioType audioType, string type, string format, int sampleRate, int channels)
     {
-        var outputDevice = AudioDeviceService.GetOutputDevice(Settings);
-        var deviceSelection = outputDevice == null ? "" : $" -D \"{outputDevice}\"";
+        var deviceSelection = OutputDevice == null ? "" : $" -D \"{OutputDevice}\"";
         return GetProcess("aplay", $"-q -t {type} -f {format} -r {sampleRate} -c {channels}{deviceSelection}", true, audioType);
     }
 
@@ -228,6 +241,23 @@ public class LinuxAudioPlayer : IAudioPlayer
     {
         var escapedArgs = command.Replace("\"", "\\\"");
         return GetProcess("/bin/bash", $"-c \"{escapedArgs}\"", addEvents, audioType);
+    }
+
+    protected string? GetCurrentAudioCardNumber()
+    {
+        if (OutputDevice == null)
+            return null;
+
+        var cardName = AudioDeviceService.GetAudioCardNameByDeviceId(DataFlow.Render, OutputDevice);
+        if (String.IsNullOrEmpty(cardName))
+            return null;
+
+        var audioCards = AudioDeviceService.GetAudioCards(DataFlow.Render);
+        var audioCard = audioCards.FirstOrDefault(entry => entry.Name.Contains(cardName));
+        if (audioCard == default)
+            return null;
+
+        return audioCard.Number;
     }
 
     #endregion

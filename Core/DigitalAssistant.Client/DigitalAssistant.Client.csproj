@@ -10,14 +10,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Resources\CNNWakeWord.onnx" />
-    <None Remove="Resources\OLD_WakeWord.onnx" />
-    <None Remove="Resources\RequestSound.wav" />
-    <None Remove="Resources\TimerRingtone.wav" />
-    <None Remove="Resources\WakeWord.onnx" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Content Include="Resources\RequestSound.wav">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

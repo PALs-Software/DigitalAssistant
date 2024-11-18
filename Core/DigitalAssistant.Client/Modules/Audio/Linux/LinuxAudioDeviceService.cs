@@ -11,6 +11,15 @@ public partial class LinuxAudioDeviceService : IAudioDeviceService
     #region Members
     [GeneratedRegex("(.*)(\n    .*)+")]
     protected static partial Regex DeviceInfoRegex();
+
+    [GeneratedRegex("card (\\d):(.*)")]
+    protected static partial Regex AudioCardInfoRegex();
+
+    [GeneratedRegex("CARD=(.*)")]
+    protected static partial Regex DeviceAudioCardInfoRegex();
+
+    [GeneratedRegex("control '(.*)'")]
+    protected static partial Regex MixerInfoRegex();
     #endregion
 
     #region Get Device By Settings
@@ -91,6 +100,85 @@ public partial class LinuxAudioDeviceService : IAudioDeviceService
         }
 
         return devices;
+    }
+
+    public string? GetAudioCardNameByDeviceId(DataFlow dataFlow, string id)
+    {
+        var process = new Process();
+        process.StartInfo.FileName = dataFlow == DataFlow.Render ? "aplay" : "arecord";
+        process.StartInfo.Arguments = "-L";
+        process.StartInfo.UseShellExecute = false;
+        process.StartInfo.CreateNoWindow = true;
+        process.StartInfo.RedirectStandardOutput = true;
+
+        process.Start();
+        var devicesString = process.StandardOutput.ReadToEnd();
+        process.WaitForExit();
+
+        var matches = DeviceInfoRegex().Matches(devicesString);
+        foreach (Match match in matches)
+        {
+            if (match.Groups.Count != 3)
+                continue;
+
+            if (match.Groups[1].Value == id)
+            {
+                var result = DeviceAudioCardInfoRegex().Match(match.Groups[1].Value);
+                if (result.Success && result.Groups.Count == 2)
+                    return result.Groups[1].Value.Split(",").FirstOrDefault();
+            }
+        }
+
+        return null;
+    }
+
+    public List<(string? Number, string Name)> GetAudioCards(DataFlow dataFlow)
+    {
+        var process = new Process();
+        process.StartInfo.FileName = dataFlow == DataFlow.Render ? "aplay" : "arecord";
+        process.StartInfo.Arguments = "-l";
+        process.StartInfo.UseShellExecute = false;
+        process.StartInfo.CreateNoWindow = true;
+        process.StartInfo.RedirectStandardOutput = true;
+
+        process.Start();
+        var cardString = process.StandardOutput.ReadToEnd();
+        process.WaitForExit();
+
+        var audioCards = new List<(string? Number, string Name)>();
+        var matches = AudioCardInfoRegex().Matches(cardString);
+        foreach (Match match in matches)
+        {
+            if (match.Groups.Count != 3)
+                continue;
+
+            audioCards.Add((match.Groups[1].Value, match.Groups[2].Value));
+        }
+
+        return audioCards;
+    }
+
+    public IEnumerable<string>? GetAudioCardMixerNames(string cardNumber)
+    {
+        var process = new Process();
+        process.StartInfo.FileName = "amixer";
+        process.StartInfo.Arguments = $"-c {cardNumber}";
+        process.StartInfo.UseShellExecute = false;
+        process.StartInfo.CreateNoWindow = true;
+        process.StartInfo.RedirectStandardOutput = true;
+
+        process.Start();
+        var mixerOutputString = process.StandardOutput.ReadToEnd();
+        process.WaitForExit();
+
+        var matches = MixerInfoRegex().Matches(mixerOutputString);
+        foreach (Match match in matches)
+        {
+            if (match.Groups.Count != 2)
+                continue;
+
+            yield return match.Groups[1].Value;
+        }
     }
 
     #endregion
